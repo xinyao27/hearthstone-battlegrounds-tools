@@ -149,7 +149,12 @@ export default function List() {
         }}
         unmountOnExit
       >
-        <Fab className={classes.fab} color="primary">
+        <Fab
+          className={classes.fab}
+          color="primary"
+          href="https://github.com/chenyueban/obs-hearthstone"
+          target="_blank"
+        >
           <HelpOutlineIcon />
         </Fab>
       </Zoom>

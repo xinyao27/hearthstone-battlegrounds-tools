@@ -38,7 +38,7 @@ export default function Header() {
   const { sourcesList, currentSource, setCurrentSource } = useObsText()
 
   const [open, setOpen] = React.useState(false)
-  const [host, setHost] = React.useState("localhost:4444")
+  const [host, setHost] = React.useState("http://localhost:4444")
   const [password, setPassword] = React.useState("")
   const handleClickConnect = () => {
     setOpen(true)
@@ -105,7 +105,7 @@ export default function Header() {
             fullWidth
             value={host}
             onChange={handleHostValueChange}
-            placeholder="localhost:4444"
+            placeholder="http://localhost:4444"
           />
           <TextField
             margin="dense"
