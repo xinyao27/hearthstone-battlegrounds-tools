@@ -4,6 +4,11 @@
 
 统计每天的战棋战绩，并通过数据分析得到你最拿手的英雄！
 
+<p align="center">
+  <img width="300" src="https://raw.githubusercontent.com/chenyueban/obs-hearthstone/master/docs/preview1.png" alt="preview1">
+  <img width="300" src="https://raw.githubusercontent.com/chenyueban/obs-hearthstone/master/docs/preview2.png" alt="preview2">
+</p>
+
 ## 🚀 特性
 
 - 🌴 当天战绩统计
