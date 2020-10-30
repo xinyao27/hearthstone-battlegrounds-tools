@@ -23,14 +23,18 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const classes = useStyles();
 
-  const handleSuspensionVisible = React.useCallback(() => {
+  const handleSuspensionShow = React.useCallback(() => {
     ipcRenderer.send('showSuspension');
+  }, []);
+  const handleSuspensionHide = React.useCallback(() => {
+    ipcRenderer.send('hideSuspension');
   }, []);
 
   return (
     <div className={classes.root}>
       settings
-      <Button onClick={handleSuspensionVisible}>打开悬浮</Button>
+      <Button onClick={handleSuspensionShow}>打开悬浮</Button>
+      <Button onClick={handleSuspensionHide}>关闭悬浮</Button>
     </div>
   );
 }

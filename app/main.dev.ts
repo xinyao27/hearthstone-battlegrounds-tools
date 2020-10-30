@@ -138,24 +138,31 @@ let suspensionWindow: BrowserWindow | null = null;
 
 function createSuspensionWindow() {
   suspensionWindow = new BrowserWindow({
-    width: 107, // 悬浮窗口的宽度 比实际DIV的宽度要多2px 因为有1px的边框
-    height: 27, // 悬浮窗口的高度 比实际DIV的高度要多2px 因为有1px的边框
-    type: 'toolbar', // 创建的窗口类型为工具栏窗口
-    frame: false, // 要创建无边框窗口
-    resizable: false, // 禁止窗口大小缩放
-    show: true, // 先不让窗口显示
-    webPreferences: {
-      devTools: false, // 关闭调试工具
-    },
-    transparent: true, // 设置透明
-    alwaysOnTop: true, // 窗口是否总是显示在其他窗口之前
+    width: 600,
+    height: 800,
+    type: 'toolbar',
+    frame: false,
+    resizable: false,
+    show: false,
+    webPreferences:
+      (process.env.NODE_ENV === 'development' ||
+        process.env.E2E_BUILD === 'true') &&
+      process.env.ERB_SECURE !== 'true'
+        ? {
+            nodeIntegration: true,
+          }
+        : {
+            preload: path.join(__dirname, 'dist/renderer.prod.js'),
+          },
+    alwaysOnTop: true,
   });
   const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
   const winSize = suspensionWindow.getSize(); // 获取窗口宽高
 
   // 设置窗口的位置 注意x轴要桌面的宽度 - 窗口的宽度
   suspensionWindow.setPosition(size.width - winSize[0], 100);
-  suspensionWindow.loadURL(`file://${__dirname}/app.html`);
+  suspensionWindow.setAlwaysOnTop(true, 'screen-saver', 1000);
+  suspensionWindow.loadURL(`file://${__dirname}/app.html?suspension=1`);
 
   suspensionWindow.once('ready-to-show', () => {
     suspensionWindow?.show();
@@ -168,9 +175,7 @@ function createSuspensionWindow() {
 
 ipcMain.on('showSuspension', () => {
   if (suspensionWindow) {
-    if (suspensionWindow.isVisible()) {
-      createSuspensionWindow();
-    } else {
+    if (!suspensionWindow.isVisible()) {
       suspensionWindow.showInactive();
     }
   } else {

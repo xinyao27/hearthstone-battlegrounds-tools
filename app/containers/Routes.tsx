@@ -1,11 +1,8 @@
 import React from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
-import { createHashHistory } from 'history';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import routes from '../constants/routes.json';
 import App from './App';
-
-const history = createHashHistory();
 
 const LazyRecordPage = React.lazy(
   () => import(/* webpackChunkName: "RecordPage" */ '../pages/record')
@@ -34,17 +31,15 @@ const SettingsPage = (props: Record<string, any>) => (
 
 export default function Routes() {
   return (
-    <Router history={history}>
-      <App>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to={routes.RECORD} />
-          </Route>
-          <Route path={routes.RECORD} component={RecordPage} />
-          <Route path={routes.STATISTICS} component={StatisticsPage} />
-          <Route path={routes.SETTINGS} component={SettingsPage} />
-        </Switch>
-      </App>
-    </Router>
+    <App>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to={routes.RECORD} />
+        </Route>
+        <Route path={routes.RECORD} component={RecordPage} />
+        <Route path={routes.STATISTICS} component={StatisticsPage} />
+        <Route path={routes.SETTINGS} component={SettingsPage} />
+      </Switch>
+    </App>
   );
 }
