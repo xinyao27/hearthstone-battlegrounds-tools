@@ -1,6 +1,9 @@
 import { resolve } from 'path';
 
-const heartstoneRootPath = 'D:\\Program Files (x86)\\Hearthstone';
+// Windows
+// const heartstoneRootPath = 'D:\\Program Files (x86)\\Hearthstone';
+// Mac os
+const heartstoneRootPath = '/Applications/Hearthstone';
 const heartstoneLogFileName = 'Power.log';
 const heartstoneLogFilePath = resolve(
   heartstoneRootPath,
