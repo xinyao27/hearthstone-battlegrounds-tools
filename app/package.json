@@ -1,0 +1,13 @@
+{
+  "name": "hearthstone-battlegrounds-tools",
+  "productName": "HearthstoneBattlegroundsTools",
+  "version": "1.0.0",
+  "description": "炉石传说酒馆战棋战绩统计工具",
+  "main": "./main.prod.js",
+  "scripts": {
+    "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
+    "postinstall": "yarn electron-rebuild"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}
