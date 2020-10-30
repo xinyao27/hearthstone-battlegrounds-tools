@@ -10,6 +10,7 @@ module.exports = {
     'react/prop-types': 'off',
     'react/jsx-one-expression-per-line': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    'import/prefer-default-export': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

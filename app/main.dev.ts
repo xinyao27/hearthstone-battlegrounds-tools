@@ -107,6 +107,15 @@ const createWindow = async () => {
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
+
+  // logHandler
+  const logHandlerWindow = new BrowserWindow({
+    width: 1024,
+    height: 728,
+    show: process.env.NODE_ENV === 'development',
+    webPreferences: { nodeIntegration: true },
+  });
+  logHandlerWindow.loadURL(`file://${__dirname}/logHandler.html`);
 };
 
 /**
