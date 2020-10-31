@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import useListHeroes from '../hooks/useListHeroes';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -12,7 +13,8 @@ const useStyles = makeStyles(() => ({
 
 const Welcome: React.FC = () => {
   const classes = useStyles();
-
+  const { data, loading } = useListHeroes();
+  console.log(data, loading);
   return <div className={classes.root}>welcome</div>;
 };
 
