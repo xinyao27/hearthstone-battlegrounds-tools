@@ -1,5 +1,11 @@
+export type State =
+  | 'GAME_START'
+  | 'HERO_TOBE_CHOSEN'
+  | 'HERO_CHOICES'
+  | 'GAME_RANKING'
+  | 'GAME_OVER';
 export interface StateRegex {
-  state: string;
+  state: State;
   fn: string;
   regex: RegExp;
   index?: number | number[];

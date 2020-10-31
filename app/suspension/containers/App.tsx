@@ -1,8 +1,11 @@
+import { ipcRenderer } from 'electron';
 import React, { ReactNode } from 'react';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { CssBaseline, Box } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
+
+import { MAIN_SUSPENSION_MESSAGE } from '../../constants/topic';
 
 type Props = {
   children: ReactNode;
@@ -38,6 +41,13 @@ const theme = createMuiTheme({
 
 export default function App(props: Props) {
   const { children } = props;
+
+  React.useEffect(() => {
+    ipcRenderer.on(MAIN_SUSPENSION_MESSAGE, (event, args) => {
+      console.log(event, args);
+    });
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

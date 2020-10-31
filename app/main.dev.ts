@@ -15,6 +15,11 @@ import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
+import {
+  LOGHANDLER_MAIN_MESSAGE,
+  MAIN_SUSPENSION_MESSAGE,
+} from './constants/topic';
+import { Sorted } from './logHandler/parser';
 
 export default class AppUpdater {
   constructor() {
@@ -144,7 +149,6 @@ app.on('activate', () => {
 });
 
 let suspensionWindow: BrowserWindow | null = null;
-
 function createSuspensionWindow() {
   suspensionWindow = new BrowserWindow({
     width: 600,
@@ -195,4 +199,20 @@ ipcMain.on('hideSuspension', () => {
   if (suspensionWindow) {
     suspensionWindow.hide();
   }
+});
+
+/**
+ * logHandler 向 main 发送通知
+ */
+ipcMain.on(LOGHANDLER_MAIN_MESSAGE, (_, args: Sorted) => {
+  if (args.state === 'GAME_START') {
+    if (suspensionWindow) {
+      if (!suspensionWindow.isVisible()) {
+        suspensionWindow.showInactive();
+      }
+    } else {
+      createSuspensionWindow();
+    }
+  }
+  suspensionWindow?.webContents.send(MAIN_SUSPENSION_MESSAGE, args);
 });
