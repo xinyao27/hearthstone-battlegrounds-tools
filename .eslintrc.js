@@ -11,6 +11,7 @@ module.exports = {
     'react/jsx-one-expression-per-line': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'import/prefer-default-export': 'off',
+    'global-require': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

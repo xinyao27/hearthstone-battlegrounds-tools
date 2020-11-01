@@ -11,20 +11,43 @@ type Props = {
   children: ReactNode;
 };
 
+const font = {
+  fontFamily: 'JingDianLiBianJian',
+  fontStyle: 'normal',
+  src: `
+    url(${
+      require('../assets/fonts/JingDianLiBianJian.woff2').default
+    }) format('woff2')
+  `,
+};
 const theme = createMuiTheme({
+  typography: {
+    fontFamily:
+      'JingDianLiBianJian,Belwe Bold,Georgia,Times,Times New Roman,serif',
+  },
   overrides: {
     MuiCssBaseline: {
       '@global': {
+        '@font-face': [font],
         html: {
           height: '100%',
         },
         body: {
           height: '100%',
           overflow: 'hidden',
+          background: 'none !important',
+          userSelect: 'none',
+          cursor: `url("${
+            require('../assets/images/hand.png').default
+          }") 0 0,auto`,
         },
         '#root': {
           height: '100%',
           overflow: 'hidden',
+        },
+        img: {
+          display: 'block',
+          width: '100%',
         },
       },
     },

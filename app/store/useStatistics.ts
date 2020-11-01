@@ -1,7 +1,7 @@
 import { createModel } from 'hox';
 import { useLocalStorageState } from 'ahooks';
 
-import heros from '../constants/heros.json';
+import heroes from '../constants/heroes.json';
 
 export interface RecordItem {
   id: string;
@@ -45,7 +45,7 @@ function useStatistics() {
   return Object.keys(reSummarized)
     .reduce<ResultItem[]>((pre, cur) => {
       const heroId = parseInt(cur, 10);
-      const hero = heros.find((v) => v.id === heroId);
+      const hero = heroes.find((v) => v.id === heroId);
       const heroAvatar = hero ? hero.battlegrounds.image : '';
       const heroName = hero ? hero.name : '';
       const ranks = reSummarized[heroId];

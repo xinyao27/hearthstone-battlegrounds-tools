@@ -151,9 +151,10 @@ app.on('activate', () => {
 let suspensionWindow: BrowserWindow | null = null;
 function createSuspensionWindow() {
   suspensionWindow = new BrowserWindow({
-    width: 600,
-    height: 800,
+    width: process.env.NODE_ENV === 'development' ? 800 : 260,
+    height: 1200,
     type: 'toolbar',
+    transparent: true,
     frame: false,
     resizable: false,
     show: false,

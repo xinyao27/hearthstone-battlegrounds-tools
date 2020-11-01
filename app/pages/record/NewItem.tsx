@@ -10,7 +10,7 @@ import {
 import SendIcon from '@material-ui/icons/Send';
 import { v4 as uuid } from 'uuid';
 
-import heros from '../../constants/heros.json';
+import heroes from '../../constants/heroes.json';
 import type { RecordItem } from '../../store/useStatistics';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +40,7 @@ interface NewItemProps {
 const NewItem: React.FC<NewItemProps> = ({ onSubmit }) => {
   const classes = useStyles();
 
-  const [currentItem, setCurrentItem] = React.useState(() => heros[0].id);
+  const [currentItem, setCurrentItem] = React.useState(() => heroes[0].id);
   const [rank, setRank] = React.useState('');
   const handleItemChange = React.useCallback((e) => {
     setCurrentItem(e.target.value);
@@ -49,7 +49,7 @@ const NewItem: React.FC<NewItemProps> = ({ onSubmit }) => {
     setRank(e.target.value);
   }, []);
   const handleSubmit = React.useCallback(() => {
-    const hero = heros.find((h) => h.id === currentItem);
+    const hero = heroes.find((h) => h.id === currentItem);
     const date = new Date();
     if (hero) {
       onSubmit({
@@ -73,7 +73,7 @@ const NewItem: React.FC<NewItemProps> = ({ onSubmit }) => {
         value={currentItem}
         onChange={handleItemChange}
       >
-        {heros.map((hero) => (
+        {heroes.map((hero) => (
           <MenuItem className={classes.item} key={hero.id} value={hero.id}>
             <img
               className={classes.img}

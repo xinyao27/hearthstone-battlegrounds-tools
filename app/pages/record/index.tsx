@@ -17,7 +17,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { useLocalStorageState } from 'ahooks';
 import dayjs from 'dayjs';
 
-import heros from '../../constants/heros.json';
+import heroes from '../../constants/heroes.json';
 import NewItem from './NewItem';
 import useConnect from '../../store/useConnect';
 import useCommand from '../../store/useCommand';
@@ -116,7 +116,7 @@ export default function Record() {
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
           .map((value) => {
-            const currentHero = heros.find((h) => h.id === value.hero.id);
+            const currentHero = heroes.find((h) => h.id === value.hero.id);
             return (
               <ListItem key={value.id} button>
                 <ListItemAvatar>
