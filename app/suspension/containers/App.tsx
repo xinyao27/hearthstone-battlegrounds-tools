@@ -11,13 +11,20 @@ type Props = {
   children: ReactNode;
 };
 
-const font = {
+const JingDianLiBianJianFont = {
   fontFamily: 'JingDianLiBianJian',
   fontStyle: 'normal',
   src: `
     url(${
       require('../assets/fonts/JingDianLiBianJian.woff2').default
     }) format('woff2')
+  `,
+};
+const BelweBoldFont = {
+  fontFamily: 'Belwe Bold',
+  fontStyle: 'normal',
+  src: `
+    url(${require('../assets/fonts/Belwe-Bold.ttf').default})
   `,
 };
 const theme = createMuiTheme({
@@ -28,7 +35,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [font],
+        '@font-face': [JingDianLiBianJianFont, BelweBoldFont],
         html: {
           height: '100%',
         },

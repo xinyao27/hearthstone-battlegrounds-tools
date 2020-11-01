@@ -1,4 +1,5 @@
 {
   "WELCOME": "/",
-  "HEROSELECTION": "/heroSelection"
+  "HEROSELECTION": "/heroSelection",
+  "GAMEOVER": "/gameOver"
 }

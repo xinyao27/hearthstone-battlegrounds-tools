@@ -19,8 +19,8 @@ const Welcome: React.FC = () => {
 
   return (
     <Layout className={classes.root}>
-      <div>玛维影歌</div>
       <Link to={routes.HEROSELECTION}>to heroes</Link>
+      <Link to={routes.GAMEOVER}>to gameover</Link>
     </Layout>
   );
 };
