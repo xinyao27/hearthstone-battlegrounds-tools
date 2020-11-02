@@ -6,7 +6,7 @@ import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import { useMount } from 'ahooks';
 
-import { MAIN_SUSPENSION_MESSAGE } from '../../constants/topic';
+import { LOGHANDLER_SUSPENSION_MESSAGE } from '../../constants/topic';
 import useStateFlow from '../hooks/useStateFlow';
 import type { Filtered } from '../../logHandler/parser';
 
@@ -84,7 +84,7 @@ export default function App(props: Props) {
   const [, setStateFlow] = useStateFlow();
 
   useMount(() => {
-    ipcRenderer.on(MAIN_SUSPENSION_MESSAGE, (_event, args: Filtered) => {
+    ipcRenderer.on(LOGHANDLER_SUSPENSION_MESSAGE, (_event, args: Filtered) => {
       setStateFlow(args);
     });
   });

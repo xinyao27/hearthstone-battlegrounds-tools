@@ -15,11 +15,6 @@ import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
-import {
-  LOGHANDLER_MAIN_MESSAGE,
-  MAIN_SUSPENSION_MESSAGE,
-} from './constants/topic';
-import { Sorted } from './logHandler/parser';
 
 export default class AppUpdater {
   constructor() {
@@ -53,6 +48,20 @@ const installExtensions = async () => {
   ).catch(console.log);
 };
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace NodeJS {
+    interface Global {
+      winIds: {
+        mainWindow?: number;
+        logHandlerWindow?: number;
+        suspensionWindow?: number;
+      };
+    }
+  }
+}
+global.winIds = {};
+
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -85,6 +94,7 @@ const createWindow = async () => {
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
           },
   });
+  global.winIds.mainWindow = mainWindow.webContents.id;
 
   mainWindow.loadURL(`file://${__dirname}/app.html`);
 
@@ -120,6 +130,7 @@ const createWindow = async () => {
     show: process.env.NODE_ENV === 'development',
     webPreferences: { nodeIntegration: true },
   });
+  global.winIds.logHandlerWindow = logHandlerWindow.webContents.id;
   logHandlerWindow.loadURL(`file://${__dirname}/logHandler.html`);
 };
 
@@ -171,6 +182,7 @@ function createSuspensionWindow() {
           },
     alwaysOnTop: true,
   });
+  global.winIds.suspensionWindow = suspensionWindow.webContents.id;
   const winSize = suspensionWindow.getSize(); // 获取窗口宽高
 
   // 设置窗口的位置 注意x轴要桌面的宽度 - 窗口的宽度
@@ -200,20 +212,4 @@ ipcMain.on('hideSuspension', () => {
   if (suspensionWindow) {
     suspensionWindow.hide();
   }
-});
-
-/**
- * logHandler 向 main 发送通知
- */
-ipcMain.on(LOGHANDLER_MAIN_MESSAGE, (_, args: Sorted) => {
-  if (args.state === 'GAME_START') {
-    if (suspensionWindow) {
-      if (!suspensionWindow.isVisible()) {
-        suspensionWindow.showInactive();
-      }
-    } else {
-      createSuspensionWindow();
-    }
-  }
-  suspensionWindow?.webContents.send(MAIN_SUSPENSION_MESSAGE, args);
 });

@@ -24,7 +24,6 @@ const HeroSelection: React.FC = () => {
         stateFlow?.HERO_TOBE_CHOSEN.result.map((name: string) => (
           <HeroCard heroId={getHeroId(name)} key={name} />
         ))}
-      <HeroCard heroId={58435} />
     </Layout>
   );
 };
