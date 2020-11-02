@@ -54,7 +54,7 @@ const useStyles = makeStyles(() => ({
   content: {
     width: '100%',
     flex: 1,
-    padding: 27,
+    padding: '0 27px',
     overflowX: 'hidden',
     overflowY: 'auto',
   },

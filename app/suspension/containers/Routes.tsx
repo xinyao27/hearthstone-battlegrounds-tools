@@ -24,7 +24,7 @@ const HeroSelectionPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 const LazyGameOverPage = React.lazy(
-  () => import(/* webpackChunkName: "GameOverPage" */ '../features/gameOver')
+  () => import(/* webpackChunkName: "GameOverPage" */ '../features/gameOver2')
 );
 const GameOverPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>

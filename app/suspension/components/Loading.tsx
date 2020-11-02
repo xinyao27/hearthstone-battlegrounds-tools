@@ -28,6 +28,7 @@ const useStyles = makeStyles(() => ({
       backgroundSize: '86%',
       backgroundPosition: 'center',
       animation: '$spin 3s infinite ease',
+      filter: 'brightness(150%) opacity(80%) saturate(150%)',
     },
   },
   img: {},
