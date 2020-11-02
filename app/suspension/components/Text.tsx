@@ -7,6 +7,7 @@ interface TextProps {
   className?: string;
   stroke?: boolean;
   color?: string;
+  isNumber?: boolean;
   [prop: string]: any;
 }
 
@@ -30,6 +31,7 @@ const Text: React.FC<TextProps> = ({
   className,
   stroke = true,
   color = 'white',
+  isNumber,
 }) => {
   const classes = useStyles();
 
@@ -37,7 +39,7 @@ const Text: React.FC<TextProps> = ({
     <p
       className={clsx(classes.root, className, {
         [classes.text]: typeof children === 'string',
-        [classes.number]: typeof children === 'number',
+        [classes.number]: typeof children === 'number' || isNumber,
         [classes.stroke]: stroke,
       })}
       style={{ color }}

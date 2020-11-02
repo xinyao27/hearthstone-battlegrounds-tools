@@ -150,9 +150,10 @@ app.on('activate', () => {
 
 let suspensionWindow: BrowserWindow | null = null;
 function createSuspensionWindow() {
+  const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
   suspensionWindow = new BrowserWindow({
     width: process.env.NODE_ENV === 'development' ? 800 : 260,
-    height: 1200,
+    height: size.height > 1200 ? 1200 : size.height,
     type: 'toolbar',
     transparent: true,
     frame: false,
@@ -170,7 +171,6 @@ function createSuspensionWindow() {
           },
     alwaysOnTop: true,
   });
-  const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
   const winSize = suspensionWindow.getSize(); // 获取窗口宽高
 
   // 设置窗口的位置 注意x轴要桌面的宽度 - 窗口的宽度

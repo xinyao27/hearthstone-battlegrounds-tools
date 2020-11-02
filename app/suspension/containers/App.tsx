@@ -20,13 +20,19 @@ const JingDianLiBianJianFont = {
   src: `
     url(${
       require('../assets/fonts/JingDianLiBianJian.woff2').default
-    }) format('woff2')
+    }) format('woff2'),
+    url(${
+      require('../assets/fonts/JingDianLiBianJian.woff').default
+    }) format('woff'),
+    url(${require('../assets/fonts/JingDianLiBianJian.ttf').default})
   `,
 };
 const BelweBoldFont = {
   fontFamily: 'Belwe Bold',
   fontStyle: 'normal',
   src: `
+    url(${require('../assets/fonts/Belwe-Bold.woff2').default}) format('woff2'),
+    url(${require('../assets/fonts/Belwe-Bold.woff').default}) format('woff'),
     url(${require('../assets/fonts/Belwe-Bold.ttf').default})
   `,
 };

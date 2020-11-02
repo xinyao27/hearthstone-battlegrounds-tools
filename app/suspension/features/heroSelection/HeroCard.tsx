@@ -8,6 +8,7 @@ import type { EChartOption } from 'echarts';
 
 import heroes from '../../../constants/heroes.json';
 import useListHeroes, { ListHeroesResult } from '../../hooks/useListHeroes';
+import Text from '../../components/Text';
 
 interface ChartProps {
   hero: ListHeroesResult['series']['data'][0] & typeof heroes[0];
@@ -136,8 +137,6 @@ const useStyles = makeStyles((theme) => ({
   },
   value: {
     fontSize: 20,
-    fontWeight: 'bold',
-    fontFamily: `"Roboto", "Helvetica", "Arial", sans-serif`,
   },
 
   chart: {
@@ -167,14 +166,20 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
 
         <div className={classes.data}>
           <div className={classes.card}>
-            <div className={classes.label}>平均排名</div>
-            <div className={classes.value}>
+            <Text className={classes.label} stroke={false} color="black">
+              平均排名
+            </Text>
+            <Text className={classes.value} isNumber>
               {hero?.avg_final_placement?.toFixed(2)}
-            </div>
+            </Text>
           </div>
           <div className={classes.card}>
-            <div className={classes.label}>选择率</div>
-            <div className={classes.value}>{hero?.pick_rate?.toFixed(2)}%</div>
+            <Text className={classes.label} stroke={false} color="black">
+              选择率
+            </Text>
+            <Text className={classes.value} isNumber>
+              {`${hero?.pick_rate?.toFixed(2)}%`}
+            </Text>
           </div>
         </div>
 
