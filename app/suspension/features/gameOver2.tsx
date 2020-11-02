@@ -1,10 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useUpdateEffect } from 'ahooks';
+import { useHistory } from 'react-router-dom';
 
-import heroes from '../../constants/heroes.json';
 import Layout from '../components/Layout';
-import Loading from '../components/Loading';
 import Text from '../components/Text';
+import useStateFlow from '../hooks/useStateFlow';
+import { getHeroId, getHero } from '../utils';
+import routes from '../constants/routes.json';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,18 +120,30 @@ const useStyles = makeStyles((theme) => ({
 
 const GameOver: React.FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const [stateFlow] = useStateFlow();
 
-  const heroId = 58435;
-  const rank = 2;
+  const [hero, rank] = React.useMemo(() => {
+    if (stateFlow?.current === 'GAME_OVER') {
+      if (stateFlow?.GAME_RANKING?.result) {
+        const [heroName, heroRank] = stateFlow.GAME_RANKING.result;
+        const heroId = getHeroId(heroName);
+        return [getHero(heroId), heroRank];
+      }
+    }
+    return [null, null];
+  }, [stateFlow]);
 
-  const hero = React.useMemo(() => heroes.find((v) => v.id === heroId), [
-    heroId,
-  ]);
+  useUpdateEffect(() => {
+    if (stateFlow?.current === 'GAME_START') {
+      history.push(routes.HEROSELECTION);
+    }
+  }, [stateFlow]);
 
   return (
     <Layout>
-      {hero ? (
-        <div className={classes.container}>
+      <div className={classes.container}>
+        {hero && (
           <div className={classes.hero}>
             <div className={classes.head}>
               <Text className={classes.headText} color="#e9dd52">
@@ -140,24 +155,22 @@ const GameOver: React.FC = () => {
             </div>
             <Text className={classes.name}>{hero.name}</Text>
           </div>
+        )}
 
-          <div className={classes.rank}>
-            <div className={classes.crown} />
-            <div className={classes.content}>
-              <Text className={classes.title} stroke={false} color="black">
-                当局排名
-              </Text>
-              <Text className={classes.value}>{rank}</Text>
-            </div>
+        <div className={classes.rank}>
+          <div className={classes.crown} />
+          <div className={classes.content}>
+            <Text className={classes.title} stroke={false} color="black">
+              当局排名
+            </Text>
+            <Text className={classes.value}>{rank}</Text>
           </div>
-
-          <Text className={classes.tip} stroke={false} color="black">
-            已记录本场战绩
-          </Text>
         </div>
-      ) : (
-        <Loading />
-      )}
+
+        <Text className={classes.tip} stroke={false} color="black">
+          已记录本场战绩
+        </Text>
+      </div>
     </Layout>
   );
 };

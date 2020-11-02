@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
+import Loading from '../components/Loading';
 import routes from '../constants/routes.json';
 import App from './App';
 
@@ -8,7 +9,7 @@ const LazyWelcomePage = React.lazy(
   () => import(/* webpackChunkName: "WelcomePage" */ '../features/welcome')
 );
 const WelcomePage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
+  <React.Suspense fallback={<Loading />}>
     <LazyWelcomePage {...props} />
   </React.Suspense>
 );
@@ -19,7 +20,7 @@ const LazyHeroSelectionPage = React.lazy(
     )
 );
 const HeroSelectionPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
+  <React.Suspense fallback={<Loading />}>
     <LazyHeroSelectionPage {...props} />
   </React.Suspense>
 );
@@ -27,7 +28,7 @@ const LazyGameOverPage = React.lazy(
   () => import(/* webpackChunkName: "GameOverPage" */ '../features/gameOver2')
 );
 const GameOverPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
+  <React.Suspense fallback={<Loading />}>
     <LazyGameOverPage {...props} />
   </React.Suspense>
 );

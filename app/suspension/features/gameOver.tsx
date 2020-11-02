@@ -41,7 +41,7 @@ const GameOver: React.FC = () => {
   const classes = useStyles();
 
   const heroId = 58435;
-  const rank = 2;
+  // const rank = 2;
 
   const hero = React.useMemo(() => heroes.find((v) => v.id === heroId), [
     heroId,

@@ -13,6 +13,7 @@ const useStyles = makeStyles(() => ({
       require('../assets/images/loading_bg.png').default
     }) no-repeat`,
     backgroundSize: '100%',
+    margin: '0 auto',
     position: 'relative',
 
     '&::before': {

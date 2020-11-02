@@ -1,6 +1,6 @@
 import createObservable from './observable';
 import createObserver from './observer';
-import { readFile, readline, filter, sort } from './parser';
+import { readFile, readline, filter } from './parser';
 import { stateRegexes } from './regex';
 
 function run() {
@@ -8,7 +8,7 @@ function run() {
   const observer = createObserver();
 
   source$
-    .pipe(readFile(), readline(), filter(stateRegexes), sort())
+    .pipe(readFile(), readline(), filter(stateRegexes))
     .subscribe(observer);
 }
 run();

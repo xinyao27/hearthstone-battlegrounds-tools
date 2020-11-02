@@ -7,7 +7,7 @@ import {
   map,
   filter as filterOperator,
 } from 'rxjs/operators';
-import type { StateRegex } from './regex';
+import type { State, StateRegex } from './regex';
 
 const read = bindNodeCallback(fs.read);
 export const readFile = () => (
@@ -52,7 +52,7 @@ export const readline = () => (source: Observable<Buffer>) =>
 
 export interface Filtered {
   date: string;
-  state: string;
+  state: State;
   result: any;
   line: Line;
 }

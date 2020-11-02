@@ -1,20 +1,29 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useUpdateEffect } from 'ahooks';
+import { useHistory } from 'react-router-dom';
 
-import routes from '../../constants/routes.json';
 import Layout from '../../components/Layout';
-import Loading from '../../components/Loading';
 import HeroCard from './HeroCard';
+import useStateFlow from '../../hooks/useStateFlow';
+import routes from '../../constants/routes.json';
+import { getHeroId } from '../../utils';
 
 const HeroSelection: React.FC = () => {
+  const history = useHistory();
+  const [stateFlow] = useStateFlow();
+
+  useUpdateEffect(() => {
+    if (stateFlow?.current === 'GAME_OVER') {
+      history.push(routes.GAMEOVER);
+    }
+  }, [stateFlow]);
+
   return (
     <Layout>
-      <Loading />
-      <Link to={routes.WELCOME}>to home</Link>
-      <HeroCard heroId={58435} />
-      <HeroCard heroId={60213} />
-      <HeroCard heroId={60372} />
-      <HeroCard heroId={64400} />
+      {stateFlow?.current === 'HERO_TOBE_CHOSEN' &&
+        stateFlow?.HERO_TOBE_CHOSEN.result.map((name: string) => (
+          <HeroCard heroId={getHeroId(name)} key={name} />
+        ))}
     </Layout>
   );
 };
