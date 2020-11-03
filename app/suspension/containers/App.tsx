@@ -4,11 +4,13 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { CssBaseline, Box } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
-import { useMount } from 'ahooks';
+import { useMount, useUpdateEffect } from 'ahooks';
+import { useHistory } from 'react-router-dom';
 
 import { LOGHANDLER_SUSPENSION_MESSAGE } from '../../constants/topic';
 import useStateFlow from '../hooks/useStateFlow';
 import type { Filtered } from '../../logHandler/parser';
+import routes from '../constants/routes.json';
 
 type Props = {
   children: ReactNode;
@@ -80,14 +82,25 @@ const theme = createMuiTheme({
 
 export default function App(props: Props) {
   const { children } = props;
-
-  const [, setStateFlow] = useStateFlow();
+  const history = useHistory();
+  const [stateFlow, setStateFlow] = useStateFlow();
 
   useMount(() => {
     ipcRenderer.on(LOGHANDLER_SUSPENSION_MESSAGE, (_event, args: Filtered) => {
       setStateFlow(args);
     });
   });
+
+  useUpdateEffect(() => {
+    if (stateFlow?.current === 'GAME_START') {
+      history.push(routes.HEROSELECTION);
+    }
+    if (stateFlow?.current === 'HERO_TOBE_CHOSEN') {
+      if (history.location.pathname !== '/heroSelection') {
+        history.push(routes.HEROSELECTION);
+      }
+    }
+  }, [stateFlow, history]);
 
   return (
     <ThemeProvider theme={theme}>

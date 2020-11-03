@@ -1,11 +1,9 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link, useHistory } from 'react-router-dom';
-import { useUpdateEffect } from 'ahooks';
+import { Link } from 'react-router-dom';
 
 import Layout from '../components/Layout';
 import routes from '../constants/routes.json';
-import useStateFlow from '../hooks/useStateFlow';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -16,14 +14,6 @@ const useStyles = makeStyles(() => ({
 
 const Welcome: React.FC = () => {
   const classes = useStyles();
-  const history = useHistory();
-  const [stateFlow] = useStateFlow();
-
-  useUpdateEffect(() => {
-    if (stateFlow?.current === 'GAME_START') {
-      history.push(routes.HEROSELECTION);
-    }
-  }, [stateFlow]);
 
   return (
     <Layout className={classes.root}>
