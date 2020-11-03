@@ -104,13 +104,24 @@ export default function App(props: Props) {
   useUpdateEffect(() => {
     // state 收到开始 跳转至英雄选择页
     if (stateFlow?.current === 'GAME_START') {
+      ipcRenderer.send('showSuspension');
       history.push(routes.HEROSELECTION);
     }
     // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
     if (stateFlow?.current === 'HERO_TOBE_CHOSEN') {
       if (history.location.pathname !== '/heroSelection') {
+        ipcRenderer.send('showSuspension');
         history.push(routes.HEROSELECTION);
       }
+    }
+    // 英雄选择后 隐藏悬浮
+    if (stateFlow?.current === 'HERO_CHOICES') {
+      ipcRenderer.send('hideSuspension');
+    }
+    // 对局结束 显示悬浮展示战绩
+    if (stateFlow?.current === 'GAME_OVER') {
+      ipcRenderer.send('showSuspension');
+      history.push(routes.GAMEOVER);
     }
   }, [stateFlow, history]);
 
