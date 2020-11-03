@@ -66,12 +66,12 @@ let suspensionWindow: BrowserWindow | null = null;
 function createSuspensionWindow() {
   const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
   suspensionWindow = new BrowserWindow({
-    width: process.env.NODE_ENV === 'development' ? 800 : 260,
+    width: 260,
     height: size.height > 1200 ? 1200 : size.height,
     type: 'toolbar',
     transparent: true,
     frame: false,
-    resizable: false,
+    resizable: true,
     show: false,
     webPreferences:
       (process.env.NODE_ENV === 'development' ||
@@ -88,8 +88,9 @@ function createSuspensionWindow() {
   global.winIds.suspensionWindow = suspensionWindow.webContents.id;
   const winSize = suspensionWindow.getSize(); // 获取窗口宽高
 
-  // 设置窗口的位置 注意x轴要桌面的宽度 - 窗口的宽度
-  suspensionWindow.setPosition(size.width - winSize[0], 100);
+  const x = size.width - winSize[0];
+  const y = 100;
+  suspensionWindow.setPosition(x, y);
   suspensionWindow.setAlwaysOnTop(true, 'screen-saver', 1000);
   suspensionWindow.loadURL(`file://${__dirname}/app.html?suspension=1`);
 
@@ -97,6 +98,18 @@ function createSuspensionWindow() {
     // suspensionWindow?.show();
   });
 
+  suspensionWindow.on('resize', () => {
+    // 禁止横向拖动改变大小
+    // TODO 这里会造成抖动，但是 will-resize 不知怎么返回的 newBounds 不对，待解决
+    if (suspensionWindow?.getSize()[0] !== winSize[0]) {
+      suspensionWindow?.setBounds({
+        width: winSize[0],
+        height: winSize[1],
+        x,
+        y,
+      });
+    }
+  });
   suspensionWindow.on('close', () => {
     suspensionWindow = null;
   });
