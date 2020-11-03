@@ -14,7 +14,6 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import { useLocalStorageState } from 'ahooks';
 import dayjs from 'dayjs';
 
 import heroes from '../../constants/heroes.json';
@@ -22,7 +21,7 @@ import NewItem from './NewItem';
 import useConnect from '../../store/useConnect';
 import useCommand from '../../store/useCommand';
 import useObsText from '../../store/useObsText';
-import { RecordItem } from '../../store/useStatistics';
+import useNewRecord from '../../store/useNewRecord';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,43 +46,35 @@ export default function Record() {
   const { run } = useCommand();
   const { currentSource } = useObsText();
 
-  const [recordList, setRecordList] = useLocalStorageState<RecordItem[]>(
-    'record-list',
-    []
-  );
+  const [recordList, { addRecord, deleteRecord }] = useNewRecord((result) => {
+    if (connected) {
+      (async () => {
+        // 只取当天的数据
+        const today = dayjs();
+        const todayResult = result.filter((v) =>
+          dayjs(v.date).isSame(today, 'day')
+        );
+        const text = todayResult
+          .map((v) => `${v.hero.name} ${v.rank}`)
+          .join('\n');
+        await run('SetTextGDIPlusProperties', {
+          source: currentSource,
+          text,
+        });
+      })();
+    }
+  });
   const handleNewItem = React.useCallback(
-    (e) => {
-      setRecordList((previousState) => {
-        const result = [e, ...previousState];
-        if (connected) {
-          (async () => {
-            // 只取当天的数据
-            const today = dayjs();
-            const todayResult = result.filter((v) =>
-              dayjs(v.date).isSame(today, 'day')
-            );
-            const text = todayResult
-              .map((v) => `${v.hero.name} ${v.rank}`)
-              .join('\n');
-            await run('SetTextGDIPlusProperties', {
-              source: currentSource,
-              text,
-            });
-          })();
-        }
-
-        return result;
-      });
+    (item) => {
+      addRecord(item);
     },
-    [connected, currentSource, run, setRecordList]
+    [addRecord]
   );
   const handleDeleteItem = React.useCallback(
     (item) => {
-      setRecordList((previousState) =>
-        previousState.filter((v) => v.id !== item.id)
-      );
+      deleteRecord(item);
     },
-    [setRecordList]
+    [deleteRecord]
   );
 
   const [currentDate, setCurrentDate] = React.useState(

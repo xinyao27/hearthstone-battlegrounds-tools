@@ -1,13 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useUpdateEffect } from 'ahooks';
-import { useHistory } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
 
 import Layout from '../components/Layout';
 import Text from '../components/Text';
 import useStateFlow from '../hooks/useStateFlow';
 import { getHeroId, getHero } from '../utils';
-import routes from '../constants/routes.json';
+import useNewRecord from '../../store/useNewRecord';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -120,10 +120,10 @@ const useStyles = makeStyles((theme) => ({
 
 const GameOver: React.FC = () => {
   const classes = useStyles();
-  const history = useHistory();
   const [stateFlow] = useStateFlow();
+  const [, { addRecord }] = useNewRecord(() => {});
 
-  const [hero, rank] = React.useMemo(() => {
+  const data = React.useMemo(() => {
     if (stateFlow?.current === 'GAME_OVER') {
       if (stateFlow?.GAME_RANKING?.result) {
         const [heroName, heroRank] = stateFlow.GAME_RANKING.result;
@@ -135,10 +135,23 @@ const GameOver: React.FC = () => {
   }, [stateFlow]);
 
   useUpdateEffect(() => {
-    if (stateFlow?.current === 'GAME_START') {
-      history.push(routes.HEROSELECTION);
+    const [hero, rank] = data;
+    if (hero && rank) {
+      const date = new Date();
+      const record = {
+        id: uuid(),
+        hero: {
+          id: hero.id,
+          name: hero.name,
+        },
+        rank,
+        date,
+      };
+      addRecord(record);
     }
-  }, [stateFlow]);
+  }, [data]);
+
+  const [hero, rank] = data;
 
   return (
     <Layout>
