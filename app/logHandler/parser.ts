@@ -7,7 +7,7 @@ import {
   map,
   filter as filterOperator,
 } from 'rxjs/operators';
-import type { State, StateRegex } from './regex';
+import type { BoxRegex, BoxState, State, StateRegex } from './regex';
 
 const read = bindNodeCallback(fs.read);
 export const readFile = () => (
@@ -52,33 +52,47 @@ export const readline = () => (source: Observable<Buffer>) =>
 
 export interface Filtered {
   date: string;
-  state: State;
-  result: any;
+  state: State | BoxState;
+  result?: any;
   line: Line;
 }
 /**
  * 过滤掉无用日志
- * @param stateRegexes 过滤用到的正则
+ * @param regexes
  */
-export const filter = (stateRegexes: StateRegex[]) => (
+export const filter = (regexes: StateRegex[] | BoxRegex[]) => (
   source: Observable<Line>
 ) =>
   source.pipe(
     map((line) => {
-      if (line.date && line.fn && line.params) {
+      if (line.date && line.fn) {
         // eslint-disable-next-line no-restricted-syntax
-        for (const { state, fn, regex, index = 0 } of stateRegexes) {
-          const matched = line.params.match(regex);
-          if (line.fn === fn && matched) {
-            const result = Array.isArray(index)
-              ? index.map((i) => matched[i])
-              : matched[index];
-            return {
-              date: line.date,
-              state,
-              result,
-              line,
-            };
+        for (const { state, fn, regex, index = 0 } of regexes) {
+          const fnMatched = line.fn.match(fn);
+          if (fnMatched) {
+            if (line.params.length) {
+              if (regex) {
+                const paramsMatched = line.params.match(regex);
+                // eslint-disable-next-line no-nested-ternary
+                if (paramsMatched) {
+                  const result = Array.isArray(index)
+                    ? index.map((i) => paramsMatched[i])
+                    : paramsMatched[index];
+                  return {
+                    date: line.date,
+                    state,
+                    result,
+                    line,
+                  };
+                }
+              }
+            } else {
+              return {
+                date: line.date,
+                state,
+                line,
+              };
+            }
           }
         }
       }

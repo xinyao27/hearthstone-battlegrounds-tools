@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 
 import { LOGHANDLER_SUSPENSION_MESSAGE } from '../../constants/topic';
 import useStateFlow from '../hooks/useStateFlow';
+import useBoxFlow from '../hooks/useBoxFlow';
 import type { Filtered } from '../../logHandler/parser';
 import routes from '../constants/routes.json';
 
@@ -84,17 +85,28 @@ export default function App(props: Props) {
   const { children } = props;
   const history = useHistory();
   const [stateFlow, setStateFlow] = useStateFlow();
+  const [, setBoxFlow] = useBoxFlow();
 
   useMount(() => {
-    ipcRenderer.on(LOGHANDLER_SUSPENSION_MESSAGE, (_event, args: Filtered) => {
-      setStateFlow(args);
-    });
+    ipcRenderer.on(
+      LOGHANDLER_SUSPENSION_MESSAGE,
+      (_event, args: { type: 'box' | 'state'; source: Filtered }) => {
+        if (args.type === 'box') {
+          setBoxFlow(args.source);
+        }
+        if (args.type === 'state') {
+          setStateFlow(args.source);
+        }
+      }
+    );
   });
 
   useUpdateEffect(() => {
+    // state 收到开始 跳转至英雄选择页
     if (stateFlow?.current === 'GAME_START') {
       history.push(routes.HEROSELECTION);
     }
+    // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
     if (stateFlow?.current === 'HERO_TOBE_CHOSEN') {
       if (history.location.pathname !== '/heroSelection') {
         history.push(routes.HEROSELECTION);

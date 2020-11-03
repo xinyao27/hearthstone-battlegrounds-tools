@@ -1,13 +1,14 @@
+import { Subscription } from 'rxjs';
 import type { Sorted } from './parser';
 import manager from './manager';
 
-function createObserver() {
+function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
   return {
     next: (value: Sorted) => {
-      manager(value);
+      manager(type, value, cb);
     },
-    complete: () => console.log('observer complete'),
-    error: (err: Error) => console.log('observer error: ', err),
+    complete: () => console.log(`${type} observer complete`),
+    error: (err: Error) => console.log(`${type} observer error: `, err),
   };
 }
 

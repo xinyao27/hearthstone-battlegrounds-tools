@@ -14,15 +14,24 @@ const heartstoneRootPath = (() => {
   if (platform === Platform.MACOS) return macOSHeartstoneRootPath;
   return windowsHeartstoneRootPath;
 })();
-const heartstoneLogFileName = 'Power.log';
-const heartstoneLogFilePath = resolve(
+
+const heartstonePowerLogFileName = 'Power.log';
+const heartstonePowerLogFilePath = resolve(
   heartstoneRootPath,
   'Logs',
-  heartstoneLogFileName
+  heartstonePowerLogFileName
+);
+const heartstoneBoxLogFileName = 'LoadingScreen.log';
+const heartstoneBoxLogFilePath = resolve(
+  heartstoneRootPath,
+  'Logs',
+  heartstoneBoxLogFileName
 );
 
 export default {
   heartstoneRootPath,
-  heartstoneLogFileName,
-  heartstoneLogFilePath,
+  heartstonePowerLogFileName,
+  heartstonePowerLogFilePath,
+  heartstoneBoxLogFileName,
+  heartstoneBoxLogFilePath,
 };

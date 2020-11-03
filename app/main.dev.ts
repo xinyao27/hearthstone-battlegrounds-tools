@@ -62,6 +62,62 @@ declare global {
 }
 global.winIds = {};
 
+let suspensionWindow: BrowserWindow | null = null;
+function createSuspensionWindow() {
+  const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
+  suspensionWindow = new BrowserWindow({
+    width: process.env.NODE_ENV === 'development' ? 800 : 260,
+    height: size.height > 1200 ? 1200 : size.height,
+    type: 'toolbar',
+    transparent: true,
+    frame: false,
+    resizable: false,
+    show: false,
+    webPreferences:
+      (process.env.NODE_ENV === 'development' ||
+        process.env.E2E_BUILD === 'true') &&
+      process.env.ERB_SECURE !== 'true'
+        ? {
+            nodeIntegration: true,
+          }
+        : {
+            preload: path.join(__dirname, 'dist/renderer.prod.js'),
+          },
+    alwaysOnTop: true,
+  });
+  global.winIds.suspensionWindow = suspensionWindow.webContents.id;
+  const winSize = suspensionWindow.getSize(); // 获取窗口宽高
+
+  // 设置窗口的位置 注意x轴要桌面的宽度 - 窗口的宽度
+  suspensionWindow.setPosition(size.width - winSize[0], 100);
+  suspensionWindow.setAlwaysOnTop(true, 'screen-saver', 1000);
+  suspensionWindow.loadURL(`file://${__dirname}/app.html?suspension=1`);
+
+  suspensionWindow.once('ready-to-show', () => {
+    // suspensionWindow?.show();
+  });
+
+  suspensionWindow.on('close', () => {
+    suspensionWindow = null;
+  });
+}
+
+ipcMain.on('showSuspension', () => {
+  if (suspensionWindow) {
+    if (!suspensionWindow.isVisible()) {
+      suspensionWindow.show();
+      suspensionWindow.showInactive();
+    }
+  } else {
+    createSuspensionWindow();
+  }
+});
+ipcMain.on('hideSuspension', () => {
+  if (suspensionWindow) {
+    suspensionWindow.hide();
+  }
+});
+
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -132,6 +188,9 @@ const createWindow = async () => {
   });
   global.winIds.logHandlerWindow = logHandlerWindow.webContents.id;
   logHandlerWindow.loadURL(`file://${__dirname}/logHandler.html`);
+
+  // 顺带创建 SuspensionWindow
+  createSuspensionWindow();
 };
 
 /**
@@ -157,59 +216,4 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
-});
-
-let suspensionWindow: BrowserWindow | null = null;
-function createSuspensionWindow() {
-  const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
-  suspensionWindow = new BrowserWindow({
-    width: process.env.NODE_ENV === 'development' ? 800 : 260,
-    height: size.height > 1200 ? 1200 : size.height,
-    type: 'toolbar',
-    transparent: true,
-    frame: false,
-    resizable: false,
-    show: false,
-    webPreferences:
-      (process.env.NODE_ENV === 'development' ||
-        process.env.E2E_BUILD === 'true') &&
-      process.env.ERB_SECURE !== 'true'
-        ? {
-            nodeIntegration: true,
-          }
-        : {
-            preload: path.join(__dirname, 'dist/renderer.prod.js'),
-          },
-    alwaysOnTop: true,
-  });
-  global.winIds.suspensionWindow = suspensionWindow.webContents.id;
-  const winSize = suspensionWindow.getSize(); // 获取窗口宽高
-
-  // 设置窗口的位置 注意x轴要桌面的宽度 - 窗口的宽度
-  suspensionWindow.setPosition(size.width - winSize[0], 100);
-  suspensionWindow.setAlwaysOnTop(true, 'screen-saver', 1000);
-  suspensionWindow.loadURL(`file://${__dirname}/app.html?suspension=1`);
-
-  suspensionWindow.once('ready-to-show', () => {
-    suspensionWindow?.show();
-  });
-
-  suspensionWindow.on('close', () => {
-    suspensionWindow = null;
-  });
-}
-
-ipcMain.on('showSuspension', () => {
-  if (suspensionWindow) {
-    if (!suspensionWindow.isVisible()) {
-      suspensionWindow.showInactive();
-    }
-  } else {
-    createSuspensionWindow();
-  }
-});
-ipcMain.on('hideSuspension', () => {
-  if (suspensionWindow) {
-    suspensionWindow.hide();
-  }
 });
