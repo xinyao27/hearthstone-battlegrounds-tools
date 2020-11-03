@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { Grow } from '@material-ui/core';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
@@ -9,6 +10,7 @@ import type { EChartOption } from 'echarts';
 import heroes from '../../../constants/heroes.json';
 import useListHeroes, { ListHeroesResult } from '../../hooks/useListHeroes';
 import Text from '../../components/Text';
+import Loading from '../../components/Loading';
 
 interface ChartProps {
   hero: ListHeroesResult['series']['data'][0] & typeof heroes[0];
@@ -153,40 +155,44 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
     return Object.assign(resource, heroData);
   }, [heroId, data]);
 
+  if (loading) return <Loading />;
+
   if (data && hero) {
     return (
-      <div className={classes.root}>
-        <div className={classes.title}>
-          <div className={classes.avatar}>
-            <img src={hero.battlegrounds.image} alt={hero.name} />
+      <Grow in={!!hero} style={{ transformOrigin: '0 0 0' }} timeout={300}>
+        <div className={classes.root}>
+          <div className={classes.title}>
+            <div className={classes.avatar}>
+              <img src={hero.battlegrounds.image} alt={hero.name} />
+            </div>
+            <div className={classes.nameBar} />
+            <div className={classes.name}>{hero.name}</div>
           </div>
-          <div className={classes.nameBar} />
-          <div className={classes.name}>{hero.name}</div>
-        </div>
 
-        <div className={classes.data}>
-          <div className={classes.card}>
-            <Text className={classes.label} stroke={false} color="black">
-              平均排名
-            </Text>
-            <Text className={classes.value} isNumber>
-              {hero?.avg_final_placement?.toFixed(2)}
-            </Text>
+          <div className={classes.data}>
+            <div className={classes.card}>
+              <Text className={classes.label} stroke={false} color="black">
+                平均排名
+              </Text>
+              <Text className={classes.value} isNumber>
+                {hero?.avg_final_placement?.toFixed(2)}
+              </Text>
+            </div>
+            <div className={classes.card}>
+              <Text className={classes.label} stroke={false} color="black">
+                选择率
+              </Text>
+              <Text className={classes.value} isNumber>
+                {`${hero?.pick_rate?.toFixed(2)}%`}
+              </Text>
+            </div>
           </div>
-          <div className={classes.card}>
-            <Text className={classes.label} stroke={false} color="black">
-              选择率
-            </Text>
-            <Text className={classes.value} isNumber>
-              {`${hero?.pick_rate?.toFixed(2)}%`}
-            </Text>
-          </div>
-        </div>
 
-        <div className={classes.chart}>
-          <Chart hero={hero} />
+          <div className={classes.chart}>
+            <Chart hero={hero} />
+          </div>
         </div>
-      </div>
+      </Grow>
     );
   }
 

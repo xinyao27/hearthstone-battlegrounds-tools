@@ -20,7 +20,8 @@ function manager(
     if (source.state === 'GAME_START') {
       observable = cb?.();
 
-      ipcRenderer.send('showSuspension');
+      // 这里可能会提前显示悬浮框，导致悬浮框的内容还在上一局结束的状态
+      // ipcRenderer.send('showSuspension');
     }
     // 对局结束 结束监控 Power.log 以及关闭悬浮框
     if (source.state === 'GAME_OVER') {
