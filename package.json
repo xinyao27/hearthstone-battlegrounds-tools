@@ -108,7 +108,7 @@
     "type": "git",
     "url": "git+https://github.com/chenyueban/hearthstone-battlegrounds-tools.git"
   },
-  "author": "chenyueban",
+  "author": "chenyueban <jasonchan0527@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/chenyueban/hearthstone-battlegrounds-tools/issues"
@@ -249,6 +249,7 @@
     "echarts-for-react": "^2.0.16",
     "electron-debug": "^3.1.0",
     "electron-log": "^4.2.4",
+    "electron-store": "^6.0.1",
     "electron-updater": "^4.3.4",
     "history": "^4.7.2",
     "hox": "^1.1.1",
