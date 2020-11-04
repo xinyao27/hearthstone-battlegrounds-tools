@@ -12,7 +12,7 @@ function useQuery() {
 const Root = () => {
   const query = useQuery();
   const children =
-    query.get('suspension') === '1' ? <SuspensionRoutes /> : <Routes />;
+    query.get('type') === 'suspension' ? <SuspensionRoutes /> : <Routes />;
 
   return <Router history={history}>{children}</Router>;
 };
