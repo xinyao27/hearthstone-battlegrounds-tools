@@ -2,14 +2,18 @@ import Store from 'electron-store';
 
 import type { RecordItem } from '@app/hooks/useStatistics';
 
+interface Config {
+  heartstoneRootPath?: string;
+}
+
 // 存储配置文件
 export const config = {
-  store: new Store({ name: 'config' }),
-  get(key: string) {
+  store: new Store<Config>({ name: 'config' }),
+  get(key: keyof Config) {
     return this.store.get(key);
   },
-  set(payload: any) {
-    return this.store.set(payload);
+  set(key: string, payload: any) {
+    return this.store.set(key, payload);
   },
 };
 

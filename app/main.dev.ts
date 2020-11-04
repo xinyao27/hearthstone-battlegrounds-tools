@@ -14,6 +14,12 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { PluginManager } from 'live-plugin-manager';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
+
+import type { Plugin } from '@app/hooks/usePlugins';
+
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
@@ -52,15 +58,18 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
-      winIds: {
-        mainWindow?: number;
-        logHandlerWindow?: number;
-        suspensionWindow?: number;
+      windows: {
+        mainWindow?: BrowserWindow;
+        logHandlerWindow?: BrowserWindow;
+        suspensionWindow?: BrowserWindow;
       };
+      plugins: Plugin[];
     }
   }
 }
-global.winIds = {};
+global.windows = {};
+const pluginManager = new PluginManager();
+global.plugins = [];
 
 let suspensionWindow: BrowserWindow | null = null;
 function createSuspensionWindow() {
@@ -88,7 +97,7 @@ function createSuspensionWindow() {
           },
     alwaysOnTop: true,
   });
-  global.winIds.suspensionWindow = suspensionWindow.webContents.id;
+  global.windows.suspensionWindow = suspensionWindow;
   const winSize = suspensionWindow.getSize(); // 获取窗口宽高
 
   const x = size.width - winSize[0];
@@ -146,7 +155,7 @@ function createLogHandlerWindow() {
     webPreferences: { nodeIntegration: true },
   });
   logHandlerWindow.webContents.openDevTools();
-  global.winIds.logHandlerWindow = logHandlerWindow.webContents.id;
+  global.windows.logHandlerWindow = logHandlerWindow;
   logHandlerWindow.loadURL(`file://${__dirname}/app.html?name=logHandler`);
 }
 
@@ -185,7 +194,7 @@ const createWindow = async () => {
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
           },
   });
-  global.winIds.mainWindow = mainWindow.webContents.id;
+  global.windows.mainWindow = mainWindow;
 
   mainWindow.loadURL(`file://${__dirname}/app.html?name=renderer`);
 
@@ -229,7 +238,8 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
-app.on('window-all-closed', () => {
+app.on('window-all-closed', async () => {
+  await pluginManager.uninstallAll();
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
@@ -248,4 +258,26 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
+});
+
+ipcMain.handle('installPlugin', async (_, pluginPath) => {
+  await pluginManager.installFromPath(pluginPath);
+  // eslint-disable-next-line import/no-dynamic-require
+  const pkg = require(path.resolve(pluginPath, 'package.json'));
+  const plugin = pluginManager.require(pkg.name);
+  global.plugins.push({ ...plugin, path: pluginPath });
+  return plugin;
+});
+ipcMain.handle('uninstallPlugin', async (_, pluginName) => {
+  await pluginManager.uninstall(pluginName);
+
+  global.plugins = global.plugins.filter((v) => v.name !== pluginName);
+  return global.plugins;
+});
+ipcMain.handle('getPluginComponent', async (_, pluginName) => {
+  const plugin = pluginManager.require(pluginName);
+  const componentString = ReactDOMServer.renderToString(
+    React.createElement(plugin.Component)
+  );
+  return componentString;
 });

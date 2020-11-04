@@ -1,11 +1,15 @@
 import { resolve } from 'path';
 
 import { getPlatform, Platform } from '@app/utils';
+import { config } from '@app/store';
 
+const configHeartstoneRootPath = config.get('heartstoneRootPath');
 // Windows
-const windowsHeartstoneRootPath = 'D:\\Program Files (x86)\\Hearthstone';
+const windowsHeartstoneRootPath =
+  configHeartstoneRootPath ?? 'C:\\Program Files (x86)\\Hearthstone';
 // Mac os
-const macOSHeartstoneRootPath = '/Applications/Hearthstone';
+const macOSHeartstoneRootPath =
+  configHeartstoneRootPath ?? '/Applications/Hearthstone';
 
 // @ts-ignore
 // eslint-disable-next-line consistent-return

@@ -33,12 +33,16 @@ function manager(
     }
   }
 
-  const { suspensionWindow } = remote.getGlobal('winIds');
+  const { suspensionWindow } = remote.getGlobal('windows');
   if (suspensionWindow !== undefined) {
-    ipcRenderer.sendTo(suspensionWindow, LOGHANDLER_SUSPENSION_MESSAGE, {
-      type,
-      source,
-    });
+    ipcRenderer.sendTo(
+      suspensionWindow.webContents?.id,
+      LOGHANDLER_SUSPENSION_MESSAGE,
+      {
+        type,
+        source,
+      }
+    );
   }
 }
 

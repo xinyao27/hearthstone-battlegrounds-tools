@@ -3,6 +3,7 @@ import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { CssBaseline, Box } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
+import 'fontsource-roboto';
 
 import Header from '@app/components/Header';
 // import Footer from '@app/components/Footer';
