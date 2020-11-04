@@ -10,8 +10,8 @@ import {
 import SendIcon from '@material-ui/icons/Send';
 import { v4 as uuid } from 'uuid';
 
-import heroes from '../../constants/heroes.json';
-import type { RecordItem } from '../../store/useStatistics';
+import heroes from '@app/constants/heroes.json';
+import type { RecordItem } from '@app/hooks/useStatistics';
 
 const useStyles = makeStyles((theme) => ({
   root: {

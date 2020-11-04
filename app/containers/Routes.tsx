@@ -1,11 +1,12 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import routes from '../constants/routes.json';
+import routes from '@app/constants/routes.json';
+
 import App from './App';
 
 const LazyRecordPage = React.lazy(
-  () => import(/* webpackChunkName: "RecordPage" */ '../pages/record')
+  () => import(/* webpackChunkName: "RecordPage" */ '@app/pages/record')
 );
 const RecordPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>
@@ -13,7 +14,7 @@ const RecordPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 const LazyStatisticsPage = React.lazy(
-  () => import(/* webpackChunkName: "StatisticsPage" */ '../pages/statistics')
+  () => import(/* webpackChunkName: "StatisticsPage" */ '@app/pages/statistics')
 );
 const StatisticsPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>
@@ -21,7 +22,7 @@ const StatisticsPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 const LazySettingsPage = React.lazy(
-  () => import(/* webpackChunkName: "SettingsPage" */ '../pages/settings')
+  () => import(/* webpackChunkName: "SettingsPage" */ '@app/pages/settings')
 );
 const SettingsPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>

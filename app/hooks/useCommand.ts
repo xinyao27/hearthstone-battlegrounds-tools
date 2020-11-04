@@ -1,7 +1,8 @@
 import { createModel } from 'hox';
 
+import type { RequestMethodsKeys, RequestMethodReturnMap } from '@app/types';
+
 import useObs from './useObs';
-import type { RequestMethodsKeys, RequestMethodReturnMap } from '../types';
 
 function useCommand() {
   const { obs } = useObs();

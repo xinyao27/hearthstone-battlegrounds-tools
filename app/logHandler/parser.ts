@@ -7,6 +7,7 @@ import {
   map,
   filter as filterOperator,
 } from 'rxjs/operators';
+
 import type { BoxRegex, BoxState, State, StateRegex } from './regex';
 
 const read = bindNodeCallback(fs.read);

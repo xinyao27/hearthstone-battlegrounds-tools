@@ -25,7 +25,7 @@ export default function Settings() {
   const classes = useStyles();
 
   useMount(async () => {
-    const result = await ipcRenderer.invoke('setStoreValue', {
+    const result = await ipcRenderer.invoke('setConfigValue', {
       settings: {
         test: 1,
       },

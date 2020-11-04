@@ -1,8 +1,11 @@
 import React from 'react';
-import { useLocalStorageState, useDebounceFn } from 'ahooks';
+import { useDebounceFn } from 'ahooks';
+
+import { records } from '@app/store';
+
 import type { RecordItem } from './useStatistics';
 
-function useNewRecord(
+function useRecord(
   callback?: (result: RecordItem[]) => void
 ): [
   RecordItem[],
@@ -11,15 +14,14 @@ function useNewRecord(
     deleteRecord: (item: RecordItem) => void;
   }
 ] {
-  const [recordList, setRecordList] = useLocalStorageState<RecordItem[]>(
-    'record-list',
-    []
+  const [recordList, setRecordList] = React.useState<RecordItem[]>(() =>
+    records.get()
   );
-
   const { run: handleAddRecord } = useDebounceFn(
     (item: RecordItem) => {
       setRecordList((previousState) => {
         const result = [item, ...previousState];
+        records.set(result);
         callback?.(result);
         return result;
       });
@@ -32,6 +34,7 @@ function useNewRecord(
     (item: RecordItem) => {
       setRecordList((previousState) => {
         const result = previousState.filter((v) => v.id !== item.id);
+        records.set(result);
         callback?.(result);
         return result;
       });
@@ -45,4 +48,4 @@ function useNewRecord(
   ];
 }
 
-export default useNewRecord;
+export default useRecord;

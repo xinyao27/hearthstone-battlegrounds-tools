@@ -1,7 +1,8 @@
 import React from 'react';
 import { createModel } from 'hox';
-import { State } from '../../logHandler/regex';
-import type { Filtered } from '../../logHandler/parser';
+
+import type { State } from '@logHandler/regex';
+import type { Filtered } from '@logHandler/parser';
 
 export type StateFlow = Record<
   State,

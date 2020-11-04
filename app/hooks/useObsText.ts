@@ -1,9 +1,10 @@
 import React from 'react';
 import { createModel } from 'hox';
 
+import { RequestMethodReturnMap } from '@app/types';
+
 import useCommand from './useCommand';
 import useConnect from './useConnect';
-import { RequestMethodReturnMap } from '../types';
 
 function useObsText() {
   const { run } = useCommand();

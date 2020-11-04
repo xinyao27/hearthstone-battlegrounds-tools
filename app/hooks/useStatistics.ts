@@ -1,7 +1,8 @@
 import { createModel } from 'hox';
-import { useLocalStorageState } from 'ahooks';
 
-import heroes from '../constants/heroes.json';
+import heroes from '@app/constants/heroes.json';
+
+import useRecord from './useRecord';
 
 export interface RecordItem {
   id: string;
@@ -25,7 +26,7 @@ export interface ResultItem {
 }
 
 function useStatistics() {
-  const [recordList] = useLocalStorageState<RecordItem[]>('record-list', []);
+  const [recordList] = useRecord();
 
   const reSummarized = recordList.reduce<{
     [key: number]: {

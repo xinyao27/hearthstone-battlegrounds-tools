@@ -36,6 +36,11 @@ export default {
   resolve: {
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: [path.join(__dirname, '..', 'app'), 'node_modules'],
+    alias: {
+      '@app': path.resolve(__dirname, '../app'),
+      '@logHandler': path.resolve(__dirname, '../app/logHandler'),
+      '@suspension': path.resolve(__dirname, '../app/suspension'),
+    },
   },
 
   plugins: [

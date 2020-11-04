@@ -17,7 +17,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import dayjs from 'dayjs';
 
-import useStatistics, { ResultItem } from '../../store/useStatistics';
+import useStatistics, { ResultItem } from '@app/hooks/useStatistics';
 
 const useRowStyles = makeStyles({
   root: {

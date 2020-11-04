@@ -14,7 +14,6 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import Store from 'electron-store';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
@@ -249,13 +248,4 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
-});
-
-// 存储配置文件
-const store = new Store();
-ipcMain.handle('getStoreValue', (_, key: string) => {
-  return store.get(key);
-});
-ipcMain.handle('setStoreValue', (_, payload) => {
-  return store.set(payload);
 });

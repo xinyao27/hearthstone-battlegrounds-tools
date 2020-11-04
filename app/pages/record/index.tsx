@@ -16,12 +16,13 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import dayjs from 'dayjs';
 
-import heroes from '../../constants/heroes.json';
+import heroes from '@app/constants/heroes.json';
+import useConnect from '@app/hooks/useConnect';
+import useCommand from '@app/hooks/useCommand';
+import useObsText from '@app/hooks/useObsText';
+import useRecord from '@app/hooks/useRecord';
+
 import NewItem from './NewItem';
-import useConnect from '../../store/useConnect';
-import useCommand from '../../store/useCommand';
-import useObsText from '../../store/useObsText';
-import useNewRecord from '../../store/useNewRecord';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,7 +47,7 @@ export default function Record() {
   const { run } = useCommand();
   const { currentSource } = useObsText();
 
-  const [recordList, { addRecord, deleteRecord }] = useNewRecord((result) => {
+  const [recordList, { addRecord, deleteRecord }] = useRecord((result) => {
     if (connected) {
       (async () => {
         // 只取当天的数据

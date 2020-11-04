@@ -1,7 +1,8 @@
 import React from 'react';
 import { createModel } from 'hox';
-import { BoxState } from '../../logHandler/regex';
-import type { Filtered } from '../../logHandler/parser';
+
+import type { BoxState } from '@logHandler/regex';
+import type { Filtered } from '@logHandler/parser';
 
 export type BoxFlow = Record<
   BoxState,

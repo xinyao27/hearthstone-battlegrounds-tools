@@ -1,7 +1,9 @@
 import { remote, ipcRenderer } from 'electron';
 import { Subscription } from 'rxjs';
+
+import { LOGHANDLER_SUSPENSION_MESSAGE } from '@app/constants/topic';
+
 import type { Filtered } from './parser';
-import { LOGHANDLER_SUSPENSION_MESSAGE } from '../constants/topic';
 
 /**
  * 负责将整理过的日志信息向外广播

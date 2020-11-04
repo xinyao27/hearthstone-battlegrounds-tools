@@ -20,7 +20,13 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@logHandler/*": ["app/logHandler/*"],
+      "@suspension/*": ["app/suspension/*"]
+    }
   },
   "exclude": [
     "test",
