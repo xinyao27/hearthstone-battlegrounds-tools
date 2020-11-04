@@ -26,8 +26,7 @@ const JingDianLiBianJianFont = {
     }) format('woff2'),
     url(${
       require('../assets/fonts/JingDianLiBianJian.woff').default
-    }) format('woff'),
-    url(${require('../assets/fonts/JingDianLiBianJian.ttf').default})
+    }) format('woff')
   `,
 };
 const BelweBoldFont = {
