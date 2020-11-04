@@ -79,8 +79,11 @@ function createSuspensionWindow() {
       process.env.ERB_SECURE !== 'true'
         ? {
             nodeIntegration: true,
+            enableRemoteModule: true,
           }
         : {
+            nodeIntegration: true,
+            enableRemoteModule: true,
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
           },
     alwaysOnTop: true,
@@ -92,7 +95,9 @@ function createSuspensionWindow() {
   const y = 100;
   suspensionWindow.setPosition(x, y);
   suspensionWindow.setAlwaysOnTop(true, 'screen-saver', 1000);
-  suspensionWindow.loadURL(`file://${__dirname}/app.html?suspension=1`);
+  suspensionWindow.loadURL(
+    `file://${__dirname}/app.html?name=renderer&type=suspension`
+  );
 
   suspensionWindow.once('ready-to-show', () => {
     // suspensionWindow?.show();
@@ -131,6 +136,20 @@ ipcMain.on('hideSuspension', () => {
   }
 });
 
+let logHandlerWindow: BrowserWindow | null = null;
+function createLogHandlerWindow() {
+  logHandlerWindow = new BrowserWindow({
+    width: 1024,
+    height: 728,
+    // show: process.env.NODE_ENV === 'development',
+    show: true,
+    webPreferences: { nodeIntegration: true },
+  });
+  logHandlerWindow.webContents.openDevTools();
+  global.winIds.logHandlerWindow = logHandlerWindow.webContents.id;
+  logHandlerWindow.loadURL(`file://${__dirname}/app.html?name=logHandler`);
+}
+
 const createWindow = async () => {
   if (
     process.env.NODE_ENV === 'development' ||
@@ -158,14 +177,17 @@ const createWindow = async () => {
       process.env.ERB_SECURE !== 'true'
         ? {
             nodeIntegration: true,
+            enableRemoteModule: true,
           }
         : {
+            nodeIntegration: true,
+            enableRemoteModule: true,
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
           },
   });
   global.winIds.mainWindow = mainWindow.webContents.id;
 
-  mainWindow.loadURL(`file://${__dirname}/app.html`);
+  mainWindow.loadURL(`file://${__dirname}/app.html?name=renderer`);
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -183,6 +205,11 @@ const createWindow = async () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+
+    logHandlerWindow?.destroy();
+    suspensionWindow?.destroy();
+    logHandlerWindow = null;
+    suspensionWindow = null;
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
@@ -193,16 +220,8 @@ const createWindow = async () => {
   new AppUpdater();
 
   // logHandler
-  const logHandlerWindow = new BrowserWindow({
-    width: 1024,
-    height: 728,
-    show: process.env.NODE_ENV === 'development',
-    webPreferences: { nodeIntegration: true },
-  });
-  global.winIds.logHandlerWindow = logHandlerWindow.webContents.id;
-  logHandlerWindow.loadURL(`file://${__dirname}/logHandler.html`);
-
-  // 顺带创建 SuspensionWindow
+  createLogHandlerWindow();
+  // SuspensionWindow
   createSuspensionWindow();
 };
 

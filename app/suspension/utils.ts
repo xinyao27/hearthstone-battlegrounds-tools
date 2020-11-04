@@ -1,4 +1,4 @@
-import heroes from '../constants/heroes.json';
+import heroes from '@app/constants/heroes.json';
 
 export function getHeroId(name: string) {
   return heroes.find((hero) => hero.name === name)?.id ?? 0;

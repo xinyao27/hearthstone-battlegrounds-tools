@@ -1,70 +1,191 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { useCreation } from 'ahooks';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import { v4 as uuid } from 'uuid';
 
-import heroes from '../../constants/heroes.json';
-import Loading from '../components/Loading';
-import Text from '../components/Text';
+import Layout from '@suspension/components/Layout';
+import Text from '@suspension/components/Text';
+import useStateFlow from '@suspension/hooks/useStateFlow';
+import { getHeroId, getHero } from '@suspension/utils';
+import useRecord from '@app/hooks/useRecord';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
-    width: 260,
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%',
+    marginBottom: theme.spacing(4),
   },
-  container: {
-    height: 300,
+  container: {},
+  hero: {},
+  head: {
+    height: 80,
     background: `url(${
-      require('../assets/images/gameover_bg.png').default
+      require('../assets/images/message_box.png').default
     }) no-repeat`,
     backgroundSize: '100%',
-    overflow: 'hidden',
+    position: 'relative',
   },
-  hero: {
-    width: '48%',
-    margin: '13% auto 0',
+  headText: {
+    width: '50%',
+    position: 'absolute',
+    left: '25%',
+    top: '71%',
+    textAlign: 'center',
+  },
+  avatar: {
+    width: '80%',
+    margin: '12px auto 0',
+  },
+  name: {
+    height: 40,
+    fontSize: 18,
+    lineHeight: '42px',
+    textAlign: 'center',
+    marginTop: -10,
+    background: `url(${
+      require('../assets/images/class_headers.png').default
+    }) no-repeat`,
+    backgroundSize: 500,
+    backgroundPosition: '-22px -10px',
   },
   rank: {
-    textAlign: 'center',
-    marginTop: '-5%',
+    width: '90%',
+    height: 220,
+    margin: '68px auto 0',
+    position: 'relative',
+    background: `url(${
+      require('../assets/images/card_bg.png').default
+    }) no-repeat`,
+    backgroundSize: '100%',
+    filter: 'brightness(120%) saturate(120%)',
   },
-
+  crown: {
+    width: 80,
+    height: 90,
+    position: 'absolute',
+    left: '50%',
+    top: -40,
+    marginLeft: -40,
+    zIndex: 1,
+    background: `url(${
+      require('../assets/images/crown3.png').default
+    }) no-repeat`,
+    backgroundSize: '100%',
+  },
+  content: {
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  title: {
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 22,
+    marginTop: 40,
+    position: 'relative',
+    '&::before, &::after': {
+      content: '""',
+      width: '70%',
+      height: 2,
+      position: 'absolute',
+      left: '15%',
+      borderRadius: 2,
+      backgroundColor: '#5a3602',
+    },
+    '&::before': {
+      top: 0,
+    },
+    '&::after': {
+      bottom: 0,
+    },
+  },
+  value: {
+    width: '70%',
+    height: 120,
+    fontSize: 46,
+    textAlign: 'center',
+    lineHeight: '86px',
+    marginTop: theme.spacing(1),
+    background: `url(${
+      require('../assets/images/olive.png').default
+    }) no-repeat`,
+    backgroundSize: '100%',
+  },
   tip: {
     textAlign: 'center',
-    fontSize: 12,
-    marginTop: '4%',
+    fontSize: 22,
+    marginTop: theme.spacing(2),
   },
 }));
 
 const GameOver: React.FC = () => {
   const classes = useStyles();
+  const [stateFlow] = useStateFlow();
+  const [, { addRecord }] = useRecord(() => {});
 
-  const heroId = 58435;
-  // const rank = 2;
+  const data = useCreation(() => {
+    if (stateFlow?.current === 'GAME_OVER') {
+      if (stateFlow?.GAME_RANKING?.result) {
+        const [heroName, heroRank] = stateFlow.GAME_RANKING.result;
+        const heroId = getHeroId(heroName);
+        return [getHero(heroId), heroRank];
+      }
+    }
+    return [null, null];
+  }, [stateFlow]);
 
-  const hero = React.useMemo(() => heroes.find((v) => v.id === heroId), [
-    heroId,
-  ]);
+  useDeepCompareEffect(() => {
+    const [hero, rank] = data;
+    if (hero && rank) {
+      const date = new Date();
+      const record = {
+        id: uuid(),
+        hero: {
+          id: hero.id,
+          name: hero.name,
+        },
+        rank,
+        date,
+      };
+      addRecord(record);
+    }
+  }, [data]);
+
+  const [hero, rank] = data;
 
   return (
-    <div className={classes.root}>
-      {hero ? (
-        <div className={classes.container}>
+    <Layout>
+      <div className={classes.container}>
+        {hero && (
           <div className={classes.hero}>
-            <img src={hero.battlegrounds.image} alt={hero.name} />
+            <div className={classes.head}>
+              <Text className={classes.headText} color="#e9dd52">
+                对局结束
+              </Text>
+            </div>
+            <div className={classes.avatar}>
+              <img src={hero.battlegrounds.image} alt={hero.name} />
+            </div>
+            <Text className={classes.name}>{hero.name}</Text>
           </div>
+        )}
 
-          <Text className={classes.rank}>第二名</Text>
-
-          <Text className={classes.tip} color="#bb6bde">
-            已记录本场战绩
-          </Text>
+        <div className={classes.rank}>
+          <div className={classes.crown} />
+          <div className={classes.content}>
+            <Text className={classes.title} stroke={false} color="black">
+              当局排名
+            </Text>
+            <Text className={classes.value}>{rank}</Text>
+          </div>
         </div>
-      ) : (
-        <Loading />
-      )}
-    </div>
+
+        <Text className={classes.tip} stroke={false} color="black">
+          已记录本场战绩
+        </Text>
+      </div>
+    </Layout>
   );
 };
 

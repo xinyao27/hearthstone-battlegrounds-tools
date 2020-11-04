@@ -1,5 +1,6 @@
 import { resolve } from 'path';
-import { getPlatform, Platform } from '../utils';
+
+import { getPlatform, Platform } from '@app/utils';
 
 // Windows
 const windowsHeartstoneRootPath = 'D:\\Program Files (x86)\\Hearthstone';

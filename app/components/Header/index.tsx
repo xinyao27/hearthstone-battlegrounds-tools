@@ -16,8 +16,8 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
-import useConnect from '../../store/useConnect';
-import useObsText from '../../store/useObsText';
+import useConnect from '@app/hooks/useConnect';
+import useObsText from '@app/hooks/useObsText';
 
 const useStyles = makeStyles((theme) => ({
   root: {

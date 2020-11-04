@@ -4,13 +4,15 @@ import TodayIcon from '@material-ui/icons/Today';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useHistory, useLocation } from 'react-router-dom';
-import routes from '../../constants/routes.json';
+
+import routes from '@app/constants/routes.json';
 
 export default function Navigation() {
   const history = useHistory();
   const location = useLocation();
-  const [value, setValue] = React.useState(
-    () => location.pathname || '/record'
+
+  const [value, setValue] = React.useState(() =>
+    location.pathname === '/' ? '/record' : location.pathname
   );
 
   const handleChange = React.useCallback(

@@ -1,4 +1,5 @@
 import { Subscription } from 'rxjs';
+
 import type { Sorted } from './parser';
 import manager from './manager';
 

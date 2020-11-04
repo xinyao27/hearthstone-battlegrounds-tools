@@ -1,8 +1,9 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import Loading from '../components/Loading';
-import routes from '../constants/routes.json';
+import Loading from '@suspension/components/Loading';
+import routes from '@suspension/constants/routes.json';
+
 import App from './App';
 
 const LazyWelcomePage = React.lazy(
@@ -25,7 +26,7 @@ const HeroSelectionPage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 const LazyGameOverPage = React.lazy(
-  () => import(/* webpackChunkName: "GameOverPage" */ '../features/gameOver2')
+  () => import(/* webpackChunkName: "GameOverPage" */ '../features/gameOver')
 );
 const GameOverPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<Loading />}>

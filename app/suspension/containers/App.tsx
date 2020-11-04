@@ -7,11 +7,11 @@ import red from '@material-ui/core/colors/red';
 import { useMount, useUpdateEffect } from 'ahooks';
 import { useHistory } from 'react-router-dom';
 
-import { LOGHANDLER_SUSPENSION_MESSAGE } from '../../constants/topic';
-import useStateFlow from '../hooks/useStateFlow';
-import useBoxFlow from '../hooks/useBoxFlow';
-import type { Filtered } from '../../logHandler/parser';
-import routes from '../constants/routes.json';
+import { LOGHANDLER_SUSPENSION_MESSAGE } from '@app/constants/topic';
+import type { Filtered } from '@logHandler/parser';
+import useStateFlow from '@suspension/hooks/useStateFlow';
+import useBoxFlow from '@suspension/hooks/useBoxFlow';
+import routes from '@suspension/constants/routes.json';
 
 type Props = {
   children: ReactNode;
@@ -26,8 +26,7 @@ const JingDianLiBianJianFont = {
     }) format('woff2'),
     url(${
       require('../assets/fonts/JingDianLiBianJian.woff').default
-    }) format('woff'),
-    url(${require('../assets/fonts/JingDianLiBianJian.ttf').default})
+    }) format('woff')
   `,
 };
 const BelweBoldFont = {

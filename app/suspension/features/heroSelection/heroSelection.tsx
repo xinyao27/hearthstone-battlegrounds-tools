@@ -1,9 +1,10 @@
 import React from 'react';
 
-import Layout from '../../components/Layout';
+import Layout from '@suspension/components/Layout';
+import useStateFlow from '@suspension/hooks/useStateFlow';
+import { getHeroId } from '@suspension/utils';
+
 import HeroCard from './HeroCard';
-import useStateFlow from '../../hooks/useStateFlow';
-import { getHeroId } from '../../utils';
 
 const HeroSelection: React.FC = () => {
   const [stateFlow] = useStateFlow();

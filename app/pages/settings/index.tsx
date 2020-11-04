@@ -1,7 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import { ipcRenderer } from 'electron';
+import { remote, ipcRenderer } from 'electron';
+import { useMount } from 'ahooks';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,6 +23,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Settings() {
   const classes = useStyles();
+
+  useMount(async () => {
+    const result = await ipcRenderer.invoke('setConfigValue', {
+      settings: {
+        test: 1,
+      },
+    });
+    console.log(remote.app.getPath('userData'), result);
+  });
 
   const handleSuspensionShow = React.useCallback(() => {
     ipcRenderer.send('showSuspension');

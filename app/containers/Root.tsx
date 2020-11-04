@@ -2,8 +2,10 @@ import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { createHashHistory } from 'history';
 import { Router } from 'react-router-dom';
+
+import SuspensionRoutes from '@suspension/containers/Routes';
+
 import Routes from './Routes';
-import SuspensionRoutes from '../suspension/containers/Routes';
 
 const history = createHashHistory();
 function useQuery() {
@@ -12,7 +14,7 @@ function useQuery() {
 const Root = () => {
   const query = useQuery();
   const children =
-    query.get('suspension') === '1' ? <SuspensionRoutes /> : <Routes />;
+    query.get('type') === 'suspension' ? <SuspensionRoutes /> : <Routes />;
 
   return <Router history={history}>{children}</Router>;
 };

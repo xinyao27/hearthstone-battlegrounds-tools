@@ -2,9 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
 
-import Layout from '../components/Layout';
-import Text from '../components/Text';
-import routes from '../constants/routes.json';
+import Layout from '@suspension/components/Layout';
+import Text from '@suspension/components/Text';
+import routes from '@suspension/constants/routes.json';
 
 const useStyles = makeStyles((theme) => ({
   root: {

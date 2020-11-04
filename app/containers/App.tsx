@@ -4,9 +4,9 @@ import { CssBaseline, Box } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 
-import Header from '../components/Header';
-// import Footer from '../components/Footer';
-import Navigation from '../components/Navigation';
+import Header from '@app/components/Header';
+// import Footer from '@app/components/Footer';
+import Navigation from '@app/components/Navigation';
 
 type Props = {
   children: ReactNode;

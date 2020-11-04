@@ -7,10 +7,12 @@ import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 import type { EChartOption } from 'echarts';
 
-import heroes from '../../../constants/heroes.json';
-import useListHeroes, { ListHeroesResult } from '../../hooks/useListHeroes';
-import Text from '../../components/Text';
-import Loading from '../../components/Loading';
+import heroes from '@app/constants/heroes.json';
+import useListHeroes, {
+  ListHeroesResult,
+} from '@suspension/hooks/useListHeroes';
+import Text from '@suspension/components/Text';
+import Loading from '@suspension/components/Loading';
 
 interface ChartProps {
   hero: ListHeroesResult['series']['data'][0] & typeof heroes[0];
