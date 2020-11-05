@@ -29,7 +29,10 @@ export const config = {
 };
 
 export const records = {
-  store: new Store<{ data: RecordItem[] }>({ name: 'records' }),
+  store: new Store<{ data: RecordItem[] }>({
+    name: 'records',
+    defaults: { data: [] },
+  }),
   get() {
     return this.store.get('data');
   },

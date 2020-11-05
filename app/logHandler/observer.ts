@@ -1,15 +1,23 @@
 import { Subscription } from 'rxjs';
 
 import type { Sorted } from './parser';
-import manager from './manager';
+import { logManager, watchStateManager } from './manager';
 
 function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
   return {
     next: (value: Sorted) => {
-      manager(type, value, cb);
+      logManager(type, value, cb);
     },
-    complete: () => console.log(`${type} observer complete`),
-    error: (err: Error) => console.log(`${type} observer error: `, err),
+    complete: () => {
+      const message = `${type} 🔚 工作结束`;
+      console.log(message);
+      watchStateManager('complete', message);
+    },
+    error: (err: Error) => {
+      const message = `${type} ❌ 工作出现了问题: ${err}`;
+      console.log(message);
+      watchStateManager('error', message);
+    },
   };
 }
 

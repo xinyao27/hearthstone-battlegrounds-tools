@@ -9,11 +9,9 @@ import {
   ListItemSecondaryAction,
   IconButton,
   TextField,
-  Zoom,
-  Fab,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+
 import dayjs from 'dayjs';
 
 import heroes from '@app/constants/heroes.json';
@@ -80,7 +78,6 @@ export default function Record() {
           onChange={handleDateChange}
         />
       </div>
-
       <BaseList dense>
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
@@ -113,24 +110,6 @@ export default function Record() {
             );
           })}
       </BaseList>
-
-      <Zoom
-        in
-        timeout={300}
-        style={{
-          transitionDelay: `${0}ms`,
-        }}
-        unmountOnExit
-      >
-        <Fab
-          className={classes.fab}
-          color="primary"
-          href="https://github.com/chenyueban/obs-hearthstone"
-          target="_blank"
-        >
-          <HelpOutlineIcon />
-        </Fab>
-      </Zoom>
     </div>
   );
 }

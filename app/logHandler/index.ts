@@ -4,6 +4,7 @@ import createObserver from './observer';
 import { readFile, readline, filter } from './parser';
 import { stateRegexes, boxRegexes } from './regex';
 import config from './config';
+import { watchStateManager } from './manager';
 
 const createPowerLogObservable = (observable: Observable<any>) => () =>
   observable
@@ -17,5 +18,6 @@ function run() {
   BoxSource$.pipe(readFile(), readline(), filter(boxRegexes)).subscribe(
     createObserver('box', createPowerLogObservable(PowerLogSource$))
   );
+  watchStateManager('next', '🚀 正在酒馆中工作');
 }
 run();
