@@ -14,11 +14,6 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, screen } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { PluginManager } from 'live-plugin-manager';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-
-import type { Plugin } from '@app/hooks/usePlugins';
 
 import MenuBuilder from './menu';
 
@@ -63,13 +58,10 @@ declare global {
         logHandlerWindow?: BrowserWindow;
         suspensionWindow?: BrowserWindow;
       };
-      plugins: Plugin[];
     }
   }
 }
 global.windows = {};
-const pluginManager = new PluginManager();
-global.plugins = [];
 
 let suspensionWindow: BrowserWindow | null = null;
 function createSuspensionWindow() {
@@ -239,7 +231,6 @@ const createWindow = async () => {
  */
 
 app.on('window-all-closed', async () => {
-  await pluginManager.uninstallAll();
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
   if (process.platform !== 'darwin') {
@@ -258,26 +249,4 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
-});
-
-ipcMain.handle('installPlugin', async (_, pluginPath) => {
-  await pluginManager.installFromPath(pluginPath);
-  // eslint-disable-next-line import/no-dynamic-require
-  const pkg = require(path.resolve(pluginPath, 'package.json'));
-  const plugin = pluginManager.require(pkg.name);
-  global.plugins.push({ ...plugin, path: pluginPath });
-  return plugin;
-});
-ipcMain.handle('uninstallPlugin', async (_, pluginName) => {
-  await pluginManager.uninstall(pluginName);
-
-  global.plugins = global.plugins.filter((v) => v.name !== pluginName);
-  return global.plugins;
-});
-ipcMain.handle('getPluginComponent', async (_, pluginName) => {
-  const plugin = pluginManager.require(pluginName);
-  const componentString = ReactDOMServer.renderToString(
-    React.createElement(plugin.Component)
-  );
-  return componentString;
 });

@@ -17,6 +17,21 @@ export const config = {
   },
 };
 
+export interface Plugin {
+  name: string;
+  path: string;
+}
+// 存储插件配置
+export const plugins = {
+  store: new Store<{ data: Plugin[] }>({ name: 'plugins' }),
+  get() {
+    return this.store.get('data');
+  },
+  set(payload: Plugin[]) {
+    return this.store.set('data', payload);
+  },
+};
+
 export const records = {
   store: new Store<{ data: RecordItem[] }>({ name: 'records' }),
   get() {

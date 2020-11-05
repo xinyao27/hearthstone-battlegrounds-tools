@@ -9,20 +9,26 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Dialog,
+  CircularProgress,
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useBoolean } from 'ahooks';
-import { remote, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 
 import usePlugins from '@app/hooks/usePlugins';
 
+import importPlugin, { HBTPlugin } from './importPlugin';
+import { useEnv } from './createEnv';
+
 const Plugins: React.FC = () => {
+  useEnv();
   const [plugins, { add: addPlugin, remove: removePlugin }] = usePlugins();
   const [open, { toggle }] = useBoolean(false);
-  const [settingComponent, setSettingComponent] = React.useState<
-    [string, boolean, string?] | []
-  >([]);
+  const [loading, { toggle: toggleLoading }] = useBoolean(false);
+  const [pluginModule, setPluginModule] = React.useState<HBTPlugin | null>(
+    null
+  );
 
   const handleInstallPlugin = React.useCallback(async () => {
     try {
@@ -34,8 +40,10 @@ const Plugins: React.FC = () => {
         addPlugin(path);
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>
@@ -52,19 +60,15 @@ const Plugins: React.FC = () => {
         <Box width={400}>
           <List>
             {plugins?.map((plugin) => {
+              async function handleClick() {
+                toggleLoading(true);
+                const module = await importPlugin(plugin.path, plugin.name);
+                setPluginModule(module);
+                toggleLoading(false);
+              }
               return (
                 <React.Fragment key={plugin.name}>
-                  <ListItem
-                    button
-                    onClick={() => {
-                      ipcRenderer
-                        .invoke('getPluginComponent', plugin.name)
-                        .then((html: string) => {
-                          return setSettingComponent([plugin.name, true, html]);
-                        })
-                        .catch(console.log);
-                    }}
-                  >
+                  <ListItem button onClick={handleClick}>
                     <ListItemText>{plugin.name}</ListItemText>
                     <ListItemSecondaryAction>
                       <IconButton onClick={() => removePlugin(plugin.name)}>
@@ -74,22 +78,17 @@ const Plugins: React.FC = () => {
                   </ListItem>
                   <Dialog
                     id="dialog"
-                    open={
-                      !!(
-                        settingComponent[0] === plugin.name &&
-                        settingComponent[1]
-                      )
-                    }
+                    open={!!(pluginModule && pluginModule.name === plugin.name)}
                     onBackdropClick={() => {
-                      setSettingComponent([]);
+                      setPluginModule(null);
                     }}
                   >
-                    <div
-                      id="dialog_container"
-                      dangerouslySetInnerHTML={{
-                        __html: settingComponent[2] || '',
-                      }}
-                    />
+                    {loading ? (
+                      <CircularProgress />
+                    ) : (
+                      pluginModule?.Component &&
+                      React.createElement(pluginModule.Component)
+                    )}
                   </Dialog>
                 </React.Fragment>
               );

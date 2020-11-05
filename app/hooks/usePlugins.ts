@@ -1,19 +1,11 @@
 import React from 'react';
-import { remote, ipcRenderer } from 'electron';
+import { remote } from 'electron';
 import { promises as fsPromises } from 'fs';
 import { copy, remove } from 'fs-extra';
 import path from 'path';
 import { useMount } from 'ahooks';
 
-interface HBTPlugin {
-  name: string;
-  Component: React.ElementType;
-  mounted?: () => void;
-  addedRecord?: (record: any) => void;
-}
-export interface Plugin extends HBTPlugin {
-  path: string;
-}
+import { plugins as pluginsStore, Plugin } from '@app/store';
 
 function usePlugins(): [
   Plugin[],
@@ -22,18 +14,31 @@ function usePlugins(): [
   const [plugins, setPlugins] = React.useState<Plugin[]>([]);
 
   useMount(() => {
-    setPlugins(() => remote.getGlobal('plugins'));
+    setPlugins(pluginsStore.get() ?? []);
   });
 
   const handleAddPlugin = React.useCallback(async (pluginPath: string) => {
     const userDataPath = remote.app.getPath('userData');
+    // 插件将存储的 path
     const pluginsPath = path.resolve(userDataPath, 'plugins');
+    // eslint-disable-next-line no-console
     fsPromises.mkdir(pluginsPath).catch(console.log);
+    // 目标目录
     const targetPath = path.resolve(pluginsPath, path.basename(pluginPath));
+    // 复制目录
     await copy(pluginPath, targetPath);
-    // eslint-disable-next-line promise/catch-or-return
-    ipcRenderer.invoke('installPlugin', targetPath).then(() => {
-      return setPlugins(() => remote.getGlobal('plugins'));
+    const pkg = JSON.parse(
+      await fsPromises.readFile(path.resolve(pluginPath, 'package.json'), {
+        encoding: 'utf8',
+      })
+    );
+    if (!pkg) {
+      throw new Error('目标目录不是合法的插件目录');
+    }
+    setPlugins((prevState) => {
+      const result = [...prevState, { name: pkg.name, path: targetPath }];
+      pluginsStore.set(result);
+      return result;
     });
   }, []);
 
@@ -42,9 +47,10 @@ function usePlugins(): [
     const pluginsPath = path.resolve(userDataPath, 'plugins');
     const pluginPath = path.resolve(pluginsPath, pluginName);
     remove(pluginPath);
-    // eslint-disable-next-line promise/catch-or-return
-    ipcRenderer.invoke('uninstallPlugin', pluginName).then(() => {
-      return setPlugins(() => remote.getGlobal('plugins'));
+    setPlugins((prevState) => {
+      const result = prevState.filter((v) => v.name !== pluginName);
+      pluginsStore.set(result);
+      return result;
     });
   }, []);
 

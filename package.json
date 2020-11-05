@@ -255,7 +255,6 @@
     "fs-extra": "^9.0.1",
     "history": "^4.7.2",
     "hox": "^1.1.1",
-    "live-plugin-manager": "^0.15.1",
     "obs-websocket-js": "^4.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.12.0",
