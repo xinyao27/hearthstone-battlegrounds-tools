@@ -1,6 +1,5 @@
 import { createModel } from 'hox';
-
-import type { RequestMethodsKeys, RequestMethodReturnMap } from '@app/types';
+import type { RequestMethodsKeys, RequestMethodReturnMap } from './types';
 
 import useObs from './useObs';
 

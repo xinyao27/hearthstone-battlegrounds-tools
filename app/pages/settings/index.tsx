@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  Button,
   List,
   ListItem,
   ListItemIcon,
@@ -9,10 +8,6 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
-import { remote } from 'electron';
-import { useMount } from 'ahooks';
-
-import { config } from '@app/store';
 
 import getList from './list';
 
@@ -35,11 +30,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Settings() {
   const classes = useStyles();
-
-  useMount(() => {
-    const result = config.get('heartstoneRootPath');
-    console.log(remote.app.getPath('userData'), result);
-  });
 
   const list = getList();
 

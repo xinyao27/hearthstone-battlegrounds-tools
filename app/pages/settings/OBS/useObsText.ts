@@ -1,14 +1,14 @@
 import React from 'react';
 import { createModel } from 'hox';
 
-import { RequestMethodReturnMap } from '@app/types';
-
+import type { RequestMethodReturnMap } from './types';
 import useCommand from './useCommand';
 import useConnect from './useConnect';
 
 function useObsText() {
   const { run } = useCommand();
   const { connected } = useConnect();
+  const [enable, setEnable] = React.useState(false);
   const [sourcesList, setSourcesList] = React.useState<
     RequestMethodReturnMap['GetSourcesList']['sources']
   >([]);
@@ -27,6 +27,8 @@ function useObsText() {
   }, [connected, run]);
 
   return {
+    enable,
+    setEnable,
     sourcesList,
     currentSource,
     setCurrentSource,

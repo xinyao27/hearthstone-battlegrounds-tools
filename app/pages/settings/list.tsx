@@ -4,14 +4,14 @@ import { useMount, useBoolean } from 'ahooks';
 import { IconButton, Switch } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
-import ExtensionIcon from '@material-ui/icons/Extension';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
 import { config } from '@app/store';
 
-import Plugins from './Plugins';
+import OBS from './OBS';
 
 interface Item {
   icon: React.ReactElement;
@@ -60,9 +60,11 @@ function getList(): Item[] {
       },
     },
     {
-      icon: <ExtensionIcon />,
-      label: '插件设置',
-      action: <Plugins />,
+      icon: <RadioButtonCheckedIcon />,
+      label: 'OBS设置',
+      action: function Action() {
+        return <OBS />;
+      },
     },
   ];
 

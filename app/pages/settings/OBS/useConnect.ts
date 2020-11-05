@@ -55,6 +55,7 @@ function useConnect() {
       console.log('OBS-websocket version:', version);
     });
     obs.on('AuthenticationFailure', async () => {
+      // eslint-disable-next-line no-alert
       alert('密码错误');
     });
   }, [obs, run]);

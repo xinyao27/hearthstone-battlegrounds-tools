@@ -17,9 +17,6 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import dayjs from 'dayjs';
 
 import heroes from '@app/constants/heroes.json';
-import useConnect from '@app/hooks/useConnect';
-import useCommand from '@app/hooks/useCommand';
-import useObsText from '@app/hooks/useObsText';
 import useRecord from '@app/hooks/useRecord';
 
 import NewItem from './NewItem';
@@ -43,28 +40,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Record() {
   const classes = useStyles();
-  const { connected } = useConnect();
-  const { run } = useCommand();
-  const { currentSource } = useObsText();
 
-  const [recordList, { addRecord, deleteRecord }] = useRecord((result) => {
-    if (connected) {
-      (async () => {
-        // 只取当天的数据
-        const today = dayjs();
-        const todayResult = result.filter((v) =>
-          dayjs(v.date).isSame(today, 'day')
-        );
-        const text = todayResult
-          .map((v) => `${v.hero.name} ${v.rank}`)
-          .join('\n');
-        await run('SetTextGDIPlusProperties', {
-          source: currentSource,
-          text,
-        });
-      })();
-    }
-  });
+  const [recordList, { addRecord, deleteRecord }] = useRecord();
   const handleNewItem = React.useCallback(
     (item) => {
       addRecord(item);
