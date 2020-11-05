@@ -1,5 +1,8 @@
 import React from 'react';
 import { createModel } from 'hox';
+import { useUpdateEffect } from 'ahooks';
+
+import { config } from '@app/store';
 
 import type { RequestMethodReturnMap } from './types';
 import useCommand from './useCommand';
@@ -8,30 +11,68 @@ import useConnect from './useConnect';
 function useObsText() {
   const { run } = useCommand();
   const { connected } = useConnect();
-  const [enable, setEnable] = React.useState(false);
   const [sourcesList, setSourcesList] = React.useState<
     RequestMethodReturnMap['GetSourcesList']['sources']
   >([]);
-  const [currentSource, setCurrentSource] = React.useState();
+  const [enable, setEnable] = React.useState<boolean>(
+    (config.get('obs.text.enable') as boolean) ?? false
+  );
+  const [currentSource, setCurrentSource] = React.useState<string>(() => {
+    const configSource = config.get('obs.text.source') as string;
+    if (sourcesList.find((v) => v.name === configSource)) {
+      return configSource;
+    }
+    return '';
+  });
 
-  React.useEffect(() => {
+  const handleEnable = React.useCallback(
+    (result: boolean) => {
+      setEnable((pre) => {
+        if (!currentSource && !pre) {
+          // eslint-disable-next-line no-alert
+          alert('请设置文本来源');
+          return pre;
+        }
+        config.set('obs.text.enable', result);
+        return result;
+      });
+    },
+    [currentSource]
+  );
+  const handleSetCurrentSource = React.useCallback((result: string) => {
+    setCurrentSource(() => {
+      config.set('obs.text.source', result);
+      return result;
+    });
+  }, []);
+
+  useUpdateEffect(() => {
     async function getSourcesList() {
       const res = await run('GetSourcesList');
       if (res) {
-        setSourcesList(
-          res.sources.filter((v) => v.typeId === 'text_gdiplus_v2')
+        const filtered = res.sources.filter(
+          (v) => v.typeId === 'text_gdiplus_v2'
         );
+        setSourcesList(filtered);
+        const configSource = config.get('obs.text.source') as string;
+        const hasConfig = filtered.find((v) => v.name === configSource);
+        if (configSource && hasConfig) {
+          setCurrentSource(configSource);
+        }
+        if (!hasConfig) {
+          handleEnable(false);
+        }
       }
     }
     if (connected) getSourcesList();
-  }, [connected, run]);
+  }, [connected]);
 
   return {
     enable,
-    setEnable,
+    setEnable: handleEnable,
     sourcesList,
     currentSource,
-    setCurrentSource,
+    setCurrentSource: handleSetCurrentSource,
   };
 }
 

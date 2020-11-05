@@ -144,19 +144,6 @@ const OBS: React.FC = () => {
           </ListItem>
           <ListItem>
             <ListItemText>选择图片来源</ListItemText>
-            <ListItemSecondaryAction>
-              <Select
-                value={currentSource}
-                // @ts-ignore
-                onChange={(e) => setCurrentSource(e.target.value)}
-              >
-                {sourcesList.map((source) => (
-                  <MenuItem key={source.name + source.type} value={source.name}>
-                    {source.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </ListItemSecondaryAction>
           </ListItem>
         </List>
       </Drawer>
