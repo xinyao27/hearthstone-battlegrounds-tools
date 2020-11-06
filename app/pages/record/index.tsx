@@ -17,14 +17,13 @@ import dayjs from 'dayjs';
 import heroes from '@app/constants/heroes.json';
 import useRecord from '@app/hooks/useRecord';
 
-import NewItem from './NewItem';
-
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: theme.spacing(1),
     minWidth: 120,
   },
   tools: {
+    padding: theme.spacing(2),
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -39,13 +38,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Record() {
   const classes = useStyles();
 
-  const [recordList, { addRecord, deleteRecord }] = useRecord();
-  const handleNewItem = React.useCallback(
-    (item) => {
-      addRecord(item);
-    },
-    [addRecord]
-  );
+  const [recordList, { deleteRecord }] = useRecord();
+
   const handleDeleteItem = React.useCallback(
     (item) => {
       deleteRecord(item);
@@ -66,8 +60,6 @@ export default function Record() {
   return (
     <div className={classes.root}>
       <div className={classes.tools}>
-        <NewItem onSubmit={handleNewItem} />
-
         <TextField
           label="选择日期"
           type="date"
