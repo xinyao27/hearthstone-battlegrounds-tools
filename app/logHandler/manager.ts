@@ -1,11 +1,7 @@
 import { remote, ipcRenderer } from 'electron';
 import { Subscription } from 'rxjs';
 
-import type { WatchState } from '@app/types';
-import {
-  LOGHANDLER_SUSPENSION_MESSAGE,
-  LOGHANDLER_MAIN_MESSAGE,
-} from '@app/constants/topic';
+import { LOGHANDLER_SUSPENSION_MESSAGE } from '@app/constants/topic';
 
 import type { Filtered } from './parser';
 
@@ -49,24 +45,5 @@ export function logManager(
         }
       );
     }
-  }
-}
-
-/**
- * 负责将监控的状态传递到 main 窗口
- * @param state
- * @param message
- */
-export function watchStateManager(
-  state: WatchState['state'],
-  message: WatchState['message']
-) {
-  const { mainWindow } = remote.getGlobal('windows');
-  if (mainWindow !== undefined) {
-    ipcRenderer.sendTo(mainWindow.webContents?.id, LOGHANDLER_MAIN_MESSAGE, {
-      type: 'watchState',
-      state,
-      message,
-    });
   }
 }
