@@ -3,7 +3,9 @@ import { resolve } from 'path';
 import { getPlatform, Platform } from '@app/utils';
 import { config } from '@app/store';
 
-const configHeartstoneRootPath = config.get('heartstoneRootPath');
+const configHeartstoneRootPath = config.get('heartstoneRootPath') as
+  | string
+  | undefined;
 // Windows
 const windowsHeartstoneRootPath =
   configHeartstoneRootPath ?? 'C:\\Program Files (x86)\\Hearthstone';

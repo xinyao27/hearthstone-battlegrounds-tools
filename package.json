@@ -243,6 +243,7 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "ahooks": "^2.7.1",
+    "chokidar": "^3.4.3",
     "clsx": "^1.1.1",
     "dayjs": "^1.9.4",
     "echarts": "^4.9.0",

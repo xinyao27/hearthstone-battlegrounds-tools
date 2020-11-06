@@ -1,24 +1,43 @@
 import fs from 'fs';
-import { bindNodeCallback, combineLatest, Observable } from 'rxjs';
-
-const open = bindNodeCallback(fs.open);
+import { Observable } from 'rxjs';
+import chokidar from 'chokidar';
 
 /**
  * 读取 Log 创建 Observable
  */
-function createObservable(filePath: fs.PathLike) {
-  const fd$ = open(filePath, 'r');
-  const watched$ = new Observable<[fs.Stats, fs.Stats]>((observer) => {
-    fs.watchFile(filePath, { interval: 1000 }, (cur, prev) => {
-      observer.next([cur, prev]);
-    });
-    return {
-      unsubscribe() {
-        fs.unwatchFile(filePath);
-      },
-    };
-  });
-  return combineLatest([fd$, watched$]);
+function createObservable(filePath: string) {
+  return new Observable<{ filePath: string; cur: fs.Stats; prev: fs.Stats }>(
+    (observer) => {
+      const watcher = chokidar.watch(filePath, {
+        persistent: true,
+        usePolling: true,
+        alwaysStat: true,
+      });
+      let prev: fs.Stats | undefined;
+      let cur: fs.Stats | undefined;
+      watcher
+        .on('add', (_, stats) => {
+          prev = stats;
+          cur = stats;
+          if (prev && cur) {
+            observer.next({ filePath, cur, prev });
+          }
+        })
+        .on('change', (_, stats) => {
+          prev = cur;
+          cur = stats;
+          if (prev && cur) {
+            observer.next({ filePath, cur, prev });
+          }
+        });
+      return {
+        unsubscribe() {
+          console.log('unsubscribe', filePath);
+          watcher.close();
+        },
+      };
+    }
+  );
 }
 
 export default createObservable;
