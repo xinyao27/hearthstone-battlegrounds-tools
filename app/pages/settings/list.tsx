@@ -48,9 +48,10 @@ function getList(): Item[] {
       label: '打开缓存目录',
       action: function Action() {
         const handleClick = () => {
-          require('child_process').exec(
-            `start "" "${remote.app.getPath('userData')}"`
-          );
+          // require('child_process').exec(
+          //   `start "" "${remote.app.getPath('userData')}"`
+          // );
+          remote.shell.showItemInFolder(remote.app.getPath('userData'));
         };
         return (
           <IconButton onClick={handleClick}>

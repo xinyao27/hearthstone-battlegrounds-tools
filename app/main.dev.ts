@@ -11,10 +11,17 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  screen,
+  BrowserWindowConstructorOptions,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 
+import { getPlatform, Platform } from './utils';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
@@ -167,10 +174,11 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
-  mainWindow = new BrowserWindow({
+  const options: BrowserWindowConstructorOptions = {
     show: false,
     width: 1024,
-    height: 728,
+    height: 768,
+    titleBarStyle: 'hidden',
     icon: getAssetPath('icon.png'),
     webPreferences:
       (process.env.NODE_ENV === 'development' ||
@@ -185,7 +193,11 @@ const createWindow = async () => {
             enableRemoteModule: true,
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
           },
-  });
+  };
+  if (getPlatform() === Platform.WINDOWS) {
+    options.frame = false;
+  }
+  mainWindow = new BrowserWindow(options);
   global.windows.mainWindow = mainWindow;
 
   mainWindow.loadURL(`file://${__dirname}/app.html?name=renderer`);
