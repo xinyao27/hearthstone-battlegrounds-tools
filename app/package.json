@@ -7,8 +7,11 @@
   "main": "./main.prod.js",
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
-    "postinstall": "yarn electron-rebuild"
+    "postinstall": "yarn electron-rebuild",
+    "update:deps": "yarn upgrade-interactive --latest"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "chokidar": "^3.4.3"
+  }
 }

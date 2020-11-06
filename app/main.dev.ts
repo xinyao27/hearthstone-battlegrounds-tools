@@ -144,7 +144,7 @@ function createLogHandlerWindow() {
     height: 728,
     // show: process.env.NODE_ENV === 'development',
     show: true,
-    webPreferences: { nodeIntegration: true },
+    webPreferences: { nodeIntegration: true, enableRemoteModule: true },
   });
   logHandlerWindow.webContents.openDevTools();
   global.windows.logHandlerWindow = logHandlerWindow;
