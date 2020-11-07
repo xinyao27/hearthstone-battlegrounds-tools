@@ -4,6 +4,7 @@ import { CssBaseline, Box } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import 'fontsource-roboto';
+import { SnackbarProvider } from 'notistack';
 
 import Header from '@app/components/Header';
 import Navigation from '@app/components/Navigation';
@@ -44,14 +45,15 @@ export default function App({ children }: Props) {
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
-
-      <Box height="100%" display="flex" flexDirection="column">
-        <Header />
-        <Box flex={1} overflow="auto">
-          {children}
+      <SnackbarProvider maxSnack={3}>
+        <Box height="100%" display="flex" flexDirection="column">
+          <Header />
+          <Box flex={1} overflow="auto">
+            {children}
+          </Box>
+          <Navigation />
         </Box>
-        <Navigation />
-      </Box>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

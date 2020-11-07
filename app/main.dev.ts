@@ -147,12 +147,10 @@ let logHandlerWindow: BrowserWindow | null = null;
 function createLogHandlerWindow() {
   logHandlerWindow = new BrowserWindow({
     width: 1024,
-    height: 728,
-    // show: process.env.NODE_ENV === 'development',
-    show: true,
+    height: 768,
+    show: process.env.NODE_ENV === 'development',
     webPreferences: { nodeIntegration: true, enableRemoteModule: true },
   });
-  logHandlerWindow.webContents.openDevTools();
   global.windows.logHandlerWindow = logHandlerWindow;
   logHandlerWindow.loadURL(`file://${__dirname}/app.html?name=logHandler`);
 }

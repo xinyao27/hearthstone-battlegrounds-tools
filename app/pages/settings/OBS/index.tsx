@@ -21,13 +21,15 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { useBoolean } from 'ahooks';
+import { useBoolean, useUpdateEffect } from 'ahooks';
+import { useSnackbar } from 'notistack';
 
 import useConnect from './useConnect';
 import useObsText from './useObsText';
 
 const OBS: React.FC = () => {
-  const { connect, disconnect, connected } = useConnect();
+  const { enqueueSnackbar } = useSnackbar();
+  const { connect, disconnect, connected, error } = useConnect();
   const {
     enable: textEnable,
     setEnable: textSetEnable,
@@ -56,6 +58,17 @@ const OBS: React.FC = () => {
     setDrawerOpen(true);
     handleDialogClose();
   }, [connect, handleDialogClose, host, password, setDrawerOpen]);
+
+  useUpdateEffect(() => {
+    if (!connected) {
+      setDrawerOpen(false);
+    }
+  }, [connected]);
+  useUpdateEffect(() => {
+    if (error) {
+      enqueueSnackbar(error, { variant: 'error' });
+    }
+  }, [error]);
 
   return (
     <Box>

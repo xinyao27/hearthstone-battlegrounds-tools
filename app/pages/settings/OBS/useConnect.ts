@@ -7,6 +7,7 @@ import useCommand from './useCommand';
 
 function useConnect() {
   const [connected, setConnected] = React.useState(false);
+  const [error, setError] = React.useState<string>();
   const { obs } = useObs();
   const { run } = useCommand();
 
@@ -31,6 +32,7 @@ function useConnect() {
         try {
           await obs.connect({ address, password, secure });
         } catch (e) {
+          setError(e?.description);
           console.error(e);
         }
       }
@@ -44,6 +46,7 @@ function useConnect() {
   React.useEffect(() => {
     // OBS events
     obs.on('ConnectionClosed', () => {
+      setConnected(true);
       setConnected(false);
       console.log('Connection closed');
     });
@@ -64,6 +67,7 @@ function useConnect() {
     connect,
     disconnect,
     connected,
+    error,
   };
 }
 

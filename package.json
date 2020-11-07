@@ -256,6 +256,7 @@
     "fs-extra": "^9.0.1",
     "history": "^4.7.2",
     "hox": "^1.1.1",
+    "notistack": "^1.0.1",
     "obs-websocket-js": "^4.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
