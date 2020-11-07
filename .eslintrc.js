@@ -13,6 +13,8 @@ module.exports = {
     '@typescript-eslint/no-throw-literal': 'off',
     'import/prefer-default-export': 'off',
     'global-require': 'off',
+    'jsx-a11y/no-static-element-interactions': 'off',
+    'jsx-a11y/click-events-have-key-events': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

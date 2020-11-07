@@ -3,11 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
 import { getPlatform, Platform } from '@app/utils';
+import WinTitleBar from '@app/components/Native/WinTitleBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     '-webkit-app-region': 'drag',
     userSelect: 'none',
+    position: 'relative',
   },
   toolbar:
     getPlatform() === Platform.MACOS
@@ -36,6 +38,7 @@ export default function Header() {
           酒馆战棋战绩统计
         </Typography>
       </Toolbar>
+      {getPlatform() === Platform.WINDOWS && <WinTitleBar />}
     </AppBar>
   );
 }

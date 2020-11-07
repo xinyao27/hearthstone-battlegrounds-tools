@@ -22,7 +22,6 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 
 import { getPlatform, Platform } from './utils';
-import MenuBuilder from './menu';
 
 export default class AppUpdater {
   constructor() {
@@ -179,6 +178,7 @@ const createWindow = async () => {
     width: 1024,
     height: 768,
     titleBarStyle: 'hidden',
+    maximizable: false,
     icon: getAssetPath('icon.png'),
     webPreferences:
       (process.env.NODE_ENV === 'development' ||
@@ -224,9 +224,6 @@ const createWindow = async () => {
     logHandlerWindow = null;
     suspensionWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
