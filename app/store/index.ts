@@ -5,15 +5,16 @@ import type { RequestMethodReturnMap } from '@app/pages/settings/OBS/types';
 
 interface Config {
   heartstoneRootPath?: string;
-  obs?: {
-    text?: {
-      enable: boolean;
-      source: RequestMethodReturnMap['GetSourcesList']['sources'][0];
+  obs: {
+    text: {
+      enable?: boolean;
+      source?: RequestMethodReturnMap['GetSourcesList']['sources'][0];
+      max: number;
     };
-    image?: {
-      enable: boolean;
-      source: RequestMethodReturnMap['GetSourcesList']['sources'][0];
-      dir: string;
+    image: {
+      enable?: boolean;
+      source?: RequestMethodReturnMap['GetSourcesList']['sources'][0];
+      dir?: string;
       max: number;
     };
   };
@@ -21,7 +22,19 @@ interface Config {
 
 // 存储配置文件
 export const config = {
-  store: new Store<Config>({ name: 'config' }),
+  store: new Store<Config>({
+    name: 'config',
+    defaults: {
+      obs: {
+        image: {
+          max: 12,
+        },
+        text: {
+          max: 12,
+        },
+      },
+    },
+  }),
   get(key: keyof Config | string) {
     return this.store.get(key);
   },

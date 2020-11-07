@@ -34,16 +34,16 @@ function useObsImage() {
   const handleEnable = React.useCallback(
     (result: boolean) => {
       setEnable((pre) => {
-        if (!currentSource && !pre) {
+        if ((!currentSource || !dir) && !pre) {
           // eslint-disable-next-line no-alert
-          alert('请设置图片来源');
+          alert('未设置图片来源或图片储存路径');
           return pre;
         }
         config.set('obs.image.enable', result);
         return result;
       });
     },
-    [currentSource]
+    [currentSource, dir]
   );
   const handleSetCurrentSource = React.useCallback((result: string) => {
     setCurrentSource(() => {
