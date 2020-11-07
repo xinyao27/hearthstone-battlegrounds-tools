@@ -89,7 +89,6 @@ const NewItem: React.FC<NewItemProps> = ({ onSubmit }) => {
         className={classes.input}
         value={rank}
         onChange={handleRankChange}
-        placeholder="名次"
         type="number"
       />
 

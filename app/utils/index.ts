@@ -16,3 +16,7 @@ export function getPlatform() {
       return platform;
   }
 }
+
+export function isDevelopment() {
+  return process.env.NODE_ENV === 'development';
+}

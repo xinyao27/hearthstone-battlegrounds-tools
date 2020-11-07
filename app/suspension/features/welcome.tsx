@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import routes from '@suspension/constants/routes.json';
+import { isDevelopment } from '@app/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +27,7 @@ const Welcome: React.FC = () => {
 
   return (
     <Layout className={classes.root}>
-      {process.env.NODE_ENV === 'development' && (
+      {isDevelopment() && (
         <>
           <Link to={routes.HEROSELECTION}>to heroes</Link>
           <Link to={routes.GAMEOVER}>to gameover</Link>

@@ -17,15 +17,18 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Switch,
+  Tooltip,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useBoolean, useUpdateEffect } from 'ahooks';
 import { useSnackbar } from 'notistack';
+import { remote } from 'electron';
 
 import useConnect from './useConnect';
 import useObsText from './useObsText';
+import useObsImage from './useObsImage';
 
 const OBS: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -33,10 +36,23 @@ const OBS: React.FC = () => {
   const {
     enable: textEnable,
     setEnable: textSetEnable,
-    sourcesList,
-    currentSource,
-    setCurrentSource,
+    sourcesList: textSourcesList,
+    currentSource: textCurrentSource,
+    setCurrentSource: textSetCurrentSource,
+    max: textMax,
+    setMax: textSetMax,
   } = useObsText();
+  const {
+    enable: imageEnable,
+    setEnable: imageSetEnable,
+    sourcesList: imageSourcesList,
+    currentSource: imageCurrentSource,
+    setCurrentSource: imageSetCurrentSource,
+    dir: imageDir,
+    setDir: imageSetDir,
+    max: imageMax,
+    setMax: imageSetMax,
+  } = useObsImage();
   const [dialogOpen, { toggle: setDialogOpen }] = useBoolean(false);
   const [drawerOpen, { toggle: setDrawerOpen }] = useBoolean(false);
   const [host, setHost] = React.useState('http://localhost:4444');
@@ -58,6 +74,17 @@ const OBS: React.FC = () => {
     setDrawerOpen(true);
     handleDialogClose();
   }, [connect, handleDialogClose, host, password, setDrawerOpen]);
+  const handleChooseImageDir = React.useCallback(() => {
+    remote.dialog
+      .showOpenDialog({ properties: ['openDirectory'] })
+      .then((result) => {
+        if (!result.canceled && result.filePaths[0]) {
+          imageSetDir(result.filePaths[0]);
+        }
+        return result;
+      })
+      .catch(console.log);
+  }, [imageSetDir]);
 
   useUpdateEffect(() => {
     if (!connected) {
@@ -135,11 +162,11 @@ const OBS: React.FC = () => {
             <ListItemText>选择文本来源(GDI+)</ListItemText>
             <ListItemSecondaryAction>
               <Select
-                value={currentSource}
+                value={textCurrentSource}
                 // @ts-ignore
-                onChange={(e) => setCurrentSource(e.target.value)}
+                onChange={(e) => textSetCurrentSource(e.target.value)}
               >
-                {sourcesList.map((source) => (
+                {textSourcesList.map((source) => (
                   <MenuItem key={source.name + source.type} value={source.name}>
                     {source.name}
                   </MenuItem>
@@ -147,16 +174,72 @@ const OBS: React.FC = () => {
               </Select>
             </ListItemSecondaryAction>
           </ListItem>
+          <ListItem>
+            <ListItemText>
+              <Tooltip title="这个选项表示在OBS中最多可展示的文本战绩数量">
+                <span>战绩最大展示数</span>
+              </Tooltip>
+            </ListItemText>
+            <ListItemSecondaryAction>
+              <TextField
+                style={{ width: 52 }}
+                value={textMax}
+                onChange={(e) => textSetMax(parseInt(e.target.value, 10))}
+                type="number"
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
 
           <ListSubheader>输出图片</ListSubheader>
           <ListItem>
             <ListItemText>开启</ListItemText>
             <ListItemSecondaryAction>
-              <Switch />
+              <Switch
+                checked={imageEnable}
+                onChange={(_, checked) => imageSetEnable(checked)}
+              />
             </ListItemSecondaryAction>
           </ListItem>
           <ListItem>
             <ListItemText>选择图片来源</ListItemText>
+            <ListItemSecondaryAction>
+              <Select
+                value={imageCurrentSource}
+                // @ts-ignore
+                onChange={(e) => imageSetCurrentSource(e.target.value)}
+              >
+                {imageSourcesList.map((source) => (
+                  <MenuItem key={source.name + source.type} value={source.name}>
+                    {source.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </ListItemSecondaryAction>
+          </ListItem>
+          <ListItem>
+            <ListItemText>选择图片储存路径</ListItemText>
+            <ListItemSecondaryAction>
+              <Tooltip title={imageDir}>
+                <IconButton onClick={handleChooseImageDir}>
+                  <SettingsIcon />
+                </IconButton>
+              </Tooltip>
+            </ListItemSecondaryAction>
+          </ListItem>
+          <ListItem>
+            <ListItemText>
+              <Tooltip title="这个选项表示在OBS中最多可展示的图片战绩数量">
+                <span>战绩最大展示数</span>
+              </Tooltip>
+            </ListItemText>
+            <ListItemSecondaryAction>
+              <TextField
+                style={{ width: 52 }}
+                value={imageMax}
+                onChange={(e) => imageSetMax(parseInt(e.target.value, 10))}
+                type="number"
+              />
+            </ListItemSecondaryAction>
           </ListItem>
         </List>
       </Drawer>

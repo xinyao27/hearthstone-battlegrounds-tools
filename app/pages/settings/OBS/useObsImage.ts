@@ -8,24 +8,27 @@ import type { RequestMethodReturnMap } from './types';
 import useCommand from './useCommand';
 import useConnect from './useConnect';
 
-function useObsText() {
+function useObsImage() {
   const { run } = useCommand();
   const { connected } = useConnect();
   const [sourcesList, setSourcesList] = React.useState<
     RequestMethodReturnMap['GetSourcesList']['sources']
   >([]);
   const [enable, setEnable] = React.useState<boolean>(
-    (config.get('obs.text.enable') as boolean) ?? false
+    (config.get('obs.image.enable') as boolean) ?? false
   );
   const [currentSource, setCurrentSource] = React.useState<string>(() => {
-    const configSource = config.get('obs.text.source') as string;
+    const configSource = config.get('obs.image.source') as string;
     if (sourcesList.find((v) => v.name === configSource)) {
       return configSource;
     }
     return '';
   });
+  const [dir, setDir] = React.useState<string>(
+    (config.get('obs.image.dir') as string) ?? ''
+  );
   const [max, setMax] = React.useState<number>(
-    (config.get('obs.text.max') as number) ?? 12
+    (config.get('obs.image.max') as number) ?? 12
   );
 
   const handleEnable = React.useCallback(
@@ -33,10 +36,10 @@ function useObsText() {
       setEnable((pre) => {
         if (!currentSource && !pre) {
           // eslint-disable-next-line no-alert
-          alert('请设置文本来源');
+          alert('请设置图片来源');
           return pre;
         }
-        config.set('obs.text.enable', result);
+        config.set('obs.image.enable', result);
         return result;
       });
     },
@@ -44,13 +47,19 @@ function useObsText() {
   );
   const handleSetCurrentSource = React.useCallback((result: string) => {
     setCurrentSource(() => {
-      config.set('obs.text.source', result);
+      config.set('obs.image.source', result);
+      return result;
+    });
+  }, []);
+  const handleSetDir = React.useCallback((result: string) => {
+    setDir(() => {
+      config.set('obs.image.dir', result);
       return result;
     });
   }, []);
   const handleSetMax = React.useCallback((result: number) => {
     setMax(() => {
-      config.set('obs.text.max', result);
+      config.set('obs.image.max', result);
       return result;
     });
   }, []);
@@ -59,11 +68,9 @@ function useObsText() {
     async function getSourcesList() {
       const res = await run('GetSourcesList');
       if (res) {
-        const filtered = res.sources.filter(
-          (v) => v.typeId === 'text_gdiplus_v2'
-        );
+        const filtered = res.sources.filter((v) => v.typeId === 'image_source');
         setSourcesList(filtered);
-        const configSource = config.get('obs.text.source') as string;
+        const configSource = config.get('obs.image.source') as string;
         const hasConfig = filtered.find((v) => v.name === configSource);
         if (configSource && hasConfig) {
           setCurrentSource(configSource);
@@ -82,9 +89,11 @@ function useObsText() {
     sourcesList,
     currentSource,
     setCurrentSource: handleSetCurrentSource,
+    dir,
+    setDir: handleSetDir,
     max,
     setMax: handleSetMax,
   };
 }
 
-export default createModel(useObsText);
+export default createModel(useObsImage);

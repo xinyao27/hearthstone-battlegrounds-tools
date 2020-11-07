@@ -1,7 +1,7 @@
 import React from 'react';
 import { ipcRenderer, remote } from 'electron';
 import { useMount, useBoolean } from 'ahooks';
-import { IconButton, Switch } from '@material-ui/core';
+import { IconButton, Switch, Tooltip } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
@@ -10,6 +10,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
 import { config } from '@app/store';
+import { isDevelopment } from '@app/utils';
 
 import OBS from './OBS';
 
@@ -37,9 +38,11 @@ function getList(): Item[] {
             .catch(console.log);
         };
         return (
-          <IconButton onClick={handleClick}>
-            <SettingsIcon />
-          </IconButton>
+          <Tooltip title={config.get('heartstoneRootPath') as string}>
+            <IconButton onClick={handleClick}>
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
         );
       },
     },
@@ -69,7 +72,7 @@ function getList(): Item[] {
     },
   ];
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopment()) {
     list.unshift({
       icon: <DeveloperModeIcon />,
       label: '悬浮框展示',
