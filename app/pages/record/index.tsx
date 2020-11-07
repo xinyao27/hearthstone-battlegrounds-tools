@@ -81,7 +81,10 @@ export default function Record() {
           onChange={handleDateChange}
         />
       </div>
-      <div id="recordImage" />
+      <div
+        id="recordImage"
+        style={{ position: 'fixed', left: 9999, top: 9999 }}
+      />
       <BaseList dense>
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
