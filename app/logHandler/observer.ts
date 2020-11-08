@@ -1,4 +1,5 @@
 import { Subscription } from 'rxjs';
+import log from 'electron-log';
 
 import type { Filtered } from './parser';
 import { logManager } from './manager';
@@ -6,17 +7,16 @@ import { logManager } from './manager';
 function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
   return {
     next: (value: Filtered | null) => {
+      log.info(type, value);
       logManager(type, value, cb);
     },
     complete: () => {
       const message = `${type} 🔚 工作结束`;
-      // eslint-disable-next-line no-console
-      console.log(message);
+      log.warn(message);
     },
     error: (err: Error) => {
       const message = `${type} ❌ 工作出现了问题: ${err}`;
-      // eslint-disable-next-line no-console
-      console.log(message);
+      log.error(message);
     },
   };
 }

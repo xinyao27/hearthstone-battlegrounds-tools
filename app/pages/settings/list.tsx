@@ -1,7 +1,6 @@
 import React from 'react';
 import { ipcRenderer, remote } from 'electron';
 import { useMount, useBoolean } from 'ahooks';
-import { is } from 'electron-util';
 import { IconButton, Switch, Tooltip } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -24,6 +23,26 @@ interface Item {
 function getList(): Item[] {
   const { suspensionWindow } = remote.getGlobal('windows');
   const list: Item[] = [
+    {
+      icon: <DeveloperModeIcon />,
+      label: '悬浮框展示',
+      action: function Action() {
+        const [checked, { toggle }] = useBoolean(false);
+        useMount(() => {
+          toggle(suspensionWindow.isVisible());
+        });
+        return (
+          <Switch
+            edge="end"
+            checked={checked}
+            onChange={(_, value) => {
+              toggle(value);
+              ipcRenderer.send(value ? 'showSuspension' : 'hideSuspension');
+            }}
+          />
+        );
+      },
+    },
     {
       id: 'heartstoneRootPathSetting',
       icon: <FolderIcon />,
@@ -76,29 +95,6 @@ function getList(): Item[] {
       },
     },
   ];
-
-  if (is.development) {
-    list.unshift({
-      icon: <DeveloperModeIcon />,
-      label: '悬浮框展示',
-      action: function Action() {
-        const [checked, { toggle }] = useBoolean(false);
-        useMount(() => {
-          toggle(suspensionWindow.isVisible());
-        });
-        return (
-          <Switch
-            edge="end"
-            checked={checked}
-            onChange={(_, value) => {
-              toggle(value);
-              ipcRenderer.send(value ? 'showSuspension' : 'hideSuspension');
-            }}
-          />
-        );
-      },
-    });
-  }
 
   return list;
 }

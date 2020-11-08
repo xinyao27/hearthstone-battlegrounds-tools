@@ -121,7 +121,7 @@ export default function App(props: Props) {
       ipcRenderer.send('showSuspension');
       history.push(routes.GAMEOVER);
     }
-  }, [stateFlow, history]);
+  }, [stateFlow]);
 
   return (
     <ThemeProvider theme={theme}>

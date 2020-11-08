@@ -11,6 +11,24 @@ const productionPlugins = [
   require('@babel/plugin-transform-react-constant-elements'),
   require('@babel/plugin-transform-react-inline-elements'),
   require('babel-plugin-transform-react-remove-prop-types'),
+  [
+    require('babel-plugin-import'),
+    {
+      libraryName: '@material-ui/core',
+      libraryDirectory: 'esm',
+      camel2DashComponentName: false,
+    },
+    'core',
+  ],
+  [
+    require('babel-plugin-import'),
+    {
+      libraryName: '@material-ui/icons',
+      libraryDirectory: 'esm',
+      camel2DashComponentName: false,
+    },
+    'icons',
+  ],
 ];
 
 module.exports = (api) => {

@@ -6,6 +6,7 @@
   "scripts": {
     "prebuild": "rimraf app/dist",
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "build-analyzer": "cross-env OPEN_ANALYZER=true yarn build",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
     "build-e2e": "cross-env E2E_BUILD=true yarn build",
     "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
@@ -55,7 +56,8 @@
   },
   "build": {
     "productName": "HearthstoneBattlegroundsTools",
-    "appId": "org.develar.HearthstoneBattlegroundsTools",
+    "appId": "org.hbt.HearthstoneBattlegroundsTools",
+    "copyright": "hbt-org",
     "files": [
       "dist/",
       "node_modules/",
@@ -83,14 +85,6 @@
         "nsis",
         "msi"
       ]
-    },
-    "linux": {
-      "target": [
-        "deb",
-        "rpm",
-        "AppImage"
-      ],
-      "category": "Development"
     },
     "directories": {
       "buildResources": "resources",
@@ -184,6 +178,7 @@
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-dev-expression": "^0.2.2",
+    "babel-plugin-import": "^1.13.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "browserslist-config-erb": "^0.0.1",
     "chalk": "^4.1.0",

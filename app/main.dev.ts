@@ -172,6 +172,9 @@ const createWindow = async () => {
     options.frame = false;
   }
   mainWindow = new BrowserWindow(options);
+  if (is.macos) {
+    app.dock.setIcon(getAssetPath('icon.png'));
+  }
   global.windows.mainWindow = mainWindow;
 
   mainWindow.loadURL(`file://${__dirname}/app.html?name=renderer`);
