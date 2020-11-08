@@ -1,6 +1,7 @@
 import React from 'react';
 import { ipcRenderer, remote } from 'electron';
 import { useMount, useBoolean } from 'ahooks';
+import { is } from 'electron-util';
 import { IconButton, Switch, Tooltip } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -10,11 +11,12 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 
 import { config } from '@app/store';
-import { isDevelopment } from '@app/utils';
+import useInit from '@app/hooks/useInit';
 
 import OBS from './OBS';
 
 interface Item {
+  id?: string;
   icon: React.ReactElement;
   label: string;
   action: React.ReactNode | React.Component;
@@ -23,15 +25,18 @@ function getList(): Item[] {
   const { suspensionWindow } = remote.getGlobal('windows');
   const list: Item[] = [
     {
+      id: 'heartstoneRootPathSetting',
       icon: <FolderIcon />,
       label: '设置《炉石传说》安装路径',
       action: function Action() {
+        const [, { check }] = useInit();
         const handleClick = () => {
           remote.dialog
             .showOpenDialog({ properties: ['openDirectory'] })
             .then((result) => {
               if (!result.canceled && result.filePaths[0]) {
                 config.set('heartstoneRootPath', result.filePaths[0]);
+                check();
               }
               return result;
             })
@@ -39,7 +44,10 @@ function getList(): Item[] {
         };
         return (
           <Tooltip title={config.get('heartstoneRootPath') as string}>
-            <IconButton onClick={handleClick}>
+            <IconButton
+              id="heartstoneRootPathSettingButton"
+              onClick={handleClick}
+            >
               <SettingsIcon />
             </IconButton>
           </Tooltip>
@@ -51,9 +59,6 @@ function getList(): Item[] {
       label: '打开缓存目录',
       action: function Action() {
         const handleClick = () => {
-          // require('child_process').exec(
-          //   `start "" "${remote.app.getPath('userData')}"`
-          // );
           remote.shell.showItemInFolder(remote.app.getPath('userData'));
         };
         return (
@@ -72,7 +77,7 @@ function getList(): Item[] {
     },
   ];
 
-  if (isDevelopment()) {
+  if (is.development) {
     list.unshift({
       icon: <DeveloperModeIcon />,
       label: '悬浮框展示',

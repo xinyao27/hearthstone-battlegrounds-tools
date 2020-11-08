@@ -16,7 +16,7 @@ const useStyles = makeStyles(() => ({
     margin: 0,
   },
   text: {
-    fontFamily: 'JingDianLiBianJian,Georgia,Times,Times New Roman,serif',
+    fontFamily: 'JianLiBian,Georgia,Times,Times New Roman,serif',
   },
   number: {
     fontFamily: 'Belwe Bold',

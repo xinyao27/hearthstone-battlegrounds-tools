@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 
 import getList from './list';
+import Intro from './Intro';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,12 +36,13 @@ export default function Settings() {
 
   return (
     <div className={classes.root}>
+      <Intro />
       <List
         subheader={<ListSubheader>Settings</ListSubheader>}
         className={classes.root}
       >
         {list.map((item) => (
-          <ListItem key={item.label}>
+          <ListItem id={item.id} key={item.label}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.label} />
             <ListItemSecondaryAction>

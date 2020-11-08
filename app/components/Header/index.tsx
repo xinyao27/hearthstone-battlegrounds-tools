@@ -1,8 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
+import { is } from 'electron-util';
 
-import { getPlatform, Platform } from '@app/utils';
 import WinTitleBar from '@app/components/Native/WinTitleBar';
 
 const useStyles = makeStyles((theme) => ({
@@ -11,14 +11,13 @@ const useStyles = makeStyles((theme) => ({
     userSelect: 'none',
     position: 'relative',
   },
-  toolbar:
-    getPlatform() === Platform.MACOS
-      ? {
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }
-      : {},
+  toolbar: is.macos
+    ? {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }
+    : {},
   title: {
     paddingLeft: theme.spacing(1),
   },
@@ -38,7 +37,7 @@ export default function Header() {
           酒馆战棋战绩统计
         </Typography>
       </Toolbar>
-      {getPlatform() === Platform.WINDOWS && <WinTitleBar />}
+      {is.windows && <WinTitleBar />}
     </AppBar>
   );
 }

@@ -19,9 +19,12 @@ import crystal from '@suspension/assets/images/crystal.png';
 import type { RecordItem } from './useStatistics';
 
 function createImage(result: RecordItem[], dir: string) {
-  const dom = document.querySelector('#recordImage');
+  const dom = document.createElement('div');
+  dom.id = 'recordImage';
+  dom.setAttribute('style', 'position: fixed; left: 9999px; top: 9999px');
+  document.body.append(dom);
   const image = (
-    <div>
+    <div style={{ width: 140, minHeight: 80 }}>
       {result.map((record) => {
         const hero = getHero(record.hero.id);
         if (hero) {
@@ -40,6 +43,7 @@ function createImage(result: RecordItem[], dir: string) {
                   width: 40,
                   height: 40,
                   background: `url(${crystal}) no-repeat`,
+                  backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   textAlign: 'center',
                   lineHeight: '36px',
@@ -58,13 +62,20 @@ function createImage(result: RecordItem[], dir: string) {
   );
   if (dom) {
     ReactDOM.render(image, dom);
-    html2canvas(dom as HTMLElement, { backgroundColor: null, useCORS: true })
+    html2canvas(dom as HTMLElement, {
+      width: 140,
+      height: 663,
+      scale: 2,
+      backgroundColor: null,
+      useCORS: true,
+    })
       .then((canvas) => {
         const base64 = canvas
           ?.toDataURL()
           ?.replace(/^data:image\/\w+;base64,/, '');
         const decode = Buffer.from(base64, 'base64');
         fs.writeFileSync(path.resolve(dir, 'hbt-obs.png'), decode);
+        document.body.removeChild(dom);
         return decode;
       })
       .catch(console.log);
@@ -157,7 +168,7 @@ function useRecord(
       });
     },
     {
-      wait: 500,
+      wait: 300,
     }
   );
   const handleDeleteRecord = React.useCallback(

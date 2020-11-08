@@ -11,12 +11,12 @@ import {
   TextField,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { is } from 'electron-util';
 
 import dayjs from 'dayjs';
 
 import heroes from '@app/constants/heroes.json';
 import useRecord from '@app/hooks/useRecord';
-import { isDevelopment } from '@app/utils';
 
 import NewItem from './NewItem';
 
@@ -69,7 +69,7 @@ export default function Record() {
   return (
     <div className={classes.root}>
       <div className={classes.tools}>
-        {isDevelopment() && <NewItem onSubmit={handleNewItem} />}
+        {is.development && <NewItem onSubmit={handleNewItem} />}
 
         <TextField
           label="选择日期"
@@ -81,10 +81,6 @@ export default function Record() {
           onChange={handleDateChange}
         />
       </div>
-      <div
-        id="recordImage"
-        style={{ position: 'fixed', left: 9999, top: 9999 }}
-      />
       <BaseList dense>
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))

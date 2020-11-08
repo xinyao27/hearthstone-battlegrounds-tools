@@ -17,16 +17,16 @@ type Props = {
   children: ReactNode;
 };
 
-const JingDianLiBianJianFont = {
-  fontFamily: 'JingDianLiBianJian',
+const JianLiBianFont = {
+  fontFamily: 'JianLiBian',
   fontStyle: 'normal',
   src: `
+    url(${require('../assets/fonts/JianLiBian.woff2').default}) format('woff2'),
+    url(${require('../assets/fonts/JianLiBian.woff').default}) format('woff'),
     url(${
-      require('../assets/fonts/JingDianLiBianJian.woff2').default
-    }) format('woff2'),
-    url(${
-      require('../assets/fonts/JingDianLiBianJian.woff').default
-    }) format('woff')
+      require('../assets/fonts/JianLiBian.ttf').default
+    }) format('truetype'),
+    url(${require('../assets/fonts/JianLiBian.svg').default}) format('svg')
   `,
 };
 const BelweBoldFont = {
@@ -40,13 +40,12 @@ const BelweBoldFont = {
 };
 const theme = createMuiTheme({
   typography: {
-    fontFamily:
-      'JingDianLiBianJian,Belwe Bold,Georgia,Times,Times New Roman,serif',
+    fontFamily: 'JianLiBian,Belwe Bold,Georgia,Times,Times New Roman,serif',
   },
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [JingDianLiBianJianFont, BelweBoldFont],
+        '@font-face': [JianLiBianFont, BelweBoldFont],
         html: {
           height: '100%',
         },

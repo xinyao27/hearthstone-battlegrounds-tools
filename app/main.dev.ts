@@ -20,10 +20,7 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-
-import { getPlatform, isDevelopment, Platform } from './utils';
-
-const isDevelop = isDevelopment();
+import { is } from 'electron-util';
 
 export default class AppUpdater {
   constructor() {
@@ -40,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-if (isDevelop || process.env.DEBUG_PROD === 'true') {
+if (is.development || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
 }
 
@@ -79,18 +76,10 @@ function createSuspensionWindow() {
     frame: false,
     resizable: true,
     show: false,
-    webPreferences:
-      (isDevelop || process.env.E2E_BUILD === 'true') &&
-      process.env.ERB_SECURE !== 'true'
-        ? {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-          }
-        : {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            preload: path.join(__dirname, 'dist/renderer.prod.js'),
-          },
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
     alwaysOnTop: true,
   });
   global.windows.suspensionWindow = suspensionWindow;
@@ -146,15 +135,16 @@ function createLogHandlerWindow() {
   logHandlerWindow = new BrowserWindow({
     width: 1024,
     height: 768,
-    show: isDevelop,
+    show: is.development,
     webPreferences: { nodeIntegration: true, enableRemoteModule: true },
   });
   global.windows.logHandlerWindow = logHandlerWindow;
   logHandlerWindow.loadURL(`file://${__dirname}/app.html?name=logHandler`);
+  logHandlerWindow.webContents.openDevTools();
 }
 
 const createWindow = async () => {
-  if (isDevelop || process.env.DEBUG_PROD === 'true') {
+  if (is.development || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
 
@@ -173,26 +163,19 @@ const createWindow = async () => {
     titleBarStyle: 'hidden',
     maximizable: false,
     icon: getAssetPath('icon.png'),
-    webPreferences:
-      (isDevelop || process.env.E2E_BUILD === 'true') &&
-      process.env.ERB_SECURE !== 'true'
-        ? {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-          }
-        : {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            preload: path.join(__dirname, 'dist/renderer.prod.js'),
-          },
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
   };
-  if (getPlatform() === Platform.WINDOWS) {
+  if (is.windows) {
     options.frame = false;
   }
   mainWindow = new BrowserWindow(options);
   global.windows.mainWindow = mainWindow;
 
   mainWindow.loadURL(`file://${__dirname}/app.html?name=renderer`);
+  // mainWindow.webContents.openDevTools();
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event

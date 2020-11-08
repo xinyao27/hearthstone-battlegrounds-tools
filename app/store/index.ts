@@ -25,6 +25,7 @@ export const config = {
   store: new Store<Config>({
     name: 'config',
     defaults: {
+      heartstoneRootPath: 'D:\\Program Files (x86)\\Hearthstone',
       obs: {
         image: {
           max: 12,

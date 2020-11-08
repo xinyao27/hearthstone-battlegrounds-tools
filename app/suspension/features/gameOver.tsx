@@ -1,14 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useCreation } from 'ahooks';
+import { useCreation, useDebounceFn } from 'ahooks';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { v4 as uuid } from 'uuid';
+import { ipcRenderer, remote } from 'electron';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import { getHeroId, getHero } from '@suspension/utils';
-import useRecord from '@app/hooks/useRecord';
+import { SUSPENSION_MAIN_MESSAGE } from '@app/constants/topic';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,7 +123,6 @@ const useStyles = makeStyles((theme) => ({
 const GameOver: React.FC = () => {
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
-  const [, { addRecord }] = useRecord(() => {});
 
   const data = useCreation(() => {
     if (stateFlow?.current === 'GAME_OVER') {
@@ -135,21 +135,35 @@ const GameOver: React.FC = () => {
     return [null, null];
   }, [stateFlow]);
 
+  const { run } = useDebounceFn(
+    () => {
+      const [hero, rank] = data;
+      if (hero && rank) {
+        const date = new Date();
+        const record = {
+          id: uuid(),
+          hero: {
+            id: hero.id,
+            name: hero.name,
+          },
+          rank,
+          date,
+        };
+        const { mainWindow } = remote.getGlobal('windows');
+        ipcRenderer.sendTo(
+          mainWindow.webContents?.id,
+          SUSPENSION_MAIN_MESSAGE,
+          {
+            type: 'addRecord',
+            data: record,
+          }
+        );
+      }
+    },
+    { wait: 500 }
+  );
   useDeepCompareEffect(() => {
-    const [hero, rank] = data;
-    if (hero && rank) {
-      const date = new Date();
-      const record = {
-        id: uuid(),
-        hero: {
-          id: hero.id,
-          name: hero.name,
-        },
-        rank,
-        date,
-      };
-      addRecord(record);
-    }
+    run();
   }, [data]);
 
   const [hero, rank] = data;

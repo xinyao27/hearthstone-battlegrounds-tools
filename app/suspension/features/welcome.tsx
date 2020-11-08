@@ -1,11 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+import { is } from 'electron-util';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import routes from '@suspension/constants/routes.json';
-import { isDevelopment } from '@app/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,7 +27,7 @@ const Welcome: React.FC = () => {
 
   return (
     <Layout className={classes.root}>
-      {isDevelopment() && (
+      {is.development && (
         <>
           <Link to={routes.HEROSELECTION}>to heroes</Link>
           <Link to={routes.GAMEOVER}>to gameover</Link>

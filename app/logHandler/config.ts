@@ -1,6 +1,6 @@
 import { resolve } from 'path';
+import { is } from 'electron-util';
 
-import { getPlatform, Platform } from '@app/utils';
 import { config } from '@app/store';
 
 const configHeartstoneRootPath = config.get('heartstoneRootPath') as
@@ -8,7 +8,7 @@ const configHeartstoneRootPath = config.get('heartstoneRootPath') as
   | undefined;
 // Windows
 const windowsHeartstoneRootPath =
-  configHeartstoneRootPath ?? 'C:\\Program Files (x86)\\Hearthstone';
+  configHeartstoneRootPath ?? 'D:\\Program Files (x86)\\Hearthstone';
 // Mac os
 const macOSHeartstoneRootPath =
   configHeartstoneRootPath ?? '/Applications/Hearthstone';
@@ -16,9 +16,8 @@ const macOSHeartstoneRootPath =
 // @ts-ignore
 // eslint-disable-next-line consistent-return
 const heartstoneRootPath = (() => {
-  const platform = getPlatform();
-  if (platform === Platform.WINDOWS) return windowsHeartstoneRootPath;
-  if (platform === Platform.MACOS) return macOSHeartstoneRootPath;
+  if (is.windows) return windowsHeartstoneRootPath;
+  if (is.macos) return macOSHeartstoneRootPath;
   return windowsHeartstoneRootPath;
 })();
 
