@@ -214,23 +214,36 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
-app.on('window-all-closed', async () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-if (process.env.E2E_BUILD === 'true') {
-  // eslint-disable-next-line promise/catch-or-return
-  app.whenReady().then(createWindow);
+// 防止程序二次开启
+const singleInstanceLock = app.requestSingleInstanceLock();
+if (!singleInstanceLock) {
+  app.quit();
 } else {
-  app.on('ready', createWindow);
-}
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
-});
+  app.on('window-all-closed', async () => {
+    // Respect the OSX convention of having the application in memory even
+    // after all windows have been closed
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  if (process.env.E2E_BUILD === 'true') {
+    // eslint-disable-next-line promise/catch-or-return
+    app.whenReady().then(createWindow);
+  } else {
+    app.on('ready', createWindow);
+  }
+
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) createWindow();
+  });
+}
