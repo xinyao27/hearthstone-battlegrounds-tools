@@ -62,7 +62,7 @@ function getList(): Item[] {
             .catch(console.log);
         };
         return (
-          <Tooltip title={config.get('heartstoneRootPath') as string}>
+          <Tooltip title={config.get('heartstoneRootPath') as string} arrow>
             <IconButton
               id="heartstoneRootPathSettingButton"
               onClick={handleClick}

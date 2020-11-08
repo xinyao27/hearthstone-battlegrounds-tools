@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grow } from '@material-ui/core';
+import { Grow, Tooltip } from '@material-ui/core';
 import ReactEchartsCore from 'echarts-for-react/lib/core';
 import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
@@ -147,9 +147,18 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
 }));
+const useStylesTooltip = makeStyles((theme) => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+  },
+}));
 
 const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
   const classes = useStyles();
+  const tooltipClasses = useStylesTooltip();
   const { data, loading } = useListHeroes();
   const hero = React.useMemo(() => {
     const resource = heroes.find((v) => v.id === heroId);
@@ -172,27 +181,48 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
           </div>
 
           <div className={classes.data}>
-            <div className={classes.card}>
-              <Text className={classes.label} stroke={false} color="black">
-                平均排名
-              </Text>
-              <Text className={classes.value} isNumber>
-                {hero?.avg_final_placement?.toFixed(2)}
-              </Text>
-            </div>
-            <div className={classes.card}>
-              <Text className={classes.label} stroke={false} color="black">
-                选择率
-              </Text>
-              <Text className={classes.value} isNumber>
-                {`${hero?.pick_rate?.toFixed(2)}%`}
-              </Text>
-            </div>
-          </div>
+            <Tooltip
+              classes={tooltipClasses}
+              title="英雄的平均最终排名"
+              arrow
+              placement="top"
+            >
+              <div className={classes.card}>
+                <Text className={classes.label} stroke={false} color="black">
+                  平均排名
+                </Text>
+                <Text className={classes.value} isNumber>
+                  {hero?.avg_final_placement?.toFixed(2)}
+                </Text>
+              </div>
+            </Tooltip>
 
-          <div className={classes.chart}>
-            <Chart hero={hero} />
+            <Tooltip
+              classes={tooltipClasses}
+              title="对局开始出现该英雄时 该英雄被选取的百分率"
+              arrow
+              placement="top"
+            >
+              <div className={classes.card}>
+                <Text className={classes.label} stroke={false} color="black">
+                  选择率
+                </Text>
+                <Text className={classes.value} isNumber>
+                  {`${hero?.pick_rate?.toFixed(2)}%`}
+                </Text>
+              </div>
+            </Tooltip>
           </div>
+          <Tooltip
+            classes={tooltipClasses}
+            title="每一条代表该英雄得到这个名次的频率"
+            arrow
+            placement="bottom"
+          >
+            <div className={classes.chart}>
+              <Chart hero={hero} />
+            </div>
+          </Tooltip>
         </div>
       </Grow>
     );

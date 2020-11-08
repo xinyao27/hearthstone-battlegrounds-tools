@@ -176,7 +176,10 @@ const OBS: React.FC = () => {
           </ListItem>
           <ListItem>
             <ListItemText>
-              <Tooltip title="这个选项表示在OBS中最多可展示的文本战绩数量">
+              <Tooltip
+                title="这个选项表示在OBS中最多可展示的文本战绩数量"
+                arrow
+              >
                 <span>战绩最大展示数</span>
               </Tooltip>
             </ListItemText>
@@ -219,7 +222,7 @@ const OBS: React.FC = () => {
           <ListItem>
             <ListItemText>选择图片储存路径</ListItemText>
             <ListItemSecondaryAction>
-              <Tooltip title={imageDir}>
+              <Tooltip title={imageDir} arrow>
                 <IconButton onClick={handleChooseImageDir}>
                   <SettingsIcon />
                 </IconButton>
@@ -228,7 +231,10 @@ const OBS: React.FC = () => {
           </ListItem>
           <ListItem>
             <ListItemText>
-              <Tooltip title="这个选项表示在OBS中最多可展示的图片战绩数量">
+              <Tooltip
+                title="这个选项表示在OBS中最多可展示的图片战绩数量"
+                arrow
+              >
                 <span>战绩最大展示数</span>
               </Tooltip>
             </ListItemText>
