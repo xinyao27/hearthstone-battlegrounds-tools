@@ -83,7 +83,7 @@ export default function App(props: Props) {
   const { children } = props;
   const history = useHistory();
   const [stateFlow, setStateFlow] = useStateFlow();
-  const [, setBoxFlow] = useBoxFlow();
+  const [boxFlow, setBoxFlow] = useBoxFlow();
 
   useMount(() => {
     ipcRenderer.on(
@@ -122,6 +122,12 @@ export default function App(props: Props) {
       history.push(routes.GAMEOVER);
     }
   }, [stateFlow]);
+  useUpdateEffect(() => {
+    // 对局结束 显示悬浮展示战绩
+    if (boxFlow?.current === 'GAME_OVER') {
+      ipcRenderer.send('hideSuspension');
+    }
+  }, [boxFlow]);
 
   return (
     <ThemeProvider theme={theme}>

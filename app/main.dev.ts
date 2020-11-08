@@ -125,9 +125,9 @@ ipcMain.on('showSuspension', () => {
   }
 });
 ipcMain.on('hideSuspension', () => {
-  if (suspensionWindow) {
-    suspensionWindow.hide();
-  }
+  setTimeout(() => {
+    suspensionWindow?.hide();
+  }, 300);
 });
 
 let logHandlerWindow: BrowserWindow | null = null;

@@ -63,14 +63,14 @@ export const stateRegexes: StateRegex[] = [
   {
     state: 'HERO_TOBE_CHOSEN',
     fn: /GameState.DebugPrintEntityChoices\(\)/,
-    regex: /Entities\[\d\]=\[entityName=(\S+) .*zone=HAND .*\]/,
+    regex: /Entities\[\d\]=\[entityName=(\S+).*zone=HAND.*\]/,
     index: 1,
   },
   // 实际选择的英雄
   {
     state: 'HERO_CHOICES',
     fn: /GameState.SendChoices\(\)/,
-    regex: /m_chosenEntities\[\d\]=\[entityName=(\S+) .*zone=HAND .*\]/,
+    regex: /m_chosenEntities\[\d\]=\[entityName=(\S+).*zone=HAND.*\]/,
     index: 1,
   },
   // 对局排名
