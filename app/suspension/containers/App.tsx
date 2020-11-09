@@ -28,8 +28,7 @@ const JianLiBianFont = {
     url(${require('@app/assets/fonts/JianLiBian.woff').default}) format('woff'),
     url(${
       require('@app/assets/fonts/JianLiBian.ttf').default
-    }) format('truetype'),
-    url(${require('@app/assets/fonts/JianLiBian.svg').default}) format('svg')
+    }) format('truetype')
   `,
 };
 const BelweBoldFont = {
