@@ -4,6 +4,7 @@ import TodayIcon from '@material-ui/icons/Today';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useHistory, useLocation } from 'react-router-dom';
+import { useUpdateEffect } from 'ahooks';
 
 import routes from '@app/constants/routes.json';
 
@@ -22,6 +23,10 @@ export default function Navigation() {
     },
     [history]
   );
+
+  useUpdateEffect(() => {
+    setValue(location.pathname);
+  }, [location.pathname]);
 
   return (
     <BottomNavigation value={value} onChange={handleChange}>

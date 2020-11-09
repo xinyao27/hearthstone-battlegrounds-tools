@@ -1,15 +1,23 @@
 import { Subscription } from 'rxjs';
+import log from 'electron-log';
 
-import type { Sorted } from './parser';
-import manager from './manager';
+import type { Filtered } from './parser';
+import { logManager } from './manager';
 
 function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
   return {
-    next: (value: Sorted) => {
-      manager(type, value, cb);
+    next: (value: Filtered | null) => {
+      log.info(type, value);
+      logManager(type, value, cb);
     },
-    complete: () => console.log(`${type} observer complete`),
-    error: (err: Error) => console.log(`${type} observer error: `, err),
+    complete: () => {
+      const message = `${type} 🔚 工作结束`;
+      log.warn(message);
+    },
+    error: (err: Error) => {
+      const message = `${type} ❌ 工作出现了问题: ${err}`;
+      log.error(message);
+    },
   };
 }
 

@@ -1,14 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useCreation } from 'ahooks';
+import { useCreation, useDebounceFn } from 'ahooks';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { v4 as uuid } from 'uuid';
+import { ipcRenderer, remote } from 'electron';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import { getHeroId, getHero } from '@suspension/utils';
-import useRecord from '@app/hooks/useRecord';
+import { SUSPENSION_MAIN_MESSAGE } from '@app/constants/topic';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   head: {
     height: 80,
     background: `url(${
-      require('../assets/images/message_box.png').default
+      require('@app/assets/images/message_box.png').default
     }) no-repeat`,
     backgroundSize: '100%',
     position: 'relative',
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     marginTop: -10,
     background: `url(${
-      require('../assets/images/class_headers.png').default
+      require('@app/assets/images/class_headers.png').default
     }) no-repeat`,
     backgroundSize: 500,
     backgroundPosition: '-22px -10px',
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '68px auto 0',
     position: 'relative',
     background: `url(${
-      require('../assets/images/card_bg.png').default
+      require('@app/assets/images/card_bg.png').default
     }) no-repeat`,
     backgroundSize: '100%',
     filter: 'brightness(120%) saturate(120%)',
@@ -68,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -40,
     zIndex: 1,
     background: `url(${
-      require('../assets/images/crown3.png').default
+      require('@app/assets/images/crown3.png').default
     }) no-repeat`,
     backgroundSize: '100%',
   },
@@ -108,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '86px',
     marginTop: theme.spacing(1),
     background: `url(${
-      require('../assets/images/olive.png').default
+      require('@app/assets/images/olive.png').default
     }) no-repeat`,
     backgroundSize: '100%',
   },
@@ -122,7 +123,6 @@ const useStyles = makeStyles((theme) => ({
 const GameOver: React.FC = () => {
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
-  const [, { addRecord }] = useRecord(() => {});
 
   const data = useCreation(() => {
     if (stateFlow?.current === 'GAME_OVER') {
@@ -135,21 +135,35 @@ const GameOver: React.FC = () => {
     return [null, null];
   }, [stateFlow]);
 
+  const { run } = useDebounceFn(
+    () => {
+      const [hero, rank] = data;
+      if (hero && rank) {
+        const date = new Date();
+        const record = {
+          id: uuid(),
+          hero: {
+            id: hero.id,
+            name: hero.name,
+          },
+          rank,
+          date,
+        };
+        const { mainWindow } = remote.getGlobal('windows');
+        ipcRenderer.sendTo(
+          mainWindow.webContents?.id,
+          SUSPENSION_MAIN_MESSAGE,
+          {
+            type: 'addRecord',
+            data: record,
+          }
+        );
+      }
+    },
+    { wait: 500 }
+  );
   useDeepCompareEffect(() => {
-    const [hero, rank] = data;
-    if (hero && rank) {
-      const date = new Date();
-      const record = {
-        id: uuid(),
-        hero: {
-          id: hero.id,
-          name: hero.name,
-        },
-        rank,
-        date,
-      };
-      addRecord(record);
-    }
+    run();
   }, [data]);
 
   const [hero, rank] = data;

@@ -17,36 +17,39 @@ type Props = {
   children: ReactNode;
 };
 
-const JingDianLiBianJianFont = {
-  fontFamily: 'JingDianLiBianJian',
+const JianLiBianFont = {
+  fontFamily: 'JianLiBian',
   fontStyle: 'normal',
   src: `
     url(${
-      require('../assets/fonts/JingDianLiBianJian.woff2').default
+      require('@app/assets/fonts/JianLiBian.woff2').default
     }) format('woff2'),
+    url(${require('@app/assets/fonts/JianLiBian.woff').default}) format('woff'),
     url(${
-      require('../assets/fonts/JingDianLiBianJian.woff').default
-    }) format('woff')
+      require('@app/assets/fonts/JianLiBian.ttf').default
+    }) format('truetype'),
+    url(${require('@app/assets/fonts/JianLiBian.svg').default}) format('svg')
   `,
 };
 const BelweBoldFont = {
   fontFamily: 'Belwe Bold',
   fontStyle: 'normal',
   src: `
-    url(${require('../assets/fonts/Belwe-Bold.woff2').default}) format('woff2'),
-    url(${require('../assets/fonts/Belwe-Bold.woff').default}) format('woff'),
-    url(${require('../assets/fonts/Belwe-Bold.ttf').default})
+    url(${
+      require('@app/assets/fonts/Belwe-Bold.woff2').default
+    }) format('woff2'),
+    url(${require('@app/assets/fonts/Belwe-Bold.woff').default}) format('woff'),
+    url(${require('@app/assets/fonts/Belwe-Bold.ttf').default})
   `,
 };
 const theme = createMuiTheme({
   typography: {
-    fontFamily:
-      'JingDianLiBianJian,Belwe Bold,Georgia,Times,Times New Roman,serif',
+    fontFamily: 'JianLiBian,Belwe Bold,Georgia,Times,Times New Roman,serif',
   },
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [JingDianLiBianJianFont, BelweBoldFont],
+        '@font-face': [JianLiBianFont, BelweBoldFont],
         html: {
           height: '100%',
         },
@@ -56,7 +59,7 @@ const theme = createMuiTheme({
           background: 'none !important',
           userSelect: 'none',
           cursor: `url("${
-            require('../assets/images/hand.png').default
+            require('@app/assets/images/hand.png').default
           }") 0 0,auto`,
         },
         '#root': {
@@ -84,7 +87,7 @@ export default function App(props: Props) {
   const { children } = props;
   const history = useHistory();
   const [stateFlow, setStateFlow] = useStateFlow();
-  const [, setBoxFlow] = useBoxFlow();
+  const [boxFlow, setBoxFlow] = useBoxFlow();
 
   useMount(() => {
     ipcRenderer.on(
@@ -122,7 +125,13 @@ export default function App(props: Props) {
       ipcRenderer.send('showSuspension');
       history.push(routes.GAMEOVER);
     }
-  }, [stateFlow, history]);
+  }, [stateFlow]);
+  useUpdateEffect(() => {
+    // 对局结束 显示悬浮展示战绩
+    if (boxFlow?.current === 'GAME_OVER') {
+      ipcRenderer.send('hideSuspension');
+    }
+  }, [boxFlow]);
 
   return (
     <ThemeProvider theme={theme}>

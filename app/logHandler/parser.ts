@@ -1,7 +1,6 @@
 import fs from 'fs';
-import { Observable, of, bindNodeCallback } from 'rxjs';
+import { Observable, bindNodeCallback, of } from 'rxjs';
 import {
-  scan,
   catchError,
   mergeMap,
   map,
@@ -11,18 +10,27 @@ import {
 import type { BoxRegex, BoxState, State, StateRegex } from './regex';
 
 const read = bindNodeCallback(fs.read);
+const open = bindNodeCallback(fs.open);
 export const readFile = () => (
-  source: Observable<[number, [fs.Stats, fs.Stats]]>
+  source: Observable<{ filePath: string; cur: fs.Stats; prev: fs.Stats }>
 ) =>
   source.pipe(
-    mergeMap(([fd, [cur, prev]]) => {
-      const buffer = Buffer.alloc(cur.size - prev.size);
-      const length = cur.size - prev.size;
-      const position = prev.size;
-
-      return read(fd, buffer, 0, length, position).pipe(map((v) => v[1]));
+    mergeMap(({ filePath, cur, prev }) => {
+      return open(filePath, 'r').pipe(map((fd) => ({ fd, cur, prev })));
     }),
-    catchError((err) => of(err))
+    mergeMap(({ fd, cur, prev }) => {
+      const length = cur.size - prev.size;
+      if (length > 0) {
+        const buffer = Buffer.alloc(length);
+        const position = prev.size;
+
+        return read(fd, buffer, 0, length, position).pipe(map((v) => v[1]));
+      }
+      return of(Buffer.alloc(0));
+    }),
+    catchError((err) => {
+      throw `readFile: ${err}`;
+    })
   );
 
 export type Line = {
@@ -48,7 +56,9 @@ export const readline = () => (source: Observable<Buffer>) =>
         })
     ),
     mergeMap((v) => v),
-    catchError((err) => of(err))
+    catchError((err) => {
+      throw `readline: ${err}`;
+    })
   );
 
 export interface Filtered {
@@ -100,32 +110,7 @@ export const filter = (regexes: StateRegex[] | BoxRegex[]) => (
       return null;
     }),
     filterOperator((v) => !!v),
-    catchError((err) => of(err))
-  );
-
-export interface Sorted extends Filtered {
-  result: any | any[];
-}
-/**
- * 对过滤完的内容进行分类
- */
-export const sort = () => (source: Observable<Filtered>) =>
-  source.pipe(
-    scan((acc, value) => {
-      if (acc.state === value.state) {
-        const result = Array.isArray(acc.result)
-          ? [...acc.result, value.result]
-          : [acc.result, value.result];
-        return {
-          ...acc,
-          ...value,
-          result,
-        };
-      }
-      return {
-        ...acc,
-        ...value,
-      };
-    }),
-    catchError((err) => of(err))
+    catchError((err) => {
+      throw `filter: ${err}`;
+    })
   );

@@ -2,9 +2,11 @@
   "name": "hearthstone-battlegrounds-tools",
   "productName": "HearthstoneBattlegroundsTools",
   "version": "1.0.0",
-  "description": "炉石传说酒馆战棋战绩统计工具",
+  "description": "HBT - 炉石传说酒馆战棋战绩统计工具",
   "scripts": {
+    "prebuild": "rimraf app/dist",
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
+    "build-analyzer": "cross-env OPEN_ANALYZER=true yarn build",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
     "build-e2e": "cross-env E2E_BUILD=true yarn build",
     "build-main": "cross-env NODE_ENV=production webpack --config ./configs/webpack.config.main.prod.babel.js --colors",
@@ -34,7 +36,8 @@
     "test-all": "yarn lint && yarn tsc && yarn build && yarn test",
     "test-e2e": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe electron:./app ./test/e2e/HomePage.e2e.ts",
     "test-e2e-live": "node -r @babel/register ./internals/scripts/CheckBuildsExist.js && cross-env NODE_ENV=test testcafe --live electron:./app ./test/e2e/HomePage.e2e.ts",
-    "test-watch": "yarn test --watch"
+    "test-watch": "yarn test --watch",
+    "update:deps": "yarn upgrade-interactive --latest"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -53,7 +56,8 @@
   },
   "build": {
     "productName": "HearthstoneBattlegroundsTools",
-    "appId": "org.develar.HearthstoneBattlegroundsTools",
+    "appId": "org.hbt.HearthstoneBattlegroundsTools",
+    "copyright": "hbt-org",
     "files": [
       "dist/",
       "node_modules/",
@@ -82,14 +86,6 @@
         "msi"
       ]
     },
-    "linux": {
-      "target": [
-        "deb",
-        "rpm",
-        "AppImage"
-      ],
-      "category": "Development"
-    },
     "directories": {
       "buildResources": "resources",
       "output": "release"
@@ -99,21 +95,21 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "chenyueban",
+      "owner": "hbt-org",
       "repo": "hearthstone-battlegrounds-tools",
       "private": false
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/chenyueban/hearthstone-battlegrounds-tools.git"
+    "url": "git+https://github.com/hbt-org/hearthstone-battlegrounds-tools.git"
   },
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/chenyueban/hearthstone-battlegrounds-tools/issues"
+    "url": "https://github.com/hbt-org/hearthstone-battlegrounds-tools/issues"
   },
-  "homepage": "https://github.com/chenyueban/hearthstone-battlegrounds-tools#readme",
+  "homepage": "https://github.com/hbt-org/hearthstone-battlegrounds-tools#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
@@ -166,46 +162,48 @@
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/history": "^4.7.7",
     "@types/jest": "^26.0.10",
-    "@types/node": "12",
+    "@types/node": "14.14.6",
     "@types/react": "^16.9.44",
     "@types/react-dom": "^16.9.8",
     "@types/react-router": "^5.1.8",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-test-renderer": "^16.9.3",
+    "@types/reactour": "^1.17.1",
     "@types/uuid": "^8.3.0",
     "@types/webpack": "^4.41.21",
     "@types/webpack-env": "^1.15.2",
-    "@typescript-eslint/eslint-plugin": "^3.6.1",
-    "@typescript-eslint/parser": "^3.6.1",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-dev-expression": "^0.2.2",
+    "babel-plugin-import": "^1.13.1",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "browserslist-config-erb": "^0.0.1",
     "chalk": "^4.1.0",
     "concurrently": "^5.3.0",
     "core-js": "^3.6.5",
     "cross-env": "^7.0.2",
-    "css-loader": "^3.6.0",
+    "css-loader": "^5.0.1",
     "detect-port": "^1.3.0",
-    "electron": "^8",
+    "electron": "^10.1.5",
     "electron-builder": "^22.3.6",
-    "electron-devtools-installer": "^2.2.4",
-    "electron-rebuild": "^1.10.0",
+    "electron-devtools-installer": "^3.1.1",
+    "electron-rebuild": "^2.3.2",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.3",
     "enzyme-to-json": "^3.5.0",
-    "eslint": "^7.5.0",
-    "eslint-config-airbnb": "^18.2.0",
-    "eslint-config-airbnb-typescript": "^9.0.0",
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-typescript": "^12.0.0",
     "eslint-config-erb": "^1.0.0",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-import-resolver-webpack": "^0.12.2",
+    "eslint-import-resolver-webpack": "^0.13.0",
     "eslint-plugin-compat": "^3.8.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^23.18.0",
-    "eslint-plugin-jsx-a11y": "6.3.1",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.20.6",
@@ -216,13 +214,13 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^26.1.0",
     "lint-staged": "^10.2.11",
-    "mini-css-extract-plugin": "^0.9.0",
+    "mini-css-extract-plugin": "^1.3.0",
     "opencollective-postinstall": "^2.0.3",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "prettier": "^2.1.2",
-    "react-test-renderer": "^16.12.0",
+    "react-test-renderer": "^17.0.1",
     "rimraf": "^3.0.0",
-    "style-loader": "^1.2.1",
+    "style-loader": "^2.0.0",
     "stylelint": "^13.6.1",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
@@ -230,7 +228,7 @@
     "testcafe": "^1.8.8",
     "testcafe-browser-provider-electron": "^0.0.15",
     "testcafe-react-selectors": "^4.0.0",
-    "typescript": "^3.9.7",
+    "typescript": "^4.0.5",
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^3.8.0",
@@ -239,7 +237,7 @@
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
-    "@hot-loader/react-dom": "^16.13.0",
+    "@hot-loader/react-dom": "^17.0.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "ahooks": "^2.7.1",
@@ -251,16 +249,22 @@
     "electron-log": "^4.2.4",
     "electron-store": "^6.0.1",
     "electron-updater": "^4.3.4",
+    "electron-util": "^0.14.2",
+    "fs-extra": "^9.0.1",
     "history": "^4.7.2",
     "hox": "^1.1.1",
+    "html2canvas": "^1.0.0-rc.7",
+    "notistack": "^1.0.1",
     "obs-websocket-js": "^4.0.2",
-    "react": "^16.13.1",
-    "react-dom": "^16.12.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-hot-loader": "^4.12.21",
     "react-router-dom": "^5.2.0",
+    "reactour": "^1.18.0",
     "regenerator-runtime": "^0.13.5",
     "rxjs": "^6.6.3",
     "source-map-support": "^0.5.19",
+    "styled-components": "^5.2.1",
     "use-deep-compare-effect": "^1.4.0",
     "uuid": "^8.3.1"
   },

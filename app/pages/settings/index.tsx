@@ -1,8 +1,16 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import { remote, ipcRenderer } from 'electron';
-import { useMount } from 'ahooks';
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  ListSubheader,
+} from '@material-ui/core';
+
+import getList from './list';
+import Intro from './Intro';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,27 +32,28 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const classes = useStyles();
 
-  useMount(async () => {
-    const result = await ipcRenderer.invoke('setConfigValue', {
-      settings: {
-        test: 1,
-      },
-    });
-    console.log(remote.app.getPath('userData'), result);
-  });
-
-  const handleSuspensionShow = React.useCallback(() => {
-    ipcRenderer.send('showSuspension');
-  }, []);
-  const handleSuspensionHide = React.useCallback(() => {
-    ipcRenderer.send('hideSuspension');
-  }, []);
+  const list = getList();
 
   return (
     <div className={classes.root}>
-      settings
-      <Button onClick={handleSuspensionShow}>打开悬浮</Button>
-      <Button onClick={handleSuspensionHide}>关闭悬浮</Button>
+      <Intro />
+      <List
+        subheader={<ListSubheader>Settings</ListSubheader>}
+        className={classes.root}
+      >
+        {list.map((item) => (
+          <ListItem id={item.id} key={item.label}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText primary={item.label} />
+            <ListItemSecondaryAction>
+              {typeof item.action === 'function'
+                ? // @ts-ignore
+                  React.createElement(item.action)
+                : item.action}
+            </ListItemSecondaryAction>
+          </ListItem>
+        ))}
+      </List>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link } from 'react-router-dom';
+import { is } from 'electron-util';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
@@ -26,7 +27,7 @@ const Welcome: React.FC = () => {
 
   return (
     <Layout className={classes.root}>
-      {process.env.NODE_ENV === 'development' && (
+      {is.development && (
         <>
           <Link to={routes.HEROSELECTION}>to heroes</Link>
           <Link to={routes.GAMEOVER}>to gameover</Link>

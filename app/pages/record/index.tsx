@@ -9,17 +9,13 @@ import {
   ListItemSecondaryAction,
   IconButton,
   TextField,
-  Zoom,
-  Fab,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import { is } from 'electron-util';
+
 import dayjs from 'dayjs';
 
 import heroes from '@app/constants/heroes.json';
-import useConnect from '@app/hooks/useConnect';
-import useCommand from '@app/hooks/useCommand';
-import useObsText from '@app/hooks/useObsText';
 import useRecord from '@app/hooks/useRecord';
 
 import NewItem from './NewItem';
@@ -30,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
   },
   tools: {
+    padding: theme.spacing(2),
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -43,28 +40,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Record() {
   const classes = useStyles();
-  const { connected } = useConnect();
-  const { run } = useCommand();
-  const { currentSource } = useObsText();
 
-  const [recordList, { addRecord, deleteRecord }] = useRecord((result) => {
-    if (connected) {
-      (async () => {
-        // 只取当天的数据
-        const today = dayjs();
-        const todayResult = result.filter((v) =>
-          dayjs(v.date).isSame(today, 'day')
-        );
-        const text = todayResult
-          .map((v) => `${v.hero.name} ${v.rank}`)
-          .join('\n');
-        await run('SetTextGDIPlusProperties', {
-          source: currentSource,
-          text,
-        });
-      })();
-    }
-  });
+  const [recordList, { addRecord, deleteRecord }] = useRecord();
+
   const handleNewItem = React.useCallback(
     (item) => {
       addRecord(item);
@@ -91,7 +69,7 @@ export default function Record() {
   return (
     <div className={classes.root}>
       <div className={classes.tools}>
-        <NewItem onSubmit={handleNewItem} />
+        {is.development && <NewItem onSubmit={handleNewItem} />}
 
         <TextField
           label="选择日期"
@@ -103,7 +81,6 @@ export default function Record() {
           onChange={handleDateChange}
         />
       </div>
-
       <BaseList dense>
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
@@ -136,24 +113,6 @@ export default function Record() {
             );
           })}
       </BaseList>
-
-      <Zoom
-        in
-        timeout={300}
-        style={{
-          transitionDelay: `${0}ms`,
-        }}
-        unmountOnExit
-      >
-        <Fab
-          className={classes.fab}
-          color="primary"
-          href="https://github.com/chenyueban/obs-hearthstone"
-          target="_blank"
-        >
-          <HelpOutlineIcon />
-        </Fab>
-      </Zoom>
     </div>
   );
 }

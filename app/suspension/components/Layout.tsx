@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
     borderStyle: 'solid',
     borderWidth: '27px 27px 31px',
     borderImage: `url("${
-      require('../assets/images/border.png').default
+      require('@app/assets/images/border.png').default
     }") 27 27 31 fill stretch`,
   },
   container: {
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
     height: '100%',
     zIndex: 1,
     background: `url('${
-      require('../assets/images/background.png').default
+      require('@app/assets/images/background.png').default
     }') repeat-y`,
     backgroundSize: '100%',
     overflow: 'hidden',
@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => ({
     height: 142,
     padding: 27,
     background: `url('${
-      require('../assets/images/logo.png').default
+      require('@app/assets/images/logo.png').default
     }') no-repeat center`,
     backgroundSize: '80%',
   },

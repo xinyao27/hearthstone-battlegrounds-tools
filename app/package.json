@@ -2,13 +2,16 @@
   "name": "hearthstone-battlegrounds-tools",
   "productName": "HearthstoneBattlegroundsTools",
   "version": "1.0.0",
-  "description": "炉石传说酒馆战棋战绩统计工具",
+  "description": "HBT - 炉石传说酒馆战棋战绩统计工具",
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "main": "./main.prod.js",
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
-    "postinstall": "yarn electron-rebuild"
+    "postinstall": "yarn electron-rebuild",
+    "update:deps": "yarn upgrade-interactive --latest"
   },
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "chokidar": "^3.4.3"
+  }
 }

@@ -11,10 +11,16 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, ipcMain, screen } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  screen,
+  BrowserWindowConstructorOptions,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import MenuBuilder from './menu';
+import { is } from 'electron-util';
 
 export default class AppUpdater {
   constructor() {
@@ -31,10 +37,7 @@ if (process.env.NODE_ENV === 'production') {
   sourceMapSupport.install();
 }
 
-if (
-  process.env.NODE_ENV === 'development' ||
-  process.env.DEBUG_PROD === 'true'
-) {
+if (is.development || process.env.DEBUG_PROD === 'true') {
   require('electron-debug')();
 }
 
@@ -52,15 +55,15 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
-      winIds: {
-        mainWindow?: number;
-        logHandlerWindow?: number;
-        suspensionWindow?: number;
+      windows: {
+        mainWindow?: BrowserWindow;
+        logHandlerWindow?: BrowserWindow;
+        suspensionWindow?: BrowserWindow;
       };
     }
   }
 }
-global.winIds = {};
+global.windows = {};
 
 let suspensionWindow: BrowserWindow | null = null;
 function createSuspensionWindow() {
@@ -73,22 +76,13 @@ function createSuspensionWindow() {
     frame: false,
     resizable: true,
     show: false,
-    webPreferences:
-      (process.env.NODE_ENV === 'development' ||
-        process.env.E2E_BUILD === 'true') &&
-      process.env.ERB_SECURE !== 'true'
-        ? {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-          }
-        : {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            preload: path.join(__dirname, 'dist/renderer.prod.js'),
-          },
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
     alwaysOnTop: true,
   });
-  global.winIds.suspensionWindow = suspensionWindow.webContents.id;
+  global.windows.suspensionWindow = suspensionWindow;
   const winSize = suspensionWindow.getSize(); // 获取窗口宽高
 
   const x = size.width - winSize[0];
@@ -131,30 +125,26 @@ ipcMain.on('showSuspension', () => {
   }
 });
 ipcMain.on('hideSuspension', () => {
-  if (suspensionWindow) {
-    suspensionWindow.hide();
-  }
+  setTimeout(() => {
+    suspensionWindow?.hide();
+  }, 300);
 });
 
 let logHandlerWindow: BrowserWindow | null = null;
 function createLogHandlerWindow() {
   logHandlerWindow = new BrowserWindow({
     width: 1024,
-    height: 728,
-    // show: process.env.NODE_ENV === 'development',
-    show: true,
-    webPreferences: { nodeIntegration: true },
+    height: 768,
+    show: is.development,
+    webPreferences: { nodeIntegration: true, enableRemoteModule: true },
   });
-  logHandlerWindow.webContents.openDevTools();
-  global.winIds.logHandlerWindow = logHandlerWindow.webContents.id;
+  global.windows.logHandlerWindow = logHandlerWindow;
   logHandlerWindow.loadURL(`file://${__dirname}/app.html?name=logHandler`);
+  logHandlerWindow.webContents.openDevTools();
 }
 
 const createWindow = async () => {
-  if (
-    process.env.NODE_ENV === 'development' ||
-    process.env.DEBUG_PROD === 'true'
-  ) {
+  if (is.development || process.env.DEBUG_PROD === 'true') {
     await installExtensions();
   }
 
@@ -166,28 +156,29 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
-  mainWindow = new BrowserWindow({
+  const options: BrowserWindowConstructorOptions = {
     show: false,
     width: 1024,
-    height: 728,
+    height: 768,
+    titleBarStyle: 'hidden',
+    maximizable: false,
     icon: getAssetPath('icon.png'),
-    webPreferences:
-      (process.env.NODE_ENV === 'development' ||
-        process.env.E2E_BUILD === 'true') &&
-      process.env.ERB_SECURE !== 'true'
-        ? {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-          }
-        : {
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            preload: path.join(__dirname, 'dist/renderer.prod.js'),
-          },
-  });
-  global.winIds.mainWindow = mainWindow.webContents.id;
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+    },
+  };
+  if (is.windows) {
+    options.frame = false;
+  }
+  mainWindow = new BrowserWindow(options);
+  if (is.macos) {
+    app.dock.setIcon(getAssetPath('icon.png'));
+  }
+  global.windows.mainWindow = mainWindow;
 
   mainWindow.loadURL(`file://${__dirname}/app.html?name=renderer`);
+  // mainWindow.webContents.openDevTools();
 
   // @TODO: Use 'ready-to-show' event
   //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event
@@ -212,9 +203,6 @@ const createWindow = async () => {
     suspensionWindow = null;
   });
 
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
-
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
@@ -229,23 +217,36 @@ const createWindow = async () => {
  * Add event listeners...
  */
 
-app.on('window-all-closed', () => {
-  // Respect the OSX convention of having the application in memory even
-  // after all windows have been closed
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-if (process.env.E2E_BUILD === 'true') {
-  // eslint-disable-next-line promise/catch-or-return
-  app.whenReady().then(createWindow);
+// 防止程序二次开启
+const singleInstanceLock = app.requestSingleInstanceLock();
+if (!singleInstanceLock) {
+  app.quit();
 } else {
-  app.on('ready', createWindow);
-}
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) createWindow();
-});
+  app.on('window-all-closed', async () => {
+    // Respect the OSX convention of having the application in memory even
+    // after all windows have been closed
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  if (process.env.E2E_BUILD === 'true') {
+    // eslint-disable-next-line promise/catch-or-return
+    app.whenReady().then(createWindow);
+  } else {
+    app.on('ready', createWindow);
+  }
+
+  app.on('activate', () => {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (mainWindow === null) createWindow();
+  });
+}
