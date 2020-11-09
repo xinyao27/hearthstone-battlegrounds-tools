@@ -12,6 +12,7 @@ import type { Filtered } from '@logHandler/parser';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 import routes from '@suspension/constants/routes.json';
+import { config } from '@app/store';
 
 type Props = {
   children: ReactNode;
@@ -122,7 +123,10 @@ export default function App(props: Props) {
     }
     // 对局结束 显示悬浮展示战绩
     if (stateFlow?.current === 'GAME_OVER') {
-      ipcRenderer.send('showSuspension');
+      // 当开启 enableGameResult 选项时展示对局结果，如果不做这层限制会导致最后决战时提前知晓排名，影响游戏体验
+      if (config.get('enableGameResult') as boolean) {
+        ipcRenderer.send('showSuspension');
+      }
       history.push(routes.GAMEOVER);
     }
   }, [stateFlow]);

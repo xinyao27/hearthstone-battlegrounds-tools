@@ -8,6 +8,7 @@ import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 
 import { config } from '@app/store';
 import useInit from '@app/hooks/useInit';
@@ -27,7 +28,7 @@ function getList(): Item[] {
       icon: <DeveloperModeIcon />,
       label: '悬浮框展示',
       action: function Action() {
-        const [checked, { toggle }] = useBoolean(false);
+        const [checked, { toggle }] = useBoolean(suspensionWindow.isVisible());
         useMount(() => {
           toggle(suspensionWindow.isVisible());
         });
@@ -69,6 +70,27 @@ function getList(): Item[] {
             >
               <SettingsIcon />
             </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      icon: <VideogameAssetIcon />,
+      label: '提前展示游戏排名结果',
+      action: function Action() {
+        const [checked, { toggle }] = useBoolean(
+          config.get('enableGameResult') as boolean
+        );
+        return (
+          <Tooltip title="提前看到排名可能会影响游戏体验，请谨慎开启" arrow>
+            <Switch
+              edge="end"
+              checked={checked}
+              onChange={(_, value) => {
+                toggle(value);
+                config.set('enableGameResult', value);
+              }}
+            />
           </Tooltip>
         );
       },
