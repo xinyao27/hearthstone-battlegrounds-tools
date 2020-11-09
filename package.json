@@ -1,10 +1,10 @@
 {
   "name": "hearthstone-battlegrounds-tools",
   "productName": "HearthstoneBattlegroundsTools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "HBT - 炉石传说酒馆战棋战绩统计工具",
   "scripts": {
-    "prebuild": "rimraf app/dist",
+    "prebuild": "rimraf app/dist && rimraf release",
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-analyzer": "cross-env OPEN_ANALYZER=true yarn build",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
