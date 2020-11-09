@@ -20,6 +20,10 @@
 - 🚄 连接 OBS 自动同步当天战绩到 OBS
 - 😻 跨平台 同时支持 Windows MacOS
 
+## 🍦 下载
+
+前往 [release](https://github.com/hbt-org/hearthstone-battlegrounds-tools/releases) 选择属于你平台的安装包
+
 ## 😎 OBS 连接
 
 目前可实现当天统计的战绩同步到 OBS 中（支持展示文字或图片），效果如下图
