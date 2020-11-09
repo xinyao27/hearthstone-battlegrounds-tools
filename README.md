@@ -2,10 +2,11 @@
   HBT - 炉石传说酒馆战棋战绩统计工具
 </h1>
 
-统计每天的战棋战绩，并通过数据分析得到你最拿手的英雄！
+<p align="center">
+  统计每天的战棋战绩，并通过数据分析得到你最拿手的英雄！
+</p>
 
 <p align="center">
-  <img width="300" src="https://raw.githubusercontent.com/hbt-org/hearthstone-battlegrounds-tools/main/docs/preview1.jpg" alt="preview1">
   <img width="300" src="https://raw.githubusercontent.com/hbt-org/hearthstone-battlegrounds-tools/main/docs/preview2.jpg" alt="preview2">
   <img width="300" src="https://raw.githubusercontent.com/hbt-org/hearthstone-battlegrounds-tools/main/docs/preview3.jpg" alt="preview3">
 </p>
