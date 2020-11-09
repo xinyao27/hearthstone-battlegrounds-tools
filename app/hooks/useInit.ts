@@ -1,6 +1,7 @@
 import React from 'react';
 import { createModel } from 'hox';
 import { useBoolean, useMount } from 'ahooks';
+import { is } from 'electron-util';
 import { promises as fsPromises } from 'fs';
 
 import { config } from '@app/store';
@@ -16,10 +17,21 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
       const items = stats.isDirectory()
         ? (await fsPromises.readdir(heartstoneRootPath)) || []
         : [];
-      const result = items.some(
-        (item) =>
-          item === 'Hearthstone.exe' || item === 'Hearthstone Beta Launcher.exe'
-      );
+      const result = items.some((item) => {
+        if (is.windows) {
+          return (
+            item === 'Hearthstone.exe' ||
+            item === 'Hearthstone Beta Launcher.exe'
+          );
+        }
+        if (is.macos) {
+          return (
+            item === 'Hearthstone.app' ||
+            item === 'Hearthstone Beta Launcher.app'
+          );
+        }
+        return false;
+      });
       setCorrectDirectory(result);
       return result;
     } catch (_) {
