@@ -4,8 +4,6 @@ import { SvgIcon } from '@material-ui/core';
 export default function WinMaximize() {
   return (
     <SvgIcon
-      width={12}
-      height={12}
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeLinecap="round"

@@ -14,7 +14,7 @@ import useObsImage from '@app/pages/settings/OBS/useObsImage';
 import { getHero } from '@suspension/utils';
 import Text from '@suspension/components/Text';
 // @ts-ignore
-import crystal from '@suspension/assets/images/crystal.png';
+import crystal from '@app/assets/images/crystal.png';
 
 import type { RecordItem } from './useStatistics';
 

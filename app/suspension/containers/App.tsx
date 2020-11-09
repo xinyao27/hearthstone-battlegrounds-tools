@@ -21,21 +21,25 @@ const JianLiBianFont = {
   fontFamily: 'JianLiBian',
   fontStyle: 'normal',
   src: `
-    url(${require('../assets/fonts/JianLiBian.woff2').default}) format('woff2'),
-    url(${require('../assets/fonts/JianLiBian.woff').default}) format('woff'),
     url(${
-      require('../assets/fonts/JianLiBian.ttf').default
+      require('@app/assets/fonts/JianLiBian.woff2').default
+    }) format('woff2'),
+    url(${require('@app/assets/fonts/JianLiBian.woff').default}) format('woff'),
+    url(${
+      require('@app/assets/fonts/JianLiBian.ttf').default
     }) format('truetype'),
-    url(${require('../assets/fonts/JianLiBian.svg').default}) format('svg')
+    url(${require('@app/assets/fonts/JianLiBian.svg').default}) format('svg')
   `,
 };
 const BelweBoldFont = {
   fontFamily: 'Belwe Bold',
   fontStyle: 'normal',
   src: `
-    url(${require('../assets/fonts/Belwe-Bold.woff2').default}) format('woff2'),
-    url(${require('../assets/fonts/Belwe-Bold.woff').default}) format('woff'),
-    url(${require('../assets/fonts/Belwe-Bold.ttf').default})
+    url(${
+      require('@app/assets/fonts/Belwe-Bold.woff2').default
+    }) format('woff2'),
+    url(${require('@app/assets/fonts/Belwe-Bold.woff').default}) format('woff'),
+    url(${require('@app/assets/fonts/Belwe-Bold.ttf').default})
   `,
 };
 const theme = createMuiTheme({
@@ -55,7 +59,7 @@ const theme = createMuiTheme({
           background: 'none !important',
           userSelect: 'none',
           cursor: `url("${
-            require('../assets/images/hand.png').default
+            require('@app/assets/images/hand.png').default
           }") 0 0,auto`,
         },
         '#root': {

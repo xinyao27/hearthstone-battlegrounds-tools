@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   head: {
     height: 80,
     background: `url(${
-      require('../assets/images/message_box.png').default
+      require('@app/assets/images/message_box.png').default
     }) no-repeat`,
     backgroundSize: '100%',
     position: 'relative',
@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     marginTop: -10,
     background: `url(${
-      require('../assets/images/class_headers.png').default
+      require('@app/assets/images/class_headers.png').default
     }) no-repeat`,
     backgroundSize: 500,
     backgroundPosition: '-22px -10px',
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '68px auto 0',
     position: 'relative',
     background: `url(${
-      require('../assets/images/card_bg.png').default
+      require('@app/assets/images/card_bg.png').default
     }) no-repeat`,
     backgroundSize: '100%',
     filter: 'brightness(120%) saturate(120%)',
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: -40,
     zIndex: 1,
     background: `url(${
-      require('../assets/images/crown3.png').default
+      require('@app/assets/images/crown3.png').default
     }) no-repeat`,
     backgroundSize: '100%',
   },
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '86px',
     marginTop: theme.spacing(1),
     background: `url(${
-      require('../assets/images/olive.png').default
+      require('@app/assets/images/olive.png').default
     }) no-repeat`,
     backgroundSize: '100%',
   },

@@ -10,7 +10,7 @@ const useStyles = makeStyles(() => ({
     width: 80,
     height: 80,
     background: `url(${
-      require('../assets/images/loading_bg.png').default
+      require('@app/assets/images/loading_bg.png').default
     }) no-repeat`,
     backgroundSize: '100%',
     margin: '0 auto',
@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
       left: 0,
       right: 0,
       background: `url(${
-        require('../assets/images/loading_line.png').default
+        require('@app/assets/images/loading_line.png').default
       }) no-repeat`,
       backgroundSize: '86%',
       backgroundPosition: 'center',
