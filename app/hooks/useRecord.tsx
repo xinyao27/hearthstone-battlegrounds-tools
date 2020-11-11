@@ -78,6 +78,7 @@ function createImage(result: RecordItem[], dir: string) {
         document.body.removeChild(dom);
         return decode;
       })
+      // eslint-disable-next-line no-console
       .catch(console.log);
   }
 }
@@ -89,6 +90,8 @@ function useRecord(
   {
     addRecord: (item: RecordItem) => void;
     deleteRecord: (item: RecordItem) => void;
+    editRecord: (item: RecordItem) => void;
+    refresh: () => void;
   }
 ] {
   const { connected } = useConnect();
@@ -98,12 +101,7 @@ function useRecord(
     currentSource: textCurrentSource,
     max: textMax,
   } = useObsText();
-  const {
-    enable: imageEnable,
-    currentSource: imageCurrentSource,
-    dir: imageDir,
-    max: imageMax,
-  } = useObsImage();
+  const { enable: imageEnable, dir: imageDir, max: imageMax } = useObsImage();
   const [recordList, setRecordList] = React.useState<RecordItem[]>(() =>
     records.get()
   );
@@ -133,14 +131,14 @@ function useRecord(
           }
         }
         if (imageEnable) {
-          if (imageCurrentSource && imageDir) {
+          if (imageDir) {
             const todayResult = result
               .filter((v) => dayjs(v.date).isSame(today, 'day'))
               .slice(0, imageMax);
             createImage(todayResult, imageDir);
           } else {
             // eslint-disable-next-line no-alert
-            alert('OBS: 当前未选择正确的图片来源或图片储存路径');
+            alert('OBS: 当前未选择正确的图片储存路径');
           }
         }
       }
@@ -153,7 +151,6 @@ function useRecord(
       textCurrentSource,
       textMax,
       run,
-      imageCurrentSource,
       imageDir,
       imageMax,
     ]
@@ -182,10 +179,34 @@ function useRecord(
     },
     [handleCallback]
   );
+  const handleEditRecord = React.useCallback(
+    (item: RecordItem) => {
+      setRecordList((previousState) => {
+        const result = previousState.map((v) => {
+          if (v.id === item.id) {
+            return item;
+          }
+          return v;
+        });
+        records.set(result);
+        handleCallback(result);
+        return result;
+      });
+    },
+    [handleCallback]
+  );
+  const handleRefresh = React.useCallback(() => {
+    setRecordList(records.get());
+  }, []);
 
   return [
     recordList,
-    { addRecord: handleAddRecord, deleteRecord: handleDeleteRecord },
+    {
+      addRecord: handleAddRecord,
+      deleteRecord: handleDeleteRecord,
+      editRecord: handleEditRecord,
+      refresh: handleRefresh,
+    },
   ];
 }
 

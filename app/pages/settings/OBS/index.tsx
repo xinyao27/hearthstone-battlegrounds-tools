@@ -45,9 +45,6 @@ const OBS: React.FC = () => {
   const {
     enable: imageEnable,
     setEnable: imageSetEnable,
-    sourcesList: imageSourcesList,
-    currentSource: imageCurrentSource,
-    setCurrentSource: imageSetCurrentSource,
     dir: imageDir,
     setDir: imageSetDir,
     max: imageMax,
@@ -83,6 +80,7 @@ const OBS: React.FC = () => {
         }
         return result;
       })
+      // eslint-disable-next-line no-console
       .catch(console.log);
   }, [imageSetDir]);
 
@@ -201,22 +199,6 @@ const OBS: React.FC = () => {
                 checked={imageEnable}
                 onChange={(_, checked) => imageSetEnable(checked)}
               />
-            </ListItemSecondaryAction>
-          </ListItem>
-          <ListItem>
-            <ListItemText>选择图片来源</ListItemText>
-            <ListItemSecondaryAction>
-              <Select
-                value={imageCurrentSource}
-                // @ts-ignore
-                onChange={(e) => imageSetCurrentSource(e.target.value)}
-              >
-                {imageSourcesList.map((source) => (
-                  <MenuItem key={source.name + source.type} value={source.name}>
-                    {source.name}
-                  </MenuItem>
-                ))}
-              </Select>
             </ListItemSecondaryAction>
           </ListItem>
           <ListItem>

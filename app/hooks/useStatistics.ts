@@ -1,8 +1,4 @@
-import { createModel } from 'hox';
-
 import heroes from '@app/constants/heroes.json';
-
-import useRecord from './useRecord';
 
 export interface RecordItem {
   id: string;
@@ -12,6 +8,7 @@ export interface RecordItem {
   };
   rank: string;
   date: string | Date;
+  remark?: string;
 }
 export interface ResultItem {
   heroId: number;
@@ -25,9 +22,7 @@ export interface ResultItem {
   selectRate: number;
 }
 
-function useStatistics() {
-  const [recordList] = useRecord();
-
+function useStatistics(recordList: RecordItem[]) {
   const reSummarized = recordList.reduce<{
     [key: number]: {
       rank: string;
@@ -69,4 +64,4 @@ function useStatistics() {
     .sort((a, b) => a.averageRanking - b.averageRanking);
 }
 
-export default createModel(useStatistics);
+export default useStatistics;

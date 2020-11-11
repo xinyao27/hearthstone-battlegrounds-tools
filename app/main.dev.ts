@@ -70,7 +70,7 @@ function createSuspensionWindow() {
   const size = screen.getPrimaryDisplay().workAreaSize; // 获取显示器的宽高
   suspensionWindow = new BrowserWindow({
     width: 260,
-    height: size.height > 1200 ? 1200 : size.height,
+    height: size.height > 1200 ? 1200 : size.height - 100,
     type: 'toolbar',
     transparent: true,
     frame: false,

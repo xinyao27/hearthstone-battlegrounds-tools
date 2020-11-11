@@ -13,7 +13,6 @@ interface Config {
     };
     image: {
       enable?: boolean;
-      source?: RequestMethodReturnMap['GetSourcesList']['sources'][0];
       dir?: string;
       max: number;
     };

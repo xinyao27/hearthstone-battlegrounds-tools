@@ -16,8 +16,10 @@ import {
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import dayjs from 'dayjs';
+import { useInViewport, useUpdateEffect } from 'ahooks';
 
 import useStatistics, { ResultItem } from '@app/hooks/useStatistics';
+import useRecord from '@app/hooks/useRecord';
 
 const useRowStyles = makeStyles({
   root: {
@@ -79,7 +81,7 @@ const Row: React.FC<RowProps> = ({ row }) => {
                   {row.ranks.map((rankRow) => (
                     <TableRow key={rankRow.date}>
                       <TableCell component="th" scope="row">
-                        {dayjs(rankRow.date).format('YYYY-MM-DD hh:mm:ss')}
+                        {dayjs(rankRow.date).format('YYYY-MM-DD HH:mm:ss')}
                       </TableCell>
                       <TableCell>{rankRow.rank}</TableCell>
                     </TableRow>
@@ -95,10 +97,19 @@ const Row: React.FC<RowProps> = ({ row }) => {
 };
 
 export default function Statistics() {
-  const result = useStatistics();
+  const [recordList, { refresh }] = useRecord();
+  const result = useStatistics(recordList);
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  const inViewPort = useInViewport(rootRef);
+  useUpdateEffect(() => {
+    if (inViewPort) {
+      refresh();
+    }
+  }, [inViewPort]);
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} ref={rootRef}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
