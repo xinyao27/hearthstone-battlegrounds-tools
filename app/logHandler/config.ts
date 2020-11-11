@@ -3,41 +3,50 @@ import { is } from 'electron-util';
 
 import { config } from '@app/store';
 
-const configHeartstoneRootPath = config.get('heartstoneRootPath') as
-  | string
-  | undefined;
-// Windows
-const windowsHeartstoneRootPath =
-  configHeartstoneRootPath ?? 'D:\\Program Files (x86)\\Hearthstone';
-// Mac os
-const macOSHeartstoneRootPath =
-  configHeartstoneRootPath ?? '/Applications/Hearthstone';
+const Config = {
+  get configHeartstoneRootPath() {
+    return config.get('heartstoneRootPath') as string | undefined;
+  },
 
-// @ts-ignore
-// eslint-disable-next-line consistent-return
-const heartstoneRootPath = (() => {
-  if (is.windows) return windowsHeartstoneRootPath;
-  if (is.macos) return macOSHeartstoneRootPath;
-  return windowsHeartstoneRootPath;
-})();
+  get windowsHeartstoneRootPath() {
+    return (
+      this.configHeartstoneRootPath ?? 'C:\\Program Files (x86)\\Hearthstone'
+    );
+  },
 
-const heartstonePowerLogFileName = 'Power.log';
-const heartstonePowerLogFilePath = resolve(
-  heartstoneRootPath,
-  'Logs',
-  heartstonePowerLogFileName
-);
-const heartstoneBoxLogFileName = 'LoadingScreen.log';
-const heartstoneBoxLogFilePath = resolve(
-  heartstoneRootPath,
-  'Logs',
-  heartstoneBoxLogFileName
-);
+  get macOSHeartstoneRootPath() {
+    return this.configHeartstoneRootPath ?? '/Applications/Hearthstone';
+  },
 
-export default {
-  heartstoneRootPath,
-  heartstonePowerLogFileName,
-  heartstonePowerLogFilePath,
-  heartstoneBoxLogFileName,
-  heartstoneBoxLogFilePath,
+  get heartstoneRootPath() {
+    if (is.windows) return this.windowsHeartstoneRootPath;
+    if (is.macos) return this.macOSHeartstoneRootPath;
+    return this.windowsHeartstoneRootPath;
+  },
+
+  get heartstonePowerLogFileName() {
+    return 'Power.log';
+  },
+
+  get heartstonePowerLogFilePath() {
+    return resolve(
+      this.heartstoneRootPath,
+      'Logs',
+      this.heartstonePowerLogFileName
+    );
+  },
+
+  get heartstoneBoxLogFileName() {
+    return 'LoadingScreen.log';
+  },
+
+  get heartstoneBoxLogFilePath() {
+    return resolve(
+      this.heartstoneRootPath,
+      'Logs',
+      this.heartstoneBoxLogFileName
+    );
+  },
 };
+
+export default Config;

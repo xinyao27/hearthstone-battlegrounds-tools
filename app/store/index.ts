@@ -1,4 +1,5 @@
 import Store from 'electron-store';
+import { is } from 'electron-util';
 
 import type { RecordItem } from '@app/hooks/useStatistics';
 import type { RequestMethodReturnMap } from '@app/pages/settings/OBS/types';
@@ -25,7 +26,11 @@ export const config = {
   store: new Store<Config>({
     name: 'config',
     defaults: {
-      heartstoneRootPath: 'D:\\Program Files (x86)\\Hearthstone',
+      heartstoneRootPath: is.windows
+        ? 'C:\\Program Files (x86)\\Hearthstone'
+        : is.macos
+        ? '/Applications/Hearthstone'
+        : '',
       obs: {
         image: {
           max: 12,

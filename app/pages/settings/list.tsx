@@ -60,6 +60,7 @@ function getList(): Item[] {
               }
               return result;
             })
+            // eslint-disable-next-line no-console
             .catch(console.log);
         };
         return (

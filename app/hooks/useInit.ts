@@ -3,8 +3,10 @@ import { createModel } from 'hox';
 import { useBoolean, useMount } from 'ahooks';
 import { is } from 'electron-util';
 import { promises as fsPromises } from 'fs';
+import { ipcRenderer, remote } from 'electron';
 
 import { config } from '@app/store';
+import { MAIN_LOGHANDLER_MESSAGE } from '@app/constants/topic';
 
 function useInit(): [boolean, { check: () => Promise<boolean> }] {
   const [correctDirectory, { toggle: setCorrectDirectory }] = useBoolean(true);
@@ -32,6 +34,17 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
         }
         return false;
       });
+      // 如果是合法目录开始监控 Logs
+      const { logHandlerWindow } = remote.getGlobal('windows');
+      if (result && logHandlerWindow !== undefined) {
+        ipcRenderer.sendTo(
+          logHandlerWindow.webContents?.id,
+          MAIN_LOGHANDLER_MESSAGE,
+          {
+            type: 'startWatch',
+          }
+        );
+      }
       setCorrectDirectory(result);
       return result;
     } catch (_) {
