@@ -90,7 +90,7 @@ const Item: React.FC<ItemProps> = ({
             color="textSecondary"
             display="inline"
           >
-            {dayjs(value.date).format('YYYY-MM-DD hh:mm:ss')}
+            {dayjs(value.date).format('YYYY-MM-DD HH:mm:ss')}
           </Typography>
         </div>
         {selected ? (

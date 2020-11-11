@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { List as BaseList, TextField } from '@material-ui/core';
 import { is } from 'electron-util';
 import dayjs from 'dayjs';
+import { useDocumentVisibility, useInViewport, useUpdateEffect } from 'ahooks';
 
 import useRecord from '@app/hooks/useRecord';
 
@@ -30,8 +31,20 @@ const useStyles = makeStyles((theme) => ({
 export default function Record() {
   const classes = useStyles();
 
-  const [recordList, { addRecord, deleteRecord, editRecord }] = useRecord();
+  const [
+    recordList,
+    { addRecord, deleteRecord, editRecord, refresh },
+  ] = useRecord();
   const [selectedItem, setSelectedItem] = React.useState<string>();
+  const rootRef = React.useRef<HTMLDivElement>(null);
+
+  const documentVisibility = useDocumentVisibility();
+  const inViewPort = useInViewport(rootRef);
+  useUpdateEffect(() => {
+    if (documentVisibility === 'visible' && inViewPort) {
+      refresh();
+    }
+  }, [inViewPort, documentVisibility]);
 
   const handleNewItem = React.useCallback(
     (item) => {
@@ -66,7 +79,7 @@ export default function Record() {
   }, [recordList, currentDate]);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} ref={rootRef}>
       <div className={classes.tools}>
         {is.development && <NewItem onSubmit={handleNewItem} />}
 

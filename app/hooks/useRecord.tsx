@@ -91,6 +91,7 @@ function useRecord(
     addRecord: (item: RecordItem) => void;
     deleteRecord: (item: RecordItem) => void;
     editRecord: (item: RecordItem) => void;
+    refresh: () => void;
   }
 ] {
   const { connected } = useConnect();
@@ -194,6 +195,9 @@ function useRecord(
     },
     [handleCallback]
   );
+  const handleRefresh = React.useCallback(() => {
+    setRecordList(records.get());
+  }, []);
 
   return [
     recordList,
@@ -201,6 +205,7 @@ function useRecord(
       addRecord: handleAddRecord,
       deleteRecord: handleDeleteRecord,
       editRecord: handleEditRecord,
+      refresh: handleRefresh,
     },
   ];
 }
