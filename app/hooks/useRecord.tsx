@@ -98,12 +98,7 @@ function useRecord(
     currentSource: textCurrentSource,
     max: textMax,
   } = useObsText();
-  const {
-    enable: imageEnable,
-    currentSource: imageCurrentSource,
-    dir: imageDir,
-    max: imageMax,
-  } = useObsImage();
+  const { enable: imageEnable, dir: imageDir, max: imageMax } = useObsImage();
   const [recordList, setRecordList] = React.useState<RecordItem[]>(() =>
     records.get()
   );
@@ -133,14 +128,14 @@ function useRecord(
           }
         }
         if (imageEnable) {
-          if (imageCurrentSource && imageDir) {
+          if (imageDir) {
             const todayResult = result
               .filter((v) => dayjs(v.date).isSame(today, 'day'))
               .slice(0, imageMax);
             createImage(todayResult, imageDir);
           } else {
             // eslint-disable-next-line no-alert
-            alert('OBS: 当前未选择正确的图片来源或图片储存路径');
+            alert('OBS: 当前未选择正确的图片储存路径');
           }
         }
       }
@@ -153,7 +148,6 @@ function useRecord(
       textCurrentSource,
       textMax,
       run,
-      imageCurrentSource,
       imageDir,
       imageMax,
     ]
