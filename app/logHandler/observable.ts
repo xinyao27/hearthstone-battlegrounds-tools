@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { Observable } from 'rxjs';
 import chokidar from 'chokidar';
+import log from 'electron-log';
 
 /**
  * 读取 Log 创建 Observable
@@ -16,8 +17,10 @@ function createObservable(filePath: string) {
       });
       let prev: fs.Stats | undefined;
       let cur: fs.Stats | undefined;
+      log.info('监控准备开始', filePath);
       watcher
         .on('add', (_, stats) => {
+          log.info('add', filePath);
           prev = stats;
           cur = stats;
           if (prev && cur) {
@@ -33,7 +36,7 @@ function createObservable(filePath: string) {
         });
       return {
         unsubscribe() {
-          console.log('unsubscribe', filePath);
+          log.info('unsubscribe', filePath);
           watcher.close();
         },
       };
