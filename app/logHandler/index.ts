@@ -1,4 +1,9 @@
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { ipcRenderer } from 'electron';
+import log from 'electron-log';
+
+import { MAIN_LOGHANDLER_MESSAGE } from '@app/constants/topic';
+
 import createObservable from './observable';
 import createObserver from './observer';
 import { readFile, readline, filter } from './parser';
@@ -14,8 +19,25 @@ function run() {
   const BoxSource$ = createObservable(config.heartstoneBoxLogFilePath);
   const PowerLogSource$ = createObservable(config.heartstonePowerLogFilePath);
 
-  BoxSource$.pipe(readFile(), readline(), filter(boxRegexes)).subscribe(
+  return BoxSource$.pipe(readFile(), readline(), filter(boxRegexes)).subscribe(
     createObserver('box', createPowerLogObservable(PowerLogSource$))
   );
 }
-run();
+
+interface StartWatch {
+  type: 'startWatch';
+  data: string;
+}
+let isWatching = false;
+let subscription: Subscription;
+ipcRenderer.on(MAIN_LOGHANDLER_MESSAGE, (_, args: StartWatch) => {
+  if (isWatching) {
+    subscription?.unsubscribe();
+    isWatching = false;
+  }
+  if (args.type === 'startWatch') {
+    subscription = run();
+    isWatching = true;
+    log.info('startWatch - started');
+  }
+});
