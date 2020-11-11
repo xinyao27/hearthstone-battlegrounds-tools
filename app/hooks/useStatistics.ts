@@ -12,6 +12,7 @@ export interface RecordItem {
   };
   rank: string;
   date: string | Date;
+  remark?: string;
 }
 export interface ResultItem {
   heroId: number;

@@ -78,6 +78,7 @@ function createImage(result: RecordItem[], dir: string) {
         document.body.removeChild(dom);
         return decode;
       })
+      // eslint-disable-next-line no-console
       .catch(console.log);
   }
 }
@@ -89,6 +90,7 @@ function useRecord(
   {
     addRecord: (item: RecordItem) => void;
     deleteRecord: (item: RecordItem) => void;
+    editRecord: (item: RecordItem) => void;
   }
 ] {
   const { connected } = useConnect();
@@ -176,10 +178,30 @@ function useRecord(
     },
     [handleCallback]
   );
+  const handleEditRecord = React.useCallback(
+    (item: RecordItem) => {
+      setRecordList((previousState) => {
+        const result = previousState.map((v) => {
+          if (v.id === item.id) {
+            return item;
+          }
+          return v;
+        });
+        records.set(result);
+        handleCallback(result);
+        return result;
+      });
+    },
+    [handleCallback]
+  );
 
   return [
     recordList,
-    { addRecord: handleAddRecord, deleteRecord: handleDeleteRecord },
+    {
+      addRecord: handleAddRecord,
+      deleteRecord: handleDeleteRecord,
+      editRecord: handleEditRecord,
+    },
   ];
 }
 

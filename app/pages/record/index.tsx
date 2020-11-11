@@ -1,24 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  List as BaseList,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  TextField,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { List as BaseList, TextField } from '@material-ui/core';
 import { is } from 'electron-util';
-
 import dayjs from 'dayjs';
 
-import heroes from '@app/constants/heroes.json';
 import useRecord from '@app/hooks/useRecord';
 
 import NewItem from './NewItem';
+import Item from './Item';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Record() {
   const classes = useStyles();
 
-  const [recordList, { addRecord, deleteRecord }] = useRecord();
+  const [recordList, { addRecord, deleteRecord, editRecord }] = useRecord();
+  const [selectedItem, setSelectedItem] = React.useState<string>();
 
   const handleNewItem = React.useCallback(
     (item) => {
@@ -55,6 +45,15 @@ export default function Record() {
     },
     [deleteRecord]
   );
+  const handleEditItem = React.useCallback(
+    (item) => {
+      editRecord(item);
+    },
+    [editRecord]
+  );
+  const handleItemClick = React.useCallback((id: string) => {
+    setSelectedItem(id);
+  }, []);
 
   const [currentDate, setCurrentDate] = React.useState(
     dayjs().format('YYYY-MM-DD')
@@ -85,31 +84,16 @@ export default function Record() {
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
           .map((value) => {
-            const currentHero = heroes.find((h) => h.id === value.hero.id);
+            const selected = selectedItem === value.id;
             return (
-              <ListItem key={value.id} button>
-                <ListItemAvatar>
-                  <Avatar
-                    src={currentHero?.battlegrounds.image}
-                    alt={currentHero?.name}
-                  />
-                </ListItemAvatar>
-                <ListItemText
-                  primary={value.rank}
-                  secondary={dayjs(value.date).format('YYYY-MM-DD hh:mm:ss')}
-                />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => {
-                      handleDeleteItem(value);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
+              <Item
+                key={value.id}
+                value={value}
+                selected={selected}
+                onClick={handleItemClick}
+                onDelete={handleDeleteItem}
+                onChange={handleEditItem}
+              />
             );
           })}
       </BaseList>
