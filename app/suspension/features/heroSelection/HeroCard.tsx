@@ -69,6 +69,14 @@ interface HeroCardProps {
 }
 
 const useStyles = makeStyles((theme) => ({
+  error: {
+    width: '100%',
+    marginBottom: theme.spacing(6),
+    '& > img': {
+      width: '50%',
+      margin: '0 auto',
+    },
+  },
   root: {
     width: '100%',
     marginBottom: theme.spacing(4),
@@ -159,7 +167,7 @@ const useStylesTooltip = makeStyles((theme) => ({
 const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
   const classes = useStyles();
   const tooltipClasses = useStylesTooltip();
-  const { data, loading } = useListHeroes();
+  const { data, loading, error, refresh } = useListHeroes();
   const hero = React.useMemo(() => {
     const resource = heroes.find((v) => v.id === heroId);
     const heroData = data?.series.data.find((v) => v.hero_dbf_id === heroId);
@@ -168,10 +176,22 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
 
   if (loading) return <Loading />;
 
+  if (error) {
+    return (
+      <div className={classes.error} onClick={refresh}>
+        <img
+          src={require('@app/assets/images/error.png').default}
+          alt="error"
+        />
+        <Text>数据加载失败 请点击叉号重试</Text>
+      </div>
+    );
+  }
+
   if (data && hero) {
     return (
       <Grow in={!!hero} style={{ transformOrigin: '0 0 0' }} timeout={300}>
-        <div className={classes.root}>
+        <div className={classes.root} onClick={refresh}>
           <div className={classes.title}>
             <div className={classes.avatar}>
               <img src={hero.battlegrounds.image} alt={hero.name} />
