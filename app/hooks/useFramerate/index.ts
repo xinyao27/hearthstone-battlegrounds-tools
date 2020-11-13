@@ -27,17 +27,27 @@ async function readFile(filePath: PathLike) {
   }
 }
 function replace(map: string[], targetframerate: string, vsync: string) {
-  const result = map.map((item) => {
-    const [key] = item.split('=');
-    if (key === 'targetframerate') {
-      return `${key}=${targetframerate}`;
-    }
-    if (key === 'vsync') {
-      return `${key}=${vsync}`;
-    }
-    return item;
-  });
-  return result.join('\n');
+  if (map.find((v) => v.indexOf('targetframerate') > -1)) {
+    const result = map.map((item) => {
+      const [key] = item.split('=');
+      if (key === 'targetframerate') {
+        return `${key}=${targetframerate}`;
+      }
+      if (key === 'vsync') {
+        return `${key}=${vsync}`;
+      }
+      return item;
+    });
+    return result.join('\n').trim();
+  }
+  const vsyncIndex = map.findIndex((v) => v.indexOf('vsync') > -1);
+  if (vsyncIndex > -1) {
+    map[vsyncIndex] = `vsync=${vsync}`;
+  } else {
+    map.push(`vsync=${vsync}`);
+  }
+  map.push(`targetframerate=${targetframerate}`);
+  return map.join('\n').trim();
 }
 async function writeFile(
   filePath: PathLike,
@@ -54,7 +64,7 @@ async function writeFile(
     const raw = replace(map, targetframerate, vsync);
     return fsPromises.writeFile(filePath, raw);
   }
-  // 没有 template.ts 这个文件的
+  // 没有 options.txt 这个文件
   const templateMap = template.split('\n');
   const raw = replace(templateMap, targetframerate, vsync);
   return fsPromises.writeFile(filePath, raw, { encoding: 'utf8' });
