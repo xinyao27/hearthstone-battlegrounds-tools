@@ -53,7 +53,7 @@ async function writeFile(
   // 没有 template.ts 这个文件的
   const templateMap = template.split('\n');
   const raw = replace(templateMap, targetframerate, vsync);
-  return fsPromises.writeFile(filePath, raw);
+  return fsPromises.writeFile(filePath, raw, { encoding: 'utf8' });
 }
 
 export type Framerate = '60' | '144' | '240';
