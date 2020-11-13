@@ -1,7 +1,13 @@
 import React from 'react';
 import { ipcRenderer, remote } from 'electron';
 import { useMount, useBoolean } from 'ahooks';
-import { IconButton, Switch, Tooltip } from '@material-ui/core';
+import {
+  IconButton,
+  Switch,
+  Tooltip,
+  Select,
+  MenuItem,
+} from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
@@ -9,11 +15,16 @@ import AllInboxIcon from '@material-ui/icons/AllInbox';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
+import BuildIcon from '@material-ui/icons/Build';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import { useSnackbar } from 'notistack';
 
 import { config } from '@app/store';
 import useInit from '@app/hooks/useInit';
+import useFramerate, { Framerate } from '@app/hooks/useFramerate';
 
 import OBS from './OBS';
+import resetGame from './resetGame';
 
 interface Item {
   id?: string;
@@ -107,6 +118,46 @@ function getList(): Item[] {
           <IconButton onClick={handleClick}>
             <OpenInNewIcon />
           </IconButton>
+        );
+      },
+    },
+    {
+      icon: <SettingsBackupRestoreIcon />,
+      label: '修复炉石',
+      action: function Action() {
+        const { enqueueSnackbar } = useSnackbar();
+        const handleClick = async () => {
+          await resetGame();
+          enqueueSnackbar('修复成功，请重启炉石传说', { variant: 'success' });
+        };
+        return (
+          <Tooltip title="若插件不展示信息可尝试（请在炉石关闭状态下使用）">
+            <IconButton onClick={handleClick}>
+              <SettingsBackupRestoreIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      icon: <BuildIcon />,
+      label: '修改炉石帧数',
+      action: function Action() {
+        const [framerate, { toggle }] = useFramerate();
+        return (
+          <Tooltip
+            title="帧数设置过高可能导致画面闪烁，请依据电脑配置合理选择。重启炉石后生效！"
+            arrow
+          >
+            <Select
+              value={framerate}
+              onChange={(e) => toggle(e.target.value as Framerate)}
+            >
+              <MenuItem value="60">60Hz</MenuItem>
+              <MenuItem value="144">144Hz</MenuItem>
+              <MenuItem value="240">240Hz</MenuItem>
+            </Select>
+          </Tooltip>
         );
       },
     },
