@@ -34,6 +34,10 @@ const muiTheme = createMuiTheme({
           height: '100%',
           overflow: 'hidden',
         },
+        img: {
+          width: '100%',
+          display: 'block',
+        },
       },
     },
   },

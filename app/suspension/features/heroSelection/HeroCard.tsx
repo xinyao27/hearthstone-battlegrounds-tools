@@ -14,8 +14,11 @@ import useListHeroes, {
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 
+type Hero = typeof heroes[0] & {
+  heroData?: ListHeroesResult['series']['data'][0];
+};
 interface ChartProps {
-  hero: ListHeroesResult['series']['data'][0] & typeof heroes[0];
+  hero: Hero;
 }
 const Chart: React.FC<ChartProps> = ({ hero }) => {
   const option = React.useMemo<EChartOption>(
@@ -49,7 +52,7 @@ const Chart: React.FC<ChartProps> = ({ hero }) => {
         {
           type: 'bar',
           barWidth: '80%',
-          data: hero?.final_placement_distribution,
+          data: hero?.heroData?.final_placement_distribution,
         },
       ],
     }),
@@ -69,9 +72,20 @@ interface HeroCardProps {
 }
 
 const useStyles = makeStyles((theme) => ({
+  error: {
+    width: '100%',
+    marginBottom: theme.spacing(6),
+    '& > img': {
+      width: '50%',
+      margin: '0 auto',
+    },
+  },
   root: {
     width: '100%',
     marginBottom: theme.spacing(4),
+  },
+  noData: {
+    textAlign: 'center',
   },
 
   title: {
@@ -159,19 +173,31 @@ const useStylesTooltip = makeStyles((theme) => ({
 const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
   const classes = useStyles();
   const tooltipClasses = useStylesTooltip();
-  const { data, loading } = useListHeroes();
-  const hero = React.useMemo(() => {
+  const { data, loading, error, refresh } = useListHeroes();
+  const hero = React.useMemo<Hero>(() => {
     const resource = heroes.find((v) => v.id === heroId);
     const heroData = data?.series.data.find((v) => v.hero_dbf_id === heroId);
-    return Object.assign(resource, heroData);
+    return Object.assign(resource, { heroData });
   }, [heroId, data]);
 
   if (loading) return <Loading />;
 
+  if (error) {
+    return (
+      <div className={classes.error} onClick={refresh}>
+        <img
+          src={require('@app/assets/images/error.png').default}
+          alt="error"
+        />
+        <Text>数据加载失败 请点击叉号重试</Text>
+      </div>
+    );
+  }
+
   if (data && hero) {
     return (
       <Grow in={!!hero} style={{ transformOrigin: '0 0 0' }} timeout={300}>
-        <div className={classes.root}>
+        <div className={classes.root} onClick={refresh}>
           <div className={classes.title}>
             <div className={classes.avatar}>
               <img src={hero.battlegrounds.image} alt={hero.name} />
@@ -180,49 +206,63 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
             <div className={classes.name}>{hero.name}</div>
           </div>
 
-          <div className={classes.data}>
-            <Tooltip
-              classes={tooltipClasses}
-              title="英雄的平均最终排名"
-              arrow
-              placement="top"
-            >
-              <div className={classes.card}>
-                <Text className={classes.label} stroke={false} color="black">
-                  平均排名
-                </Text>
-                <Text className={classes.value} isNumber>
-                  {hero?.avg_final_placement?.toFixed(2)}
-                </Text>
-              </div>
-            </Tooltip>
+          {hero.heroData ? (
+            <>
+              <div className={classes.data}>
+                <Tooltip
+                  classes={tooltipClasses}
+                  title="英雄的平均最终排名"
+                  arrow
+                  placement="top"
+                >
+                  <div className={classes.card}>
+                    <Text
+                      className={classes.label}
+                      stroke={false}
+                      color="black"
+                    >
+                      平均排名
+                    </Text>
+                    <Text className={classes.value} isNumber>
+                      {hero.heroData.avg_final_placement.toFixed(2)}
+                    </Text>
+                  </div>
+                </Tooltip>
 
-            <Tooltip
-              classes={tooltipClasses}
-              title="对局开始出现该英雄时 该英雄被选取的百分率"
-              arrow
-              placement="top"
-            >
-              <div className={classes.card}>
-                <Text className={classes.label} stroke={false} color="black">
-                  选择率
-                </Text>
-                <Text className={classes.value} isNumber>
-                  {`${hero?.pick_rate?.toFixed(2)}%`}
-                </Text>
+                <Tooltip
+                  classes={tooltipClasses}
+                  title="对局开始出现该英雄时 该英雄被选取的百分率"
+                  arrow
+                  placement="top"
+                >
+                  <div className={classes.card}>
+                    <Text
+                      className={classes.label}
+                      stroke={false}
+                      color="black"
+                    >
+                      选择率
+                    </Text>
+                    <Text className={classes.value} isNumber>
+                      {`${hero.heroData.pick_rate.toFixed(2)}%`}
+                    </Text>
+                  </div>
+                </Tooltip>
               </div>
-            </Tooltip>
-          </div>
-          <Tooltip
-            classes={tooltipClasses}
-            title="每一条代表该英雄得到这个名次的频率"
-            arrow
-            placement="bottom"
-          >
-            <div className={classes.chart}>
-              <Chart hero={hero} />
-            </div>
-          </Tooltip>
+              <Tooltip
+                classes={tooltipClasses}
+                title="每一条代表该英雄得到这个名次的频率"
+                arrow
+                placement="bottom"
+              >
+                <div className={classes.chart}>
+                  <Chart hero={hero} />
+                </div>
+              </Tooltip>
+            </>
+          ) : (
+            <Text className={classes.noData}>没有足够的数据</Text>
+          )}
         </div>
       </Grow>
     );

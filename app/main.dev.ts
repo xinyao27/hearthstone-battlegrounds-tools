@@ -98,15 +98,17 @@ function createSuspensionWindow() {
   });
 
   suspensionWindow.on('resize', () => {
-    // 禁止横向拖动改变大小
-    // TODO 这里会造成抖动，但是 will-resize 不知怎么返回的 newBounds 不对，待解决
-    if (suspensionWindow?.getSize()[0] !== winSize[0]) {
-      suspensionWindow?.setBounds({
-        width: winSize[0],
-        height: winSize[1],
-        x,
-        y,
-      });
+    if (!is.development) {
+      // 禁止横向拖动改变大小
+      // TODO 这里会造成抖动，但是 will-resize 不知怎么返回的 newBounds 不对，待解决
+      if (suspensionWindow?.getSize()[0] !== winSize[0]) {
+        suspensionWindow?.setBounds({
+          width: winSize[0],
+          height: winSize[1],
+          x,
+          y,
+        });
+      }
     }
   });
   suspensionWindow.on('close', () => {

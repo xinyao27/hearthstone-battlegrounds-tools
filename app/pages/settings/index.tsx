@@ -8,14 +8,17 @@ import {
   ListItemText,
   ListSubheader,
 } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
+import { useBoolean } from 'ahooks';
+
+import About from '@app/components/About';
 
 import getList from './list';
 import Intro from './Intro';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 375,
   },
   tools: {
     display: 'flex',
@@ -32,15 +35,14 @@ const useStyles = makeStyles((theme) => ({
 export default function Settings() {
   const classes = useStyles();
 
+  const [aboutOpen, { toggle: toggleAboutOpen }] = useBoolean(false);
+
   const list = getList();
 
   return (
     <div className={classes.root}>
       <Intro />
-      <List
-        subheader={<ListSubheader>Settings</ListSubheader>}
-        className={classes.root}
-      >
+      <List subheader={<ListSubheader>Settings</ListSubheader>}>
         {list.map((item) => (
           <ListItem id={item.id} key={item.label}>
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -53,6 +55,16 @@ export default function Settings() {
             </ListItemSecondaryAction>
           </ListItem>
         ))}
+      </List>
+
+      <About open={aboutOpen} onClose={() => toggleAboutOpen(false)} />
+      <List subheader={<ListSubheader>About</ListSubheader>}>
+        <ListItem button onClick={() => toggleAboutOpen(true)}>
+          <ListItemIcon>
+            <InfoIcon />
+          </ListItemIcon>
+          <ListItemText primary="关于" />
+        </ListItem>
       </List>
     </div>
   );

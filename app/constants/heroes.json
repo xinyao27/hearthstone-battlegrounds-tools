@@ -1833,5 +1833,41 @@
     "text": "",
     "tier": "all",
     "alias": "姐夫"
+  },
+  {
+    "armor": null,
+    "artistName": "",
+    "attack": null,
+    "availableClassIds": [12],
+    "availableGameModes": ["constructed", "battlegrounds"],
+    "battlegrounds": {
+      "hero": true,
+      "image": "https://hearthstone.nosdn.127.net/hearthstone/91029dc91a3621866a9f6536c029a1f94195d79b72ceac28a804361a74a2b308.png",
+      "imageGold": "https://hearthstone.nosdn.127.net/hearthstone/321e3c1d657d881386ece7a7f5a8cdfb66fffbf59bf5432ebfb981518a668dbf.png",
+      "tier": null,
+      "upgradeId": null
+    },
+    "cardSetId": 1453,
+    "cardTypeId": 3,
+    "childIds": [64481],
+    "classId": 12,
+    "collectible": 0,
+    "cropImage": "https://hearthstone.nosdn.127.net/hearthstone/8a60b28b4a9bb70748ce68815582bbde7a0c2ebfdf70988adb51da88c5d655fc.png",
+    "durability": null,
+    "flavorText": "",
+    "health": 40,
+    "id": 64480,
+    "image": "https://hearthstone.nosdn.127.net/hearthstone/d58bb103df18d682c4cf94bdbbe0091a5370917e4febfaaf71c926569971ff9e.png",
+    "imageGold": "",
+    "keywordIds": [],
+    "manaCost": 0,
+    "minionTypeId": null,
+    "multiClassIds": [],
+    "name": "希拉斯·暗月",
+    "parentId": null,
+    "rarityId": null,
+    "slug": "64480-silas-darkmoon",
+    "text": "",
+    "alias": "暗月"
   }
 ]

@@ -6,7 +6,7 @@ interface LayoutProps {
   className?: string;
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     height: '100%',
@@ -50,6 +50,8 @@ const useStyles = makeStyles(() => ({
       require('@app/assets/images/logo.png').default
     }') no-repeat center`,
     backgroundSize: '80%',
+    marginTop: theme.spacing(4),
+    '-webkit-app-region': 'drag',
   },
   content: {
     width: '100%',
