@@ -1,13 +1,18 @@
 import { remote } from 'electron';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
+import { is } from 'electron-util';
 
 import template from './template';
 
 const homePath = remote.app.getPath('home');
 const hearthstonePath = path.resolve(
   homePath,
-  `AppData\\Local\\Blizzard\\Hearthstone`
+  is.windows
+    ? `AppData\\Local\\Blizzard\\Hearthstone`
+    : is.macos
+    ? `Library/Preferences/Blizzard/Hearthstone`
+    : ''
 );
 const logConfigPath = path.resolve(hearthstonePath, 'log.config');
 
