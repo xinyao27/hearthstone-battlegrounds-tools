@@ -55,9 +55,6 @@ class CoreManager extends EventEmitter {
       app.dock.setIcon(getAssetPath('icon.png'));
     }
     this.window.loadURL(getAppHTML());
-    if (is.development) {
-      this.window.webContents.openDevTools();
-    }
     onInit(this.window);
 
     this.window.on('ready-to-show', () => {

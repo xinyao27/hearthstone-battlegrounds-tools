@@ -35,6 +35,15 @@ class Launcher extends EventEmitter {
     this.coreManager = new CoreManager({
       onInit: (window) => {
         global.windows.coreWindow = window;
+        if (is.development) {
+          window.webContents.on('did-frame-finish-load', () => {
+            window.webContents.once('devtools-opened', () => {
+              window.focus();
+            });
+            window.webContents.openDevTools();
+          });
+          window.webContents.openDevTools();
+        }
       },
       onDestroy: () => {
         this.logHandlerManager?.destroy();
@@ -44,11 +53,23 @@ class Launcher extends EventEmitter {
     this.logHandlerManager = new LogHandlerManager({
       onInit: (window) => {
         global.windows.logHandlerWindow = window;
+        if (is.development) {
+          window.webContents.on('did-frame-finish-load', () => {
+            window.webContents.openDevTools();
+          });
+          window.webContents.openDevTools();
+        }
       },
     });
     this.suspensionManager = new SuspensionManager({
       onInit: (window) => {
         global.windows.suspensionWindow = window;
+        if (is.development) {
+          window.webContents.on('did-frame-finish-load', () => {
+            window.webContents.openDevTools();
+          });
+          window.webContents.openDevTools();
+        }
       },
     });
 

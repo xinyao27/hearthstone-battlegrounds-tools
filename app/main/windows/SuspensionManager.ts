@@ -58,9 +58,6 @@ class SuspensionManager extends EventEmitter {
     this.window.setPosition(x, y);
     this.window.setAlwaysOnTop(true, 'screen-saver', 1000);
     this.window.loadURL(getAppHTML('suspension'));
-    if (is.development) {
-      this.window.webContents.openDevTools();
-    }
     onInit(this.window);
 
     this.window.on('resize', () => {

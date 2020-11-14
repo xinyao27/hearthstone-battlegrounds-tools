@@ -1,27 +1,18 @@
-/* eslint global-require: off, no-console: off */
+/* eslint no-console: off */
 
 import { app } from 'electron';
 
-if (process.env.DEBUG_PROD === 'true') {
-  require('electron-debug')();
-}
+require('electron-debug')();
 
-const installExtensions = async () => {
-  const installer = require('electron-devtools-installer');
-  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-  const extensions = ['REACT_DEVELOPER_TOOLS'];
+app
+  .whenReady()
+  .then(() => {
+    const {
+      default: installExtension,
+      REACT_DEVELOPER_TOOLS,
+    } = require('electron-devtools-installer');
 
-  return Promise.all(
-    extensions.map((name) => installer.default(installer[name], forceDownload))
-  ).catch(console.log);
-};
-if (process.env.DEBUG_PROD === 'true') {
-  app
-    .whenReady()
-    .then(() => {
-      return installExtensions();
-    })
-    .catch((err) => {
-      console.log('Unable to install `react-devtools`: \n', err);
-    });
-}
+    return installExtension(REACT_DEVELOPER_TOOLS);
+  })
+  .then((name) => console.log(`Added Extension: ${name}`))
+  .catch((err) => console.log('Added Extension Error: ', err));

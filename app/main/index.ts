@@ -1,4 +1,4 @@
-/* eslint global-require: off, no-console: off */
+/* eslint no-console: off */
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -8,9 +8,7 @@ import Launcher from './Launcher';
 
 if (is.development) {
   require('./index.dev');
-}
-
-if (process.env.NODE_ENV === 'production') {
+} else {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
