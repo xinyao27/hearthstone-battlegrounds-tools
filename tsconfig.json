@@ -24,16 +24,13 @@
     "baseUrl": ".",
     "paths": {
       "@app/*": ["app/*"],
-      "@logHandler/*": ["app/logHandler/*"],
-      "@suspension/*": ["app/suspension/*"]
+      "@main/*": ["app/main/*"],
+      "@renderer/*": ["app/renderer/*"],
+      "@shared/*": ["app/shared/*"],
+      "@core/*": ["app/renderer/core/*"],
+      "@logHandler/*": ["app/renderer/logHandler/*"],
+      "@suspension/*": ["app/renderer/suspension/*"]
     }
   },
-  "exclude": [
-    "test",
-    "release",
-    "app/main.prod.js",
-    "app/renderer.prod.js",
-    "app/dist",
-    "dll"
-  ]
+  "exclude": ["test", "release", "app/dist", "dll"]
 }

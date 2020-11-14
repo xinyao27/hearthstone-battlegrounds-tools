@@ -17,6 +17,7 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 'off',
     'no-nested-ternary': 'off',
     'react/jsx-wrap-multilines': 'off',
+    'no-new': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

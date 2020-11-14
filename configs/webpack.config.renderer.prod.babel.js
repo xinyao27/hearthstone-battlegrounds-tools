@@ -26,19 +26,16 @@ export default merge(baseConfig, {
       ? 'electron-renderer'
       : 'electron-preload',
 
-  entry: {
-    renderer: [
-      'core-js',
-      'regenerator-runtime/runtime',
-      path.join(__dirname, '..', 'app/index.tsx'),
-    ],
-    logHandler: path.join(__dirname, '..', 'app/logHandler/index.ts'),
-  },
+  entry: [
+    'core-js',
+    'regenerator-runtime/runtime',
+    path.join(__dirname, '..', 'app/renderer/index.tsx'),
+  ],
 
   output: {
     path: path.join(__dirname, '..', 'app/dist'),
     publicPath: './dist/',
-    filename: '[name].prod.js',
+    filename: 'renderer.prod.js',
   },
 
   module: {

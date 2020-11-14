@@ -4,7 +4,7 @@
   "version": "1.0.6",
   "description": "HBT - 炉石传说酒馆战棋战绩统计工具",
   "author": "chenyueban <jasonchan0527@gmail.com>",
-  "main": "./main.prod.js",
+  "main": "./dist/main.prod.js",
   "scripts": {
     "electron-rebuild": "node -r ../internals/scripts/BabelRegister.js ../internals/scripts/ElectronRebuild.js",
     "postinstall": "yarn electron-rebuild",

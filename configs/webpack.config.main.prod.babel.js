@@ -21,11 +21,11 @@ export default merge(baseConfig, {
 
   target: 'electron-main',
 
-  entry: './app/main.dev.ts',
+  entry: './app/main/index.ts',
 
   output: {
     path: path.join(__dirname, '..'),
-    filename: './app/main.prod.js',
+    filename: './app/dist/main.prod.js',
   },
 
   optimization: {

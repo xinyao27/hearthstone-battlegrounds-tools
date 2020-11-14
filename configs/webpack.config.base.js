@@ -38,8 +38,12 @@ export default {
     modules: [path.join(__dirname, '..', 'app'), 'node_modules'],
     alias: {
       '@app': path.resolve(__dirname, '../app'),
-      '@logHandler': path.resolve(__dirname, '../app/logHandler'),
-      '@suspension': path.resolve(__dirname, '../app/suspension'),
+      '@main': path.resolve(__dirname, '../app/main'),
+      '@renderer': path.resolve(__dirname, '../app/renderer'),
+      '@shared': path.resolve(__dirname, '../app/shared'),
+      '@core': path.resolve(__dirname, '../app/renderer/core'),
+      '@logHandler': path.resolve(__dirname, '../app/renderer/logHandler'),
+      '@suspension': path.resolve(__dirname, '../app/renderer/suspension'),
     },
   },
 

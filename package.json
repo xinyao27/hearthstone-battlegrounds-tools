@@ -28,9 +28,9 @@
     "postlint-styles-fix": "prettier --ignore-path .eslintignore --single-quote --write '**/*.{css,scss}'",
     "preinstall": "node ./internals/scripts/CheckYarn.js",
     "prestart": "yarn build",
-    "start": "cross-env NODE_ENV=production electron ./app/main.prod.js",
+    "start": "cross-env NODE_ENV=production electron ./app/dist/main.prod.js",
     "start-main-debug": "yarn start-main-dev --inspect=5858 --remote-debugging-port=9223",
-    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron -r ./internals/scripts/BabelRegister ./app/main.dev.ts",
+    "start-main-dev": "cross-env START_HOT=1 NODE_ENV=development electron -r ./internals/scripts/BabelRegister ./app/main/index.ts",
     "start-renderer-dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/webpack.config.renderer.dev.babel.js",
     "test": "cross-env BABEL_DISABLE_CACHE=1 jest",
     "test-all": "yarn lint && yarn tsc && yarn build && yarn test",
@@ -62,8 +62,6 @@
       "dist/",
       "node_modules/",
       "app.html",
-      "main.prod.js",
-      "main.prod.js.map",
       "package.json"
     ],
     "dmg": {
