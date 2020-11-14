@@ -1,14 +1,40 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { List as BaseList, TextField } from '@material-ui/core';
-import { is } from 'electron-util';
+import {
+  List as BaseList,
+  TextField,
+  Dialog,
+  Slide,
+  Zoom,
+  Tooltip,
+} from '@material-ui/core';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import StorefrontIcon from '@material-ui/icons/Storefront';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import type { TransitionProps } from '@material-ui/core/transitions';
 import dayjs from 'dayjs';
-import { useDocumentVisibility, useInViewport, useUpdateEffect } from 'ahooks';
+import {
+  useBoolean,
+  useDocumentVisibility,
+  useInViewport,
+  useUpdateEffect,
+} from 'ahooks';
 
 import useRecord from '@app/hooks/useRecord';
 
 import NewItem from './NewItem';
 import Item from './Item';
+
+const Transition = React.forwardRef(function Transition(
+  // eslint-disable-next-line react/require-default-props
+  props: TransitionProps & { children?: React.ReactElement<any, any> },
+  ref: React.Ref<HTMLElement>
+) {
+  return <Slide direction="left" ref={ref} {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +52,11 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(9),
     right: theme.spacing(2),
   },
+  newItem: {
+    position: 'absolute',
+    bottom: theme.spacing(12),
+    right: theme.spacing(2),
+  },
 }));
 
 export default function Record() {
@@ -37,6 +68,8 @@ export default function Record() {
   ] = useRecord();
   const [selectedItem, setSelectedItem] = React.useState<string>();
   const rootRef = React.useRef<HTMLDivElement>(null);
+  const [newItemIn, { toggle: newItemToggle }] = useBoolean(false);
+  const [speedDialOpen, { toggle: speedDialOpenToggle }] = useBoolean(false);
 
   const documentVisibility = useDocumentVisibility();
   const inViewPort = useInViewport(rootRef);
@@ -49,8 +82,9 @@ export default function Record() {
   const handleNewItem = React.useCallback(
     (item) => {
       addRecord(item);
+      newItemToggle(false);
     },
-    [addRecord]
+    [addRecord, newItemToggle]
   );
   const handleDeleteItem = React.useCallback(
     (item) => {
@@ -81,8 +115,6 @@ export default function Record() {
   return (
     <div className={classes.root} ref={rootRef}>
       <div className={classes.tools}>
-        {is.development && <NewItem onSubmit={handleNewItem} />}
-
         <TextField
           label="选择日期"
           type="date"
@@ -110,6 +142,38 @@ export default function Record() {
             );
           })}
       </BaseList>
+
+      <Zoom in>
+        <SpeedDial
+          className={classes.fab}
+          open={speedDialOpen}
+          onClose={() => speedDialOpenToggle(false)}
+          onOpen={() => speedDialOpenToggle(true)}
+          icon={
+            <SpeedDialIcon
+              icon={<StorefrontIcon />}
+              openIcon={<SearchIcon />}
+            />
+          }
+          ariaLabel="工具集"
+        >
+          <SpeedDialAction
+            icon={<AddIcon />}
+            title="手动添加战绩"
+            tooltipTitle="手动添加战绩"
+            onClick={() => newItemToggle(true)}
+          />
+        </SpeedDial>
+      </Zoom>
+      <Dialog
+        TransitionComponent={Transition}
+        open={newItemIn}
+        onClose={() => newItemToggle(false)}
+      >
+        <Tooltip title="可以点击">
+          <NewItem onSubmit={handleNewItem} />
+        </Tooltip>
+      </Dialog>
     </div>
   );
 }
