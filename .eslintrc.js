@@ -1,5 +1,5 @@
 module.exports = {
-  extends: 'erb/typescript',
+  extends: 'erb',
   plugins: ['prettier'],
   rules: {
     'prettier/prettier': 'error',

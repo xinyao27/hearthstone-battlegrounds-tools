@@ -1,24 +1,16 @@
 import { EventEmitter } from 'events';
 import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
-import path from 'path';
 import { is } from 'electron-util';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
-import { getAppHTML } from '../utils';
+import { getAppHTML, getAssetPath } from '../utils';
 
 function appUpdater() {
   log.transports.file.level = 'info';
   autoUpdater.logger = log;
   autoUpdater.checkForUpdatesAndNotify();
 }
-
-const getAssetPath = (...paths: string[]): string => {
-  const RESOURCES_PATH = app.isPackaged
-    ? path.join(process.resourcesPath, 'resources')
-    : path.join(__dirname, '../resources');
-  return path.join(RESOURCES_PATH, ...paths);
-};
 
 interface Params {
   onInit: (window: BrowserWindow) => void;
