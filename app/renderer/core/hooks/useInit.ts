@@ -6,7 +6,7 @@ import { promises as fsPromises } from 'fs';
 import { ipcRenderer, remote } from 'electron';
 
 import { config } from '@shared/store';
-import { MAIN_LOGHANDLER_MESSAGE } from '@shared/constants/topic';
+import { CORE_LOGHANDLER_MESSAGE } from '@shared/constants/topic';
 
 function useInit(): [boolean, { check: () => Promise<boolean> }] {
   const [correctDirectory, { toggle: setCorrectDirectory }] = useBoolean(true);
@@ -39,7 +39,7 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
       if (result && logHandlerWindow !== undefined) {
         ipcRenderer.sendTo(
           logHandlerWindow.webContents?.id,
-          MAIN_LOGHANDLER_MESSAGE,
+          CORE_LOGHANDLER_MESSAGE,
           {
             type: 'startWatch',
           }

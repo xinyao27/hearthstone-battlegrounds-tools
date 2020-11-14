@@ -9,7 +9,7 @@ import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import { getHeroId, getHero } from '@suspension/utils';
-import { SUSPENSION_MAIN_MESSAGE } from '@shared/constants/topic';
+import { SUSPENSION_CORE_MESSAGE } from '@shared/constants/topic';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -152,7 +152,7 @@ const GameOver: React.FC = () => {
         const { coreWindow } = remote.getGlobal('windows');
         ipcRenderer.sendTo(
           coreWindow.webContents?.id,
-          SUSPENSION_MAIN_MESSAGE,
+          SUSPENSION_CORE_MESSAGE,
           {
             type: 'addRecord',
             data: record,

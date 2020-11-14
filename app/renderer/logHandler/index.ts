@@ -2,7 +2,7 @@ import { Observable, Subscription } from 'rxjs';
 import { ipcRenderer } from 'electron';
 import log from 'electron-log';
 
-import { MAIN_LOGHANDLER_MESSAGE } from '@shared/constants/topic';
+import { CORE_LOGHANDLER_MESSAGE } from '@shared/constants/topic';
 
 import createObservable from './observable';
 import createObserver from './observer';
@@ -31,7 +31,7 @@ interface StartWatch {
 function run() {
   let isWatching = false;
   let subscription: Subscription;
-  ipcRenderer.on(MAIN_LOGHANDLER_MESSAGE, (_, args: StartWatch) => {
+  ipcRenderer.on(CORE_LOGHANDLER_MESSAGE, (_, args: StartWatch) => {
     if (isWatching) {
       subscription?.unsubscribe();
       isWatching = false;

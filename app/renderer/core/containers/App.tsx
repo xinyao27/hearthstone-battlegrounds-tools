@@ -13,7 +13,7 @@ import Navigation from '@core/components/Navigation';
 import useRecord from '@core/hooks/useRecord';
 import useInit from '@core/hooks/useInit';
 import routes from '@core/constants/routes.json';
-import { SUSPENSION_MAIN_MESSAGE } from '@shared/constants/topic';
+import { SUSPENSION_CORE_MESSAGE } from '@shared/constants/topic';
 
 type Props = {
   children: ReactNode;
@@ -65,7 +65,7 @@ export default function App({ children }: Props) {
 
   useMount(() => {
     ipcRenderer.on(
-      SUSPENSION_MAIN_MESSAGE,
+      SUSPENSION_CORE_MESSAGE,
       (_event, args: { type: string; data: any }) => {
         if (args.type === 'addRecord') {
           addRecord(args.data);
