@@ -3,6 +3,7 @@ import { BrowserWindow } from 'electron';
 import CoreManager from '@main/windows/CoreManager';
 import LogHandlerManager from '@main/windows/LogHandlerManager';
 import SuspensionManager from '@main/windows/SuspensionManager';
+import Store from '@shared/store/store';
 
 declare module '*.jpg' {
   const value: any;
@@ -43,6 +44,7 @@ declare global {
         logHandlerManager: LogHandlerManager | null;
         suspensionManager: SuspensionManager | null;
       };
+      store: Store<any>;
     }
   }
 }

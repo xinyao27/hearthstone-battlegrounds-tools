@@ -3,13 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useCreation, useDebounceFn } from 'ahooks';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { v4 as uuid } from 'uuid';
-import { ipcRenderer, remote } from 'electron';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
-import { getHeroId, getHero } from '@suspension/utils';
-import { SUSPENSION_CORE_MESSAGE } from '@shared/constants/topic';
+import { getHero, getHeroId } from '@suspension/utils';
+import { getStore } from '@shared/store';
+import { Topic } from '@shared/constants/topic';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -120,6 +120,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const store = getStore();
+
 const GameOver: React.FC = () => {
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
@@ -149,15 +151,10 @@ const GameOver: React.FC = () => {
           rank,
           date,
         };
-        const { coreWindow } = remote.getGlobal('windows');
-        ipcRenderer.sendTo(
-          coreWindow.webContents?.id,
-          SUSPENSION_CORE_MESSAGE,
-          {
-            type: 'addRecord',
-            data: record,
-          }
-        );
+        store.dispatch<Topic.ADD_RECORD>({
+          type: Topic.ADD_RECORD,
+          payload: record,
+        });
       }
     },
     { wait: 500 }

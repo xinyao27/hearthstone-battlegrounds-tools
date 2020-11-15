@@ -1,8 +1,11 @@
+import { remote } from 'electron';
 import Store from 'electron-store';
 import { is } from 'electron-util';
 
 import type { RecordItem } from '@core/hooks/useStatistics';
 import type { RequestMethodReturnMap } from '@core/pages/settings/OBS/types';
+
+import GlobalStore from './store';
 
 interface Config {
   heartstoneRootPath?: string;
@@ -63,7 +66,12 @@ export const records = {
   },
 };
 
-export default {
-  config,
-  records,
-};
+export function getStore(): GlobalStore<any> {
+  if (is.main) {
+    return global.store;
+  }
+  if (is.renderer) {
+    return remote.getGlobal('store');
+  }
+  return new GlobalStore();
+}

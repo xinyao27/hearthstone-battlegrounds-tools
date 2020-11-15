@@ -1,9 +1,11 @@
-import { remote, ipcRenderer } from 'electron';
 import { Subscription } from 'rxjs';
 
-import { LOGHANDLER_SUSPENSION_MESSAGE } from '@shared/constants/topic';
+import { Topic } from '@shared/constants/topic';
+import { getStore } from '@shared/store';
 
 import type { Filtered } from './parser';
+
+const store = getStore();
 
 /**
  * 负责将整理过的日志信息向外广播
@@ -29,16 +31,12 @@ export function logManager(
       }
     }
 
-    const { suspensionWindow } = remote.getGlobal('windows');
-    if (suspensionWindow !== undefined) {
-      ipcRenderer.sendTo(
-        suspensionWindow.webContents?.id,
-        LOGHANDLER_SUSPENSION_MESSAGE,
-        {
-          type,
-          source,
-        }
-      );
-    }
+    store.dispatch<Topic.FLOW>({
+      type: Topic.FLOW,
+      payload: {
+        type,
+        source,
+      },
+    });
   }
 }

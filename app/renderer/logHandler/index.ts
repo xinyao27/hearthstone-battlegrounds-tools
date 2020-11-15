@@ -1,8 +1,8 @@
 import { Observable, Subscription } from 'rxjs';
-import { ipcRenderer } from 'electron';
 import log from 'electron-log';
 
-import { CORE_LOGHANDLER_MESSAGE } from '@shared/constants/topic';
+import { getStore } from '@shared/store';
+import { Topic } from '@shared/constants/topic';
 
 import createObservable from './observable';
 import createObserver from './observer';
@@ -24,22 +24,19 @@ function startWatch() {
   );
 }
 
-interface StartWatch {
-  type: 'startWatch';
-  data: string;
-}
 function run() {
+  const store = getStore();
   let isWatching = false;
   let subscription: Subscription;
-  ipcRenderer.on(CORE_LOGHANDLER_MESSAGE, (_, args: StartWatch) => {
-    if (isWatching) {
-      subscription?.unsubscribe();
-      isWatching = false;
-    }
-    if (args.type === 'startWatch') {
+  store.subscribe<Topic.START_WATCH>((action) => {
+    if (action.type === Topic.START_WATCH) {
+      if (isWatching) {
+        subscription?.unsubscribe();
+        isWatching = false;
+      }
       subscription = startWatch();
       isWatching = true;
-      log.info('startWatch - started');
+      log.info(`${Topic.START_WATCH} - started`);
     }
   });
 }

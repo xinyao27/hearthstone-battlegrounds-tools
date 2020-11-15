@@ -1,19 +1,17 @@
-import { ipcRenderer } from 'electron';
 import React, { ReactNode } from 'react';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { CssBaseline, Box } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { Box, CssBaseline } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import { useMount, useUpdateEffect } from 'ahooks';
 import { useHistory } from 'react-router-dom';
 
-import { LOGHANDLER_SUSPENSION_MESSAGE } from '@shared/constants/topic';
-import type { Filtered } from '@logHandler/parser';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 import routes from '@suspension/constants/routes.json';
-import { config } from '@shared/store';
-import { showSuspension, hideSuspension } from '@suspension/utils';
+import { hideSuspension, showSuspension } from '@suspension/utils';
+import { config, getStore } from '@shared/store';
+import { Topic } from '@shared/constants/topic';
 
 type Props = {
   children: ReactNode;
@@ -88,6 +86,8 @@ const theme = createMuiTheme({
   },
 });
 
+const store = getStore();
+
 export default function App(props: Props) {
   const { children } = props;
   const history = useHistory();
@@ -95,17 +95,17 @@ export default function App(props: Props) {
   const [boxFlow, setBoxFlow] = useBoxFlow();
 
   useMount(() => {
-    ipcRenderer.on(
-      LOGHANDLER_SUSPENSION_MESSAGE,
-      (_event, args: { type: 'box' | 'state'; source: Filtered }) => {
-        if (args.type === 'box') {
-          setBoxFlow(args.source);
+    store.subscribe<Topic.FLOW>((action) => {
+      const { type, payload } = action;
+      if (type === Topic.FLOW) {
+        if (payload.type === 'box') {
+          setBoxFlow(payload.source);
         }
-        if (args.type === 'state') {
-          setStateFlow(args.source);
+        if (payload.type === 'state') {
+          setStateFlow(payload.source);
         }
       }
-    );
+    });
   });
 
   useUpdateEffect(() => {
