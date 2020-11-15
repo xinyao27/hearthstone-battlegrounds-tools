@@ -57,7 +57,7 @@ class CoreManager extends EventEmitter {
     this.window.loadURL(getAppHTML());
     onInit(this.window);
 
-    this.window.on('ready-to-show', () => {
+    this.window.webContents.on('did-finish-load', () => {
       if (!this.window) {
         throw new Error('`coreWindow` is not defined');
       }

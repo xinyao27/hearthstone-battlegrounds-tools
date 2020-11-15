@@ -8,21 +8,17 @@ export type State =
   | 'GAME_START'
   | 'HERO_TOBE_CHOSEN'
   | 'HERO_CHOICES'
+  | 'HERO_TO_FIGHT'
   | 'GAME_RANKING'
   | 'GAME_OVER';
-export interface BoxRegex {
-  state: BoxState;
+export interface Regex<T = string> {
+  state: T;
   fn: RegExp;
   regex?: RegExp;
   index?: number | number[];
 }
-export interface StateRegex {
-  state: State;
-  fn: RegExp;
-  regex?: RegExp;
-  index?: number | number[];
-}
-export const boxRegexes: BoxRegex[] = [
+
+export const boxRegexes: Regex<BoxState>[] = [
   // 酒馆打开
   {
     state: 'AWAKE',
@@ -52,7 +48,7 @@ export const boxRegexes: BoxRegex[] = [
   },
 ];
 
-export const stateRegexes: StateRegex[] = [
+export const stateRegexes: Regex<State>[] = [
   // 对局开始
   {
     state: 'GAME_START',
@@ -73,6 +69,14 @@ export const stateRegexes: StateRegex[] = [
     regex: /m_chosenEntities\[\d\]=\[entityName=(\S+).*zone=HAND.*\]/,
     index: 1,
   },
+  // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
+  // 本局对战中对手的英雄 Array
+  {
+    state: 'HERO_TO_FIGHT',
+    fn: /PowerTaskList.DebugPrintPower\(\)/,
+    regex: /Updating \[entityName=(\S+).*zone=SETASIDE zonePos=0.*\].*/,
+    index: 1,
+  },
   // 对局排名
   {
     state: 'GAME_RANKING',
@@ -85,5 +89,13 @@ export const stateRegexes: StateRegex[] = [
     state: 'GAME_OVER',
     fn: /GameState.DebugPrintPower\(\)/,
     regex: /TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE/,
+  },
+];
+
+export const mergeRegexes: Regex[] = [
+  {
+    state: 'FULL_ENTITY',
+    fn: /PowerTaskList.DebugPrintPower\(\)/,
+    regex: /FULL_ENTITY/,
   },
 ];

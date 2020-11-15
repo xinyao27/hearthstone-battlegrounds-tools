@@ -7,7 +7,7 @@ import {
   filter as filterOperator,
 } from 'rxjs/operators';
 
-import type { BoxRegex, BoxState, State, StateRegex } from './regex';
+import type { Regex, BoxState, State } from './regex';
 
 const read = bindNodeCallback(fs.read);
 const open = bindNodeCallback(fs.open);
@@ -54,6 +54,17 @@ export const readline = () => (source: Observable<Buffer>) =>
           const [date, fn, ...params] = item;
           return { date, fn, params: params.join(' ') };
         })
+        .reduce<Line[]>((acc, cur) => {
+          const has = acc.find((v) => v.date === cur.date);
+          if (has) {
+            const item: Line = {
+              ...has,
+              params: `${has.params} ${cur.params}`,
+            };
+            return [...acc, item];
+          }
+          return [...acc, cur];
+        }, [])
     ),
     mergeMap((v) => v),
     catchError((err) => {
@@ -71,7 +82,7 @@ export interface Filtered {
  * 过滤掉无用日志
  * @param regexes
  */
-export const filter = (regexes: StateRegex[] | BoxRegex[]) => (
+export const filter = (regexes: Regex<State>[] | Regex<BoxState>[]) => (
   source: Observable<Line>
 ) =>
   source.pipe(

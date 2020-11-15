@@ -18,6 +18,7 @@ module.exports = {
     'no-nested-ternary': 'off',
     'react/jsx-wrap-multilines': 'off',
     'no-new': 'off',
+    'class-methods-use-this': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
