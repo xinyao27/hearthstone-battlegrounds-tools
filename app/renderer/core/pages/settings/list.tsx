@@ -33,16 +33,17 @@ interface Item {
   action: React.ReactNode | React.Component;
 }
 function getList(): Item[] {
-  const { suspensionWindow } = remote.getGlobal('windows');
   const { suspensionManager } = remote.getGlobal('managers');
   const list: Item[] = [
     {
       icon: <DeveloperModeIcon />,
       label: '悬浮框展示',
       action: function Action() {
-        const [checked, { toggle }] = useBoolean(suspensionWindow.isVisible());
+        const [checked, { toggle }] = useBoolean(
+          suspensionManager?.window.isVisible()
+        );
         useMount(() => {
-          toggle(suspensionWindow.isVisible());
+          toggle(suspensionManager?.window.isVisible());
         });
         return (
           <Switch
@@ -51,9 +52,9 @@ function getList(): Item[] {
             onChange={(_, value) => {
               toggle(value);
               if (value) {
-                suspensionManager.show();
+                suspensionManager?.show();
               } else {
-                suspensionManager.hide();
+                suspensionManager?.hide();
               }
             }}
           />

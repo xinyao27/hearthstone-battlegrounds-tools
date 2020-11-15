@@ -34,11 +34,6 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
-      windows: {
-        coreWindow: BrowserWindow | null;
-        logHandlerWindow: BrowserWindow | null;
-        suspensionWindow: BrowserWindow | null;
-      };
       managers: {
         coreManager: CoreManager | null;
         logHandlerManager: LogHandlerManager | null;

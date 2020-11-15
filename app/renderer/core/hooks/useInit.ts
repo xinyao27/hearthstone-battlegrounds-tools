@@ -3,7 +3,6 @@ import { createModel } from 'hox';
 import { useBoolean, useMount } from 'ahooks';
 import { is } from 'electron-util';
 import { promises as fsPromises } from 'fs';
-import { remote } from 'electron';
 
 import { config, getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
@@ -35,8 +34,7 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
         return false;
       });
       // 如果是合法目录开始监控 Logs
-      const { logHandlerWindow } = remote.getGlobal('windows');
-      if (result && logHandlerWindow !== undefined) {
+      if (result) {
         store.dispatch<Topic.START_WATCH>({
           type: Topic.START_WATCH,
         });
