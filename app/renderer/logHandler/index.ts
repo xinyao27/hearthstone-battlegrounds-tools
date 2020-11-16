@@ -6,20 +6,20 @@ import { Topic } from '@shared/constants/topic';
 
 import createObservable from './observable';
 import createObserver from './observer';
-import { readFile, readline, filter } from './parser';
-import { stateRegexes, boxRegexes } from './regex';
+import { readFile, parser, filter } from './parser';
+import { boxFeatures, stateFeatures } from './features';
 import config from './config';
 
 const createPowerLogObservable = (observable: Observable<any>) => () =>
   observable
-    .pipe(readFile(), readline(), filter(stateRegexes))
+    .pipe(readFile(), parser(), filter(stateFeatures))
     .subscribe(createObserver('state'));
 
 function startWatch() {
   const BoxSource$ = createObservable(config.heartstoneBoxLogFilePath);
   const PowerLogSource$ = createObservable(config.heartstonePowerLogFilePath);
 
-  return BoxSource$.pipe(readFile(), readline(), filter(boxRegexes)).subscribe(
+  return BoxSource$.pipe(readFile(), parser(), filter(boxFeatures)).subscribe(
     createObserver('box', createPowerLogObservable(PowerLogSource$))
   );
 }

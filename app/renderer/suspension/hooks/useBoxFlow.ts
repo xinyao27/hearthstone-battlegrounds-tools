@@ -1,7 +1,7 @@
 import React from 'react';
 import { createModel } from 'hox';
 
-import type { BoxState } from '@logHandler/regex';
+import type { BoxState } from '@logHandler/features';
 import type { Filtered } from '@logHandler/parser';
 
 export type BoxFlow = Record<
@@ -9,7 +9,7 @@ export type BoxFlow = Record<
   {
     date: Filtered['date'];
     result: Filtered['result'];
-    line: Filtered['line'];
+    block: Filtered['block'];
   }
 > & {
   current: BoxState;
@@ -24,7 +24,7 @@ function useBoxFlow(): [BoxFlow | null, (value: Filtered) => void] {
       const data = {
         date: value.date,
         result: value.result,
-        line: value.line,
+        block: value.block,
       };
       return {
         ...prevState,

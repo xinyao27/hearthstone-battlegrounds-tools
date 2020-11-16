@@ -136,7 +136,7 @@ export default function App(props: Props) {
   }, [stateFlow?.current]);
   useUpdateEffect(() => {
     // 游戏结束 关闭悬浮
-    if (boxFlow?.current === 'GAME_OVER') {
+    if (boxFlow?.current === 'Box_GAME_OVER') {
       hideSuspension();
     }
   }, [boxFlow?.current]);

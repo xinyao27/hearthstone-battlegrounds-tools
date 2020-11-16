@@ -22,11 +22,11 @@ export function logManager(
     if (type === 'box') {
       let observable = null;
       // 对局开始 开始监控 Power.log 以及加载悬浮框
-      if (source.state === 'GAME_START') {
+      if (source.state === 'BOX_GAME_START') {
         observable = cb?.();
       }
       // 对局结束 结束监控 Power.log 以及关闭悬浮框
-      if (source.state === 'GAME_OVER') {
+      if (source.state === 'BOX_GAME_OVER') {
         observable?.unsubscribe();
       }
     }

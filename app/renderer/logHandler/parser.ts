@@ -1,13 +1,15 @@
 import fs from 'fs';
-import { Observable, bindNodeCallback, of } from 'rxjs';
+import { bindNodeCallback, Observable, of } from 'rxjs';
 import {
   catchError,
-  mergeMap,
-  map,
   filter as filterOperator,
+  map,
+  mergeMap,
 } from 'rxjs/operators';
 
-import type { Regex, BoxState, State } from './regex';
+import type { BoxState, Feature, State } from './features';
+import LogBlock from './LogBlock';
+import { match } from './utils';
 
 const read = bindNodeCallback(fs.read);
 const open = bindNodeCallback(fs.open);
@@ -33,42 +35,18 @@ export const readFile = () => (
     })
   );
 
-export type Line = {
-  date: string;
-  fn: string;
-  params: string;
-};
-/**
- * 对日志逐行读取
- */
-export const readline = () => (source: Observable<Buffer>) =>
+export const parser = () => (source: Observable<Buffer>) =>
   source.pipe(
-    map((buffer) =>
-      buffer
-        .toString()
-        .split('\n')
-        .map((v) =>
-          v.split(' ').filter((v2) => v2 !== '' && v2 !== 'D' && v2 !== '-')
-        )
-        .map((item) => {
-          const [date, fn, ...params] = item;
-          return { date, fn, params: params.join(' ') };
-        })
-        .reduce<Line[]>((acc, cur) => {
-          const has = acc.find((v) => v.date === cur.date);
-          if (has) {
-            const item: Line = {
-              ...has,
-              params: `${has.params} ${cur.params}`,
-            };
-            return [...acc, item];
-          }
-          return [...acc, cur];
-        }, [])
-    ),
-    mergeMap((v) => v),
+    map((buffer) => {
+      const string = buffer.toString();
+      if (string) {
+        return new LogBlock(string);
+      }
+      return null;
+    }),
+    filterOperator((v) => !!v),
     catchError((err) => {
-      throw `readline: ${err}`;
+      throw `parser: ${err}`;
     })
   );
 
@@ -76,47 +54,19 @@ export interface Filtered {
   date: string;
   state: State | BoxState;
   result?: any;
-  line: Line;
+  block: LogBlock;
 }
 /**
  * 过滤掉无用日志
- * @param regexes
+ * @param features
  */
-export const filter = (regexes: Regex<State>[] | Regex<BoxState>[]) => (
-  source: Observable<Line>
+export const filter = (features: Feature<State>[] | Feature<BoxState>[]) => (
+  source: Observable<LogBlock>
 ) =>
   source.pipe(
-    map((line) => {
-      if (line.date && line.fn) {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const { state, fn, regex, index = 0 } of regexes) {
-          const fnMatched = line.fn.match(fn);
-          if (fnMatched) {
-            if (line.params.length) {
-              if (regex) {
-                const paramsMatched = line.params.match(regex);
-                // eslint-disable-next-line no-nested-ternary
-                if (paramsMatched) {
-                  const result = Array.isArray(index)
-                    ? index.map((i) => paramsMatched[i])
-                    : paramsMatched[index];
-                  return {
-                    date: line.date,
-                    state,
-                    result,
-                    line,
-                  };
-                }
-              }
-            } else {
-              return {
-                date: line.date,
-                state,
-                line,
-              };
-            }
-          }
-        }
+    map((block) => {
+      if (block.original && Array.isArray(block.data) && block.data.length) {
+        return match(features, block.data);
       }
       return null;
     }),

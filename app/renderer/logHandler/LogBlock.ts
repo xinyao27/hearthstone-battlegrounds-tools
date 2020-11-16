@@ -1,6 +1,6 @@
 import LogLine from './LogLine';
 
-interface Block {
+export interface Block {
   original: string;
   data: LogLine[];
 }
@@ -22,22 +22,35 @@ export default class LogBlock implements Block {
   parse(content: string) {
     return content?.split('\n').reduce<LogLine[]>((acc, cur) => {
       if (cur) {
-        const parsedLine = new LogLine(cur);
-        if (parsedLine.isChildren) {
-          // 如果是子级 与数组最后一项合并
-          const lastIndex = acc.length - 1;
-          if (lastIndex) {
-            const parent = acc[acc.length - 1];
-            const children = parent?.body.children ?? [];
-            children.push(parsedLine);
-            parent.body.children = children;
-            acc.splice(lastIndex, 1, parent);
-          }
+        const line = new LogLine(cur);
+        if (line?.level) {
+          this.findParentAndInsertChild(acc, line);
           return acc;
         }
-        return [...acc, parsedLine];
+        // 0 级
+        return [...acc, line];
       }
+      // 兜底
       return acc;
     }, []);
+  }
+
+  /**
+   * 递归塞入 line
+   * 为了避免太多开销 这里直接修改参数
+   * @param block
+   * @param line
+   */
+  findParentAndInsertChild(
+    block: LogLine[],
+    line: LogLine
+  ): LogLine[] | undefined {
+    const lastOne = block[block.length - 1];
+    if (lastOne?.level === line.level - 1 || !lastOne.children) {
+      if (!lastOne.children) lastOne.children = [];
+      lastOne.children.push(line);
+      return undefined;
+    }
+    return this.findParentAndInsertChild(lastOne.children, line);
   }
 }
