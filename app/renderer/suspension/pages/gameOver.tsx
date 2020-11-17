@@ -1,21 +1,14 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  useBoolean,
-  useCreation,
-  useDebounceFn,
-  useUpdateEffect,
-} from 'ahooks';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import { useDebounceFn, useUpdateEffect } from 'ahooks';
 import { v4 as uuid } from 'uuid';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
-import useStateFlow from '@suspension/hooks/useStateFlow';
-import { getHero, getHeroId } from '@suspension/utils';
+import useCurrentHero from '@suspension/hooks/useCurrentHero';
+
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
-import useBoxFlow from '@suspension/hooks/useBoxFlow';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -130,39 +123,20 @@ const store = getStore();
 
 const GameOver: React.FC = () => {
   const classes = useStyles();
-  const [stateFlow] = useStateFlow();
-  const [boxFlow] = useBoxFlow();
-  const [error, { toggle: setError }] = useBoolean(false);
+  const { hero, rank } = useCurrentHero();
 
-  const data = useCreation(() => {
-    if (stateFlow?.current === 'GAME_OVER') {
-      setError(false);
-      if (stateFlow.HERO_CHOICES?.result) {
-        const [heroName] = stateFlow.HERO_CHOICES.result;
-        const heroId = getHeroId(heroName);
-        const hero = getHero(heroId);
-        if (stateFlow.GAME_RANKING?.result) {
-          const heroRank = stateFlow.GAME_RANKING.result;
-          return [hero, heroRank];
-        }
-        return [hero, '8'];
-      }
-    }
-    return [null, null];
-  }, [stateFlow]);
-
+  // 战绩发送至 core 添加战绩
   const { run } = useDebounceFn(
-    () => {
-      const [hero, rank] = data;
-      if (hero && rank) {
+    (_hero, _rank) => {
+      if (_hero && _rank) {
         const date = new Date();
         const record = {
           id: uuid(),
           hero: {
-            id: hero.id,
-            name: hero.name,
+            id: _hero.id,
+            name: _hero.name,
           },
-          rank,
+          rank: _rank,
           date,
         };
         store.dispatch<Topic.ADD_RECORD>({
@@ -173,60 +147,50 @@ const GameOver: React.FC = () => {
     },
     { wait: 500 }
   );
-  useDeepCompareEffect(() => {
-    run();
-  }, [data]);
   useUpdateEffect(() => {
-    if (boxFlow?.current === 'BOX_GAME_OVER') {
-      if (stateFlow?.current !== 'GAME_OVER') {
-        setError(true);
-      }
-    }
-  }, [boxFlow?.current]);
+    run(hero, rank);
+  }, [hero, rank]);
 
-  const [hero, rank] = data;
-
-  if (error || (!hero && !rank)) {
+  if (hero && rank) {
     return (
       <Layout>
-        <Text>
-          检测到对局可能非正常结束，本局战绩已忽略。您可以选择忽略此消息或到插件战绩栏手动记录战绩
-        </Text>
+        <div className={classes.container}>
+          {hero && (
+            <div className={classes.hero}>
+              <div className={classes.head}>
+                <Text className={classes.headText} color="#e9dd52">
+                  对局结束
+                </Text>
+              </div>
+              <div className={classes.avatar}>
+                <img src={hero.battlegrounds.image} alt={hero.name} />
+              </div>
+              <Text className={classes.name}>{hero.name}</Text>
+            </div>
+          )}
+
+          <div className={classes.rank}>
+            <div className={classes.crown} />
+            <div className={classes.content}>
+              <Text className={classes.title} stroke={false} color="black">
+                当局排名
+              </Text>
+              <Text className={classes.value}>{rank}</Text>
+            </div>
+          </div>
+
+          <Text className={classes.tip} stroke={false} color="black">
+            已记录本场战绩
+          </Text>
+        </div>
       </Layout>
     );
   }
 
   return (
     <Layout>
-      <div className={classes.container}>
-        {hero && (
-          <div className={classes.hero}>
-            <div className={classes.head}>
-              <Text className={classes.headText} color="#e9dd52">
-                对局结束
-              </Text>
-            </div>
-            <div className={classes.avatar}>
-              <img src={hero.battlegrounds.image} alt={hero.name} />
-            </div>
-            <Text className={classes.name}>{hero.name}</Text>
-          </div>
-        )}
-
-        <div className={classes.rank}>
-          <div className={classes.crown} />
-          <div className={classes.content}>
-            <Text className={classes.title} stroke={false} color="black">
-              当局排名
-            </Text>
-            <Text className={classes.value}>{rank}</Text>
-          </div>
-        </div>
-
-        <Text className={classes.tip} stroke={false} color="black">
-          已记录本场战绩
-        </Text>
-      </div>
+      <Text>检测到对局可能非正常结束，本局战绩已忽略。</Text>
+      <Text>您可以选择忽略此消息或到插件战绩栏手动记录战绩。</Text>
     </Layout>
   );
 };

@@ -197,7 +197,7 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
   if (data && hero) {
     return (
       <Grow in={!!hero} style={{ transformOrigin: '0 0 0' }} timeout={300}>
-        <div className={classes.root} onClick={refresh}>
+        <div className={classes.root}>
           <div className={classes.title}>
             <div className={classes.avatar}>
               <img src={hero.battlegrounds.image} alt={hero.name} />

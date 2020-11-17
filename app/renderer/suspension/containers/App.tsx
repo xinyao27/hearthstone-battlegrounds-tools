@@ -139,9 +139,12 @@ export default function App(props: Props) {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
       if (stateFlow?.current === 'GAME_OVER' && stateFlow.GAME_OVER) {
         hideSuspension();
+      } else {
+        history.push(routes.GAMEOVER);
+        showSuspension();
       }
     }
-  }, [boxFlow?.current]);
+  }, [boxFlow?.current, stateFlow?.current]);
 
   return (
     <ThemeProvider theme={theme}>

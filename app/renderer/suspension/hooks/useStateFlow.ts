@@ -42,14 +42,6 @@ function useStateFlow(): [
             [value.state]: data,
             current: value.state,
           };
-        case 'GAME_OVER':
-          return {
-            ...prevState,
-            [value.state]: data,
-            current: value.state,
-            // HERO_TOBE_CHOSEN 待选择英雄清空
-            HERO_TOBE_CHOSEN: null,
-          };
         default:
           return {
             ...prevState,

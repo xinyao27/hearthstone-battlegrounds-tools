@@ -57,6 +57,11 @@ class SuspensionManager extends EventEmitter {
     const y = 100;
     this.window.setPosition(x, y);
     this.window.setAlwaysOnTop(true, 'screen-saver', 1000);
+    if (is.macos) {
+      this.window.setVisibleOnAllWorkspaces(true, {
+        visibleOnFullScreen: true,
+      });
+    }
     this.window.loadURL(getAppHTML('suspension'));
     onInit(this.window);
 
