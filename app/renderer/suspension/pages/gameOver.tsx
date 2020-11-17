@@ -186,7 +186,7 @@ const GameOver: React.FC = () => {
 
   const [hero, rank] = data;
 
-  if (error) {
+  if (error || (!hero && !rank)) {
     return (
       <Layout>
         <Text>
