@@ -2,29 +2,33 @@ import React from 'react';
 import { createModel } from 'hox';
 
 import type { BoxState } from '@logHandler/features';
-import type { Filtered } from '@logHandler/parser';
+import type { MatchResult } from '@logHandler/utils';
 
 export type BoxFlow = Record<
   BoxState,
   {
-    date: Filtered['date'];
-    result: Filtered['result'];
-    block: Filtered['block'];
+    date: MatchResult<BoxState>['date'];
+    line: MatchResult<BoxState>['line'];
+    feature: MatchResult<BoxState>['feature'];
+    result: any;
   }
 > & {
   current: BoxState;
 };
 
-function useBoxFlow(): [BoxFlow | null, (value: Filtered) => void] {
+function useBoxFlow(): [
+  BoxFlow | null,
+  (value: MatchResult<BoxState>) => void
+] {
   // @ts-ignore
   const [box, setBox] = React.useState<BoxFlow>({});
-  const handleBox = React.useCallback((value: Filtered) => {
+  const handleBox = React.useCallback((value: MatchResult<BoxState>) => {
     // @ts-ignore
     setBox((prevState) => {
       const data = {
         date: value.date,
-        result: value.result,
-        block: value.block,
+        line: value.line,
+        feature: value.feature,
       };
       return {
         ...prevState,

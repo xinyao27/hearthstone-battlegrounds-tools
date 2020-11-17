@@ -21,6 +21,7 @@ export interface Feature<T = string> {
   command?: string | RegExp;
   parameter?: { key?: string | RegExp; value: string | RegExp }[];
   children?: Feature<T>[];
+  getResult?: (line: Line) => any;
 }
 
 export const boxFeatures: Feature<BoxState>[] = [
@@ -117,11 +118,35 @@ export const stateFeatures: Feature<State>[] = [
         level: 1,
         bodyType: 'parameter',
         parameter: [
-          { key: /Entities\[\d\]/, value: /\[entityName=(\S+).*zone=HAND.*\]/ },
-          { key: /Entities\[\d\]/, value: /\[entityName=(\S+).*zone=HAND.*\]/ },
+          {
+            key: /Entities\[\d\]/,
+            value: /\[entityName=(.*) id=\d+ zone=HAND.*\]/,
+          },
+          {
+            key: /Entities\[\d\]/,
+            value: /\[entityName=(.*) id=\d+ zone=HAND.*\]/,
+          },
         ],
       },
     ],
+    getResult: (line) => {
+      return line.children
+        ?.map((child) => {
+          if (
+            Array.isArray(child.body?.parameter) &&
+            child.body?.parameter.length
+          ) {
+            const { value } = child.body.parameter[0];
+            const regex = /\[entityName=(.*) id=\d+ zone=HAND.*\]/;
+            const matched = value.match(regex);
+            if (matched) {
+              return matched[1];
+            }
+          }
+          return null;
+        })
+        .filter((v) => !!v);
+    },
   },
   // 实际选择的英雄
   // D 21:10:08.4912836 GameState.SendChoices() -   m_chosenEntities[0]=[entityName=恐龙大师布莱恩 id=88 zone=HAND zonePos=2 cardId=TB_BaconShop_HERO_43 player=6]
@@ -143,11 +168,29 @@ export const stateFeatures: Feature<State>[] = [
         parameter: [
           {
             key: /m_chosenEntities\[\d\]/,
-            value: /\[entityName=(\S+) id=\d+ zone=HAND.*\]/,
+            value: /\[entityName=(.*) id=\d+ zone=HAND.*\]/,
           },
         ],
       },
     ],
+    getResult: (line) => {
+      return line.children
+        ?.map((child) => {
+          if (
+            Array.isArray(child.body?.parameter) &&
+            child.body?.parameter.length
+          ) {
+            const { value } = child.body.parameter[0];
+            const regex = /\[entityName=(.*) id=\d+ zone=HAND.*\]/;
+            const matched = value.match(regex);
+            if (matched) {
+              return matched[1];
+            }
+          }
+          return null;
+        })
+        .filter((v) => !!v);
+    },
   },
   // // 本局对战中对手的英雄 Array
   // // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
@@ -168,7 +211,7 @@ export const stateFeatures: Feature<State>[] = [
     parameter: [
       {
         key: 'Entity',
-        value: /\[entityName=(\S+).*zone=PLAY.*\]/,
+        value: /\[entityName=(.*) id=\d+ zone=PLAY.*\]/,
       },
       {
         key: 'tag',
@@ -179,6 +222,9 @@ export const stateFeatures: Feature<State>[] = [
         value: /\d/,
       },
     ],
+    getResult: (line) => {
+      return line.body?.parameter?.find((item) => item.key === 'value')?.value;
+    },
   },
   // 对局结束
   // D 21:21:43.7370339 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER

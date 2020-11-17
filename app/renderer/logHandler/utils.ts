@@ -71,11 +71,11 @@ export function matchChildren(feature: Feature, line: LogLine) {
   return null;
 }
 
-export interface MatchResult {
+export interface MatchResult<S = string> {
   date: string;
-  state: string;
+  state: S;
   line: LogLine;
-  feature: Feature<any>;
+  feature: Feature<S>;
 }
 
 export function match(features: Feature[], lines: LogLine[]): MatchResult[] {

@@ -1,6 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useCreation, useDebounceFn } from 'ahooks';
+import {
+  useBoolean,
+  useCreation,
+  useDebounceFn,
+  useUpdateEffect,
+} from 'ahooks';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { v4 as uuid } from 'uuid';
 
@@ -10,6 +15,7 @@ import useStateFlow from '@suspension/hooks/useStateFlow';
 import { getHero, getHeroId } from '@suspension/utils';
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
+import useBoxFlow from '@suspension/hooks/useBoxFlow';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,13 +131,21 @@ const store = getStore();
 const GameOver: React.FC = () => {
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
+  const [boxFlow] = useBoxFlow();
+  const [error, { toggle: setError }] = useBoolean(false);
 
   const data = useCreation(() => {
     if (stateFlow?.current === 'GAME_OVER') {
-      if (stateFlow?.GAME_RANKING?.result) {
-        const [heroName, heroRank] = stateFlow.GAME_RANKING.result;
+      setError(false);
+      if (stateFlow.HERO_CHOICES?.result) {
+        const [heroName] = stateFlow.HERO_CHOICES.result;
         const heroId = getHeroId(heroName);
-        return [getHero(heroId), heroRank];
+        const hero = getHero(heroId);
+        if (stateFlow.GAME_RANKING?.result) {
+          const heroRank = stateFlow.GAME_RANKING.result;
+          return [hero, heroRank];
+        }
+        return [hero, '8'];
       }
     }
     return [null, null];
@@ -162,8 +176,25 @@ const GameOver: React.FC = () => {
   useDeepCompareEffect(() => {
     run();
   }, [data]);
+  useUpdateEffect(() => {
+    if (boxFlow?.current === 'BOX_GAME_OVER') {
+      if (stateFlow?.current !== 'GAME_OVER') {
+        setError(true);
+      }
+    }
+  }, [boxFlow?.current]);
 
   const [hero, rank] = data;
+
+  if (error) {
+    return (
+      <Layout>
+        <Text>
+          检测到对局可能非正常结束，本局战绩已忽略。您可以选择忽略此消息或到插件战绩栏手动记录战绩
+        </Text>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>

@@ -30,7 +30,7 @@ async function getHeroes(): Promise<ListHeroesResult> {
 }
 
 function useListHeroes() {
-  return useRequest(getHeroes, { cacheKey: 'heroes' });
+  return useRequest(getHeroes, { cacheKey: 'heroes', cacheTime: 1800000 });
 }
 
 export default createModel(useListHeroes);

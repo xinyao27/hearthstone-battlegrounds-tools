@@ -1,53 +1,45 @@
 import React from 'react';
 import { createModel } from 'hox';
 
-import type { State } from '@logHandler/regex';
-import type { Filtered } from '@logHandler/parser';
+import type { State } from '@logHandler/features';
+import type { MatchResult } from '@logHandler/utils';
+import { stateFeatures } from '@logHandler/features';
 
 export type StateFlow = Record<
   State,
   {
-    date: Filtered['date'];
-    result: Filtered['result'];
-    line: Filtered['line'];
+    date: MatchResult<State>['date'];
+    line: MatchResult<State>['line'];
+    feature: MatchResult<State>['feature'];
+    result: any;
   }
 > & {
   current: State;
 };
 
-function useStateFlow(): [StateFlow | null, (value: Filtered) => void] {
+function getStateFeature(state: State) {
+  return stateFeatures.find((v) => v.state === state);
+}
+
+function useStateFlow(): [
+  StateFlow | null,
+  (value: MatchResult<State>) => void
+] {
   const [state, setState] = React.useState<StateFlow | null>(null);
-  const handleState = React.useCallback((value: Filtered) => {
+  const handleState = React.useCallback((value: MatchResult<State>) => {
     // @ts-ignore
     setState((prevState) => {
+      const feature = getStateFeature(value.state);
       const data = {
         date: value.date,
-        result: value.result,
         line: value.line,
+        feature,
+        result: feature?.getResult?.(value.line),
       };
       switch (value.state) {
         case 'GAME_START':
           return {
             [value.state]: data,
-            current: value.state,
-          };
-        case 'HERO_TOBE_CHOSEN':
-          return {
-            ...prevState,
-            [value.state]: prevState?.HERO_TOBE_CHOSEN
-              ? {
-                  ...prevState.HERO_TOBE_CHOSEN,
-                  result: [
-                    ...new Set([
-                      ...prevState.HERO_TOBE_CHOSEN.result,
-                      value.result,
-                    ]),
-                  ],
-                }
-              : {
-                  ...data,
-                  result: [data.result],
-                },
             current: value.state,
           };
         case 'GAME_OVER':
