@@ -82,11 +82,7 @@ class Launcher extends EventEmitter {
     }
 
     app.on('window-all-closed', async () => {
-      // Respect the OSX convention of having the application in memory even
-      // after all windows have been closed
-      if (!is.macos) {
-        app.quit();
-      }
+      app.quit();
     });
 
     if (process.env.E2E_BUILD === 'true') {
@@ -100,12 +96,6 @@ class Launcher extends EventEmitter {
     } else {
       app.on('ready', callback);
     }
-
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (!this.coreManager) callback();
-    });
   }
 }
 
