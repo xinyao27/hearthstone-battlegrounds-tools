@@ -181,7 +181,7 @@ export const stateFeatures: Feature<State>[] = [
     ],
   },
   // 对局结束
-  // D 21:21:43.7370339 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE
+  // D 21:21:43.7370339 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER
   {
     state: 'GAME_OVER',
     sequenceType: 'GameState.DebugPrintPower',
@@ -195,11 +195,11 @@ export const stateFeatures: Feature<State>[] = [
       },
       {
         key: 'tag',
-        value: 'STATE',
+        value: 'STEP',
       },
       {
         key: 'value',
-        value: 'COMPLETE',
+        value: 'FINAL_GAMEOVER',
       },
     ],
   },

@@ -1,13 +1,12 @@
 import { Subscription } from 'rxjs';
 import log from 'electron-log';
 
-import type { Filtered } from './parser';
+import type { MatchResult } from './utils';
 import { logManager } from './manager';
 
 function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
   return {
-    next: (value: Filtered | null) => {
-      log.info(type, value);
+    next: (value: MatchResult[]) => {
       logManager(type, value, cb);
     },
     complete: () => {
@@ -15,8 +14,8 @@ function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
       log.warn(message);
     },
     error: (err: Error) => {
-      const message = `${type} ❌ 工作出现了问题: ${err}`;
-      log.error(message);
+      const message = `${type} ❌ 工作出现了问题: `;
+      log.error(message, err);
     },
   };
 }

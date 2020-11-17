@@ -46,11 +46,14 @@ export default class LogBlock implements Block {
     line: LogLine
   ): LogLine[] | undefined {
     const lastOne = block[block.length - 1];
-    if (lastOne?.level === line.level - 1 || !lastOne.children) {
-      if (!lastOne.children) lastOne.children = [];
-      lastOne.children.push(line);
-      return undefined;
+    if (lastOne) {
+      if (lastOne.level === line.level - 1 || !lastOne.children) {
+        if (!lastOne.children) lastOne.children = [];
+        lastOne.children.push(line);
+        return undefined;
+      }
+      return this.findParentAndInsertChild(lastOne.children, line);
     }
-    return this.findParentAndInsertChild(lastOne.children, line);
+    return undefined;
   }
 }

@@ -78,10 +78,9 @@ export interface MatchResult {
   feature: Feature<any>;
 }
 
-export function match(
-  features: Feature[],
-  lines: LogLine[]
-): MatchResult | null {
+export function match(features: Feature[], lines: LogLine[]): MatchResult[] {
+  const result = [];
+
   // eslint-disable-next-line no-restricted-syntax
   for (const feature of features) {
     // eslint-disable-next-line no-restricted-syntax
@@ -113,19 +112,22 @@ export function match(
           Array.isArray(featureChildren) &&
           lineBody?.type === featureBodyType
         ) {
-          return matchChildren(feature, line);
+          const childrenResult = matchChildren(feature, line);
+          if (childrenResult) result.push(childrenResult);
+          continue;
         }
 
         // 匹配 command
         if (lineBody?.type === 'command' && featureBodyType === 'command') {
           const matched = matchCommand(feature, lineBody);
           if (matched) {
-            return {
+            result.push({
               date: lineDate,
               state: featureState,
               line,
               feature,
-            };
+            });
+            continue;
           }
         }
 
@@ -133,12 +135,13 @@ export function match(
         if (lineBody?.type === 'parameter' && featureBodyType === 'parameter') {
           const matched = matchParameter(featureParameter, lineBody.parameter);
           if (matched) {
-            return {
+            result.push({
               date: lineDate,
               state: featureState,
               line,
               feature,
-            };
+            });
+            continue;
           }
         }
 
@@ -153,12 +156,13 @@ export function match(
             lineBody.parameter
           );
           if (commandMatched && parameterMatched) {
-            return {
+            result.push({
               date: lineDate,
               state: featureState,
               line,
               feature,
-            };
+            });
+            continue;
           }
         }
 
@@ -170,16 +174,16 @@ export function match(
           featureSequenceType !== undefined &&
           featureLevel !== undefined
         ) {
-          return {
+          result.push({
             date: lineDate,
             state: featureState,
             line,
             feature,
-          };
+          });
         }
       }
     }
   }
 
-  return null;
+  return result;
 }

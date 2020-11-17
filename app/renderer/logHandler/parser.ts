@@ -12,14 +12,10 @@ import LogBlock from './LogBlock';
 import { match } from './utils';
 
 const read = bindNodeCallback(fs.read);
-const open = bindNodeCallback(fs.open);
 export const readFile = () => (
-  source: Observable<{ filePath: string; cur: fs.Stats; prev: fs.Stats }>
+  source: Observable<{ fd: number; cur: fs.Stats; prev: fs.Stats }>
 ) =>
   source.pipe(
-    mergeMap(({ filePath, cur, prev }) => {
-      return open(filePath, 'r').pipe(map((fd) => ({ fd, cur, prev })));
-    }),
     mergeMap(({ fd, cur, prev }) => {
       const length = cur.size - prev.size;
       if (length > 0) {
@@ -31,7 +27,7 @@ export const readFile = () => (
       return of(Buffer.alloc(0));
     }),
     catchError((err) => {
-      throw `readFile: ${err}`;
+      throw err;
     })
   );
 
@@ -44,34 +40,32 @@ export const parser = () => (source: Observable<Buffer>) =>
       }
       return null;
     }),
-    filterOperator((v) => !!v),
     catchError((err) => {
-      throw `parser: ${err}`;
+      throw err;
     })
   );
 
-export interface Filtered {
-  date: string;
-  state: State | BoxState;
-  result?: any;
-  block: LogBlock;
-}
 /**
  * 过滤掉无用日志
  * @param features
  */
 export const filter = (features: Feature<State>[] | Feature<BoxState>[]) => (
-  source: Observable<LogBlock>
+  source: Observable<LogBlock | null>
 ) =>
   source.pipe(
     map((block) => {
-      if (block.original && Array.isArray(block.data) && block.data.length) {
+      if (
+        block &&
+        block.original &&
+        Array.isArray(block.data) &&
+        block.data.length
+      ) {
         return match(features, block.data);
       }
-      return null;
+      return [];
     }),
-    filterOperator((v) => !!v),
+    filterOperator((v) => !!v && !!v.length),
     catchError((err) => {
-      throw `filter: ${err}`;
+      throw err;
     })
   );
