@@ -1,11 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDebounceFn, useUpdateEffect } from 'ahooks';
+import { useDebounceFn } from 'ahooks';
 import { v4 as uuid } from 'uuid';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useCurrentHero from '@suspension/hooks/useCurrentHero';
+import useBoxFlow from '@suspension/hooks/useBoxFlow';
 
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
@@ -51,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   rank: {
     width: '90%',
     height: 220,
-    margin: '68px auto 0',
+    margin: `68px auto ${theme.spacing(2)}px`,
     position: 'relative',
     background: `url(${
       require('@shared/assets/images/card_bg.png').default
@@ -115,7 +117,6 @@ const useStyles = makeStyles((theme) => ({
   tip: {
     textAlign: 'center',
     fontSize: 22,
-    marginTop: theme.spacing(2),
   },
 }));
 
@@ -123,7 +124,8 @@ const store = getStore();
 
 const GameOver: React.FC = () => {
   const classes = useStyles();
-  const { hero, rank } = useCurrentHero();
+  const { hero, rank, reset } = useCurrentHero();
+  const [boxFlow] = useBoxFlow();
 
   // 战绩发送至 core 添加战绩
   const { run } = useDebounceFn(
@@ -143,13 +145,16 @@ const GameOver: React.FC = () => {
           type: Topic.ADD_RECORD,
           payload: record,
         });
+        reset();
       }
     },
     { wait: 500 }
   );
-  useUpdateEffect(() => {
-    run(hero, rank);
-  }, [hero, rank]);
+  useDeepCompareEffect(() => {
+    if (boxFlow?.current === 'BOX_GAME_OVER') {
+      run(hero, rank);
+    }
+  }, [hero, rank, boxFlow]);
 
   if (hero && rank) {
     return (
@@ -180,7 +185,10 @@ const GameOver: React.FC = () => {
           </div>
 
           <Text className={classes.tip} stroke={false} color="black">
-            已记录本场战绩
+            关闭当前对局
+          </Text>
+          <Text className={classes.tip} stroke={false} color="black">
+            自动记录本场战绩
           </Text>
         </div>
       </Layout>

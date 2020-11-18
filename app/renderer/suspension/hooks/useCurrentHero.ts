@@ -12,7 +12,7 @@ type HeroRank = string;
 
 function useCurrentHero() {
   const [stateFlow] = useStateFlow();
-  const [hero, setHero] = React.useState<Hero>();
+  const [hero, setHero] = React.useState<Hero | null>(null);
   const [rank, setRank] = React.useState<HeroRank>('8');
 
   useDeepCompareEffect(() => {
@@ -31,9 +31,15 @@ function useCurrentHero() {
     }
   }, [stateFlow]);
 
+  const handleReset = React.useCallback(() => {
+    setHero(null);
+    setRank('8');
+  }, []);
+
   return {
     hero,
     rank,
+    reset: handleReset,
   };
 }
 
