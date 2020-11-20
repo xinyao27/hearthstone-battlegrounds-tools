@@ -124,7 +124,8 @@ const store = getStore();
 
 const GameOver: React.FC = () => {
   const classes = useStyles();
-  const { hero, rank, reset } = useCurrentHero();
+  const currentHero = useCurrentHero();
+  const { hero, rank, reset } = currentHero;
   const [boxFlow] = useBoxFlow();
 
   // 战绩发送至 core 添加战绩
@@ -152,9 +153,9 @@ const GameOver: React.FC = () => {
   );
   useDeepCompareEffect(() => {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
-      run(hero, rank);
+      run(currentHero.hero, currentHero.rank);
     }
-  }, [hero, rank, boxFlow]);
+  }, [currentHero, boxFlow]);
 
   if (hero && rank) {
     return (
@@ -185,7 +186,7 @@ const GameOver: React.FC = () => {
           </div>
 
           <Text className={classes.tip} stroke={false} color="black">
-            关闭当前对局
+            关闭当前对局后
           </Text>
           <Text className={classes.tip} stroke={false} color="black">
             自动记录本场战绩

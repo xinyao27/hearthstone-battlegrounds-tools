@@ -8,43 +8,41 @@ function isRegexp(target: any): target is RegExp {
   return target instanceof RegExp;
 }
 
-export function matchChildren(feature: Feature, line: LogLine) {
+export function matchChildren(
+  featureChildren: Feature['children'],
+  lineChildren: LogLine['children']
+): boolean {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define,@typescript-eslint/no-non-null-assertion
-  const matched = match(feature.children!, line.children!);
-  if (matched) {
-    return {
-      date: line.date,
-      state: feature.state,
-      line,
-      feature,
-    };
-  }
-  return null;
+  const matched = match(featureChildren!, lineChildren!);
+  return !!matched.length;
 }
 
 export function matchCommand(feature: Feature, line: LogLine): boolean {
   let result = false;
   if (isString(feature.command)) {
-    result = line.body!.command === feature.command;
+    result = line.body?.command === feature.command;
     if (Array.isArray(line.children) && Array.isArray(feature.children)) {
-      const childrenResult = matchChildren(feature, line);
-      return !!childrenResult && result;
+      const childrenResult = matchChildren(feature.children, line.children);
+      return childrenResult && result;
     }
     return result;
   }
   if (isRegexp(feature.command)) {
-    result = feature.command?.test(line.body!.command ?? '');
-    if (Array.isArray(line.children) && Array.isArray(feature.children)) {
-      const childrenResult = matchChildren(feature, line);
-      return !!childrenResult && result;
+    result = feature.command?.test(line.body?.command ?? '');
+    if (Array.isArray(feature.children)) {
+      if (Array.isArray(line.children)) {
+        const childrenResult = matchChildren(feature.children, line.children);
+        return childrenResult && result;
+      }
+      return false;
     }
   }
   return false;
 }
 
-export function matchParameter(feature: Feature, line: LogLine) {
+export function matchParameter(feature: Feature, line: LogLine): boolean {
   const featureParameter = feature.parameter;
-  const lineParameter = line.body!.parameter;
+  const lineParameter = line.body?.parameter;
   if (Array.isArray(featureParameter) && Array.isArray(lineParameter)) {
     let count = 0;
     // eslint-disable-next-line guard-for-in,no-restricted-syntax
@@ -75,9 +73,11 @@ export function matchParameter(feature: Feature, line: LogLine) {
       }
     }
     if (count === featureParameter.length) {
-      if (Array.isArray(line.children) && Array.isArray(feature.children)) {
-        const childrenResult = matchChildren(feature, line);
-        return !!childrenResult;
+      if (Array.isArray(feature.children)) {
+        if (Array.isArray(line.children)) {
+          return matchChildren(feature.children, line.children);
+        }
+        return false;
       }
       return true;
     }
@@ -171,10 +171,17 @@ export function match(features: Feature[], lines: LogLine[]): MatchResult[] {
           Array.isArray(featureChildren) &&
           lineBody?.type === featureBodyType &&
           !featureBodyType &&
+          !feature.command &&
           !feature.parameter
         ) {
-          const childrenResult = matchChildren(feature, line);
-          if (childrenResult) result.push(childrenResult);
+          const matched = matchChildren(feature.children, line.children);
+          if (matched)
+            result.push({
+              date: lineDate,
+              state: featureState,
+              line,
+              feature,
+            });
           continue;
         }
 

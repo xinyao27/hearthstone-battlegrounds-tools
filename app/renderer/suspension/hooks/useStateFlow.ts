@@ -42,6 +42,20 @@ function useStateFlow(): [
             [value.state]: data,
             current: value.state,
           };
+        case 'RIVAL_HEROES':
+          return {
+            ...prevState,
+            [value.state]: {
+              ...data,
+              result: [
+                ...new Set([
+                  ...(prevState?.RIVAL_HEROES?.result || []),
+                  data?.result,
+                ]),
+              ],
+            },
+            current: value.state,
+          };
         default:
           return {
             ...prevState,

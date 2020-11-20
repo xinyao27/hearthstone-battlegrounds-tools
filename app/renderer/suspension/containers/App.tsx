@@ -5,6 +5,7 @@ import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import { useMount, useUpdateEffect } from 'ahooks';
 import { useHistory } from 'react-router-dom';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
@@ -107,8 +108,7 @@ export default function App(props: Props) {
       }
     });
   });
-
-  useUpdateEffect(() => {
+  useDeepCompareEffect(() => {
     // state 收到开始 跳转至英雄选择页
     if (stateFlow?.current === 'GAME_START') {
       showSuspension();
@@ -133,7 +133,7 @@ export default function App(props: Props) {
       }
       history.push(routes.GAMEOVER);
     }
-  }, [stateFlow?.current]);
+  }, [stateFlow || {}]);
   useUpdateEffect(() => {
     // 游戏结束 关闭悬浮
     if (boxFlow?.current === 'BOX_GAME_OVER') {

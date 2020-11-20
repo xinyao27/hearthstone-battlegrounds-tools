@@ -29,7 +29,7 @@ function useCurrentHero() {
         }
       }
     }
-  }, [stateFlow]);
+  }, [stateFlow || {}]);
 
   const handleReset = React.useCallback(() => {
     setHero(null);

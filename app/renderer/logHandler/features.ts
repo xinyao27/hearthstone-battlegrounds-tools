@@ -10,6 +10,7 @@ export type State =
   | 'GAME_START'
   | 'HERO_TOBE_CHOSEN'
   | 'HERO_CHOICES'
+  | 'RIVAL_HEROES'
   | 'HERO_TO_FIGHT'
   | 'GAME_RANKING'
   | 'GAME_OVER';
@@ -122,14 +123,10 @@ export const stateFeatures: Feature<State>[] = [
             key: /Entities\[\d\]/,
             value: /\[entityName=(.*) id=\d+ zone=HAND.*\]/,
           },
-          {
-            key: /Entities\[\d\]/,
-            value: /\[entityName=(.*) id=\d+ zone=HAND.*\]/,
-          },
         ],
       },
     ],
-    getResult: (line) => {
+    getResult: (line): string[] | undefined => {
       return line.children
         ?.map((child) => {
           if (
@@ -145,7 +142,7 @@ export const stateFeatures: Feature<State>[] = [
           }
           return null;
         })
-        .filter((v) => !!v);
+        .filter((v) => !!v) as string[];
     },
   },
   // 实际选择的英雄
@@ -173,7 +170,7 @@ export const stateFeatures: Feature<State>[] = [
         ],
       },
     ],
-    getResult: (line) => {
+    getResult: (line): string[] | undefined => {
       return line.children
         ?.map((child) => {
           if (
@@ -189,17 +186,94 @@ export const stateFeatures: Feature<State>[] = [
           }
           return null;
         })
-        .filter((v) => !!v);
+        .filter((v) => !!v) as string[];
     },
   },
-  // // 本局对战中对手的英雄 Array
-  // // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
-  // {
-  //   state: 'HERO_TO_FIGHT',
-  //   fn: /PowerTaskList.DebugPrintPower\(\)/,
-  //   regex: /Updating \[entityName=(\S+).*zone=SETASIDE zonePos=0.*\].*/,
-  //   index: 1,
-  // },
+  // 本局对战中对手的英雄
+  // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
+  {
+    state: 'RIVAL_HEROES',
+    sequenceType: 'PowerTaskList.DebugDump',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'Block',
+    parameter: [
+      {
+        key: 'Start',
+        value: '(null)',
+      },
+    ],
+    children: [
+      {
+        state: 'RIVAL_HEROES',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'FULL_ENTITY',
+        parameter: [
+          {
+            key: 'entityName',
+            value: /.*/,
+          },
+          {
+            key: 'id',
+            value: /\d+/,
+          },
+          {
+            key: 'zone',
+            value: 'SETASIDE',
+          },
+          {
+            key: 'zonePos',
+            value: '0',
+          },
+          {
+            key: 'cardId',
+            value: /TB_BaconShop_HERO_\d+/,
+          },
+          {
+            key: 'player',
+            value: /\d+/,
+          },
+          {
+            key: 'CardID',
+            value: /TB_BaconShop_HERO_\d+/,
+          },
+        ],
+      },
+    ],
+    getResult: (line): { hero: string; playerId: string } | undefined => {
+      if (Array.isArray(line.children) && line.children.length >= 2) {
+        const { body, children } = line.children[1];
+        if (body && children) {
+          const { parameter } = body;
+          const hero = parameter?.find((v) => v.key === 'entityName')?.value;
+          // @ts-ignore
+          const playerId = children.find((child) => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const { parameter: childParameter } = child.body!;
+            if (Array.isArray(childParameter)) {
+              if (
+                childParameter[0].key === 'tag' &&
+                childParameter[0].value === 'PLAYER_ID' &&
+                childParameter[1].key === 'value'
+              ) {
+                return true;
+              }
+            }
+            return false;
+          })?.body?.parameter[1]?.value;
+          if (hero && playerId) {
+            return {
+              hero,
+              playerId,
+            };
+          }
+        }
+      }
+      return undefined;
+    },
+  },
   // 对局排名
   // D 21:34:58.4100975 GameState.DebugPrintPower() - TAG_CHANGE Entity=[entityName=尤格-萨隆 id=74 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_35 player=1] tag=PLAYER_LEADERBOARD_PLACE value=3
   {
@@ -222,7 +296,7 @@ export const stateFeatures: Feature<State>[] = [
         value: /\d/,
       },
     ],
-    getResult: (line) => {
+    getResult: (line): string | undefined => {
       return line.body?.parameter?.find((item) => item.key === 'value')?.value;
     },
   },

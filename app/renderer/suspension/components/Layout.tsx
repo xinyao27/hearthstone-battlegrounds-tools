@@ -1,6 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import { is } from 'electron-util';
+import { Link } from 'react-router-dom';
+
+import routes from '@suspension/constants/routes.json';
 
 interface LayoutProps {
   className?: string;
@@ -70,7 +74,22 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
       <div className={classes.border} />
       <div className={classes.container}>
         <div className={classes.header} />
-        <div className={clsx(classes.content, className)}>{children}</div>
+        <div className={clsx(classes.content, className)}>
+          {is.development && (
+            <>
+              <div>
+                <Link to={routes.WELCOME}>welcome</Link>
+              </div>
+              <div>
+                <Link to={routes.HEROSELECTION}>heroes</Link>
+              </div>
+              <div>
+                <Link to={routes.GAMEOVER}>gameover</Link>
+              </div>
+            </>
+          )}
+          {children}
+        </div>
       </div>
     </div>
   );

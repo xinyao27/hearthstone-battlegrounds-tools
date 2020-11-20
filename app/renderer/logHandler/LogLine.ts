@@ -100,6 +100,8 @@ export default class LogLine implements Line {
       const matchParameter = (string: string) => parameterReg.test(string);
       // @ts-ignore
       const getParameter = (string: string) => {
+        // 处理以下情况
+        // Entity=[entityName=派对元素 id=1703 zone=HAND zonePos=2 cardId=TB_BaconUps_160 player=7]
         if (string.includes('=[')) {
           const regex = /(\S+)=(\[.*\])(.*)$/;
           const matched = string.match(regex);
@@ -132,10 +134,28 @@ export default class LogLine implements Line {
       // 命令+参数
       // GameEntity EntityID=22
       const matchCommandWithParameter = (string: string) => {
+        // 处理以下情况
+        // FULL_ENTITY - Updating [entityName=巴罗夫领主 id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=11] CardID=TB_BaconShop_HERO_72
+        if (string.includes(' - Updating ')) {
+          const [p1, ...args] = string.split(' - Updating ');
+          return matchCommand(p1) && matchParameter(args.join(' '));
+        }
         const [p1, ...args] = string.split(' ');
         return matchCommand(p1) && matchParameter(args.join(' '));
       };
       if (matchCommandWithParameter(target)) {
+        if (target.includes(' - Updating ')) {
+          const [p1, ...args] = target
+            .replace('[', '')
+            .replace(']', '')
+            .split(' - Updating ');
+          return {
+            type: 'commandWithParameter',
+            original: body,
+            command: p1,
+            parameter: getParameter(args.join(' ')),
+          };
+        }
         const [p1, ...args] = target.split(' ');
         return {
           type: 'commandWithParameter',

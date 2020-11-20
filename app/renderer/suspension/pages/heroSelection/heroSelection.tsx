@@ -11,10 +11,9 @@ const HeroSelection: React.FC = () => {
 
   return (
     <Layout>
-      {stateFlow?.current === 'HERO_TOBE_CHOSEN' &&
-        stateFlow?.HERO_TOBE_CHOSEN.result.map((name: string) => (
-          <HeroCard heroId={getHeroId(name)} key={name} />
-        ))}
+      {stateFlow?.HERO_TOBE_CHOSEN?.result?.map((name: string) => (
+        <HeroCard heroId={getHeroId(name)} key={name} />
+      ))}
     </Layout>
   );
 };
