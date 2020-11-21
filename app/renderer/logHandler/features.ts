@@ -10,8 +10,8 @@ export type State =
   | 'GAME_START'
   | 'HERO_TOBE_CHOSEN'
   | 'HERO_CHOICES'
-  | 'RIVAL_HEROES'
-  | 'HERO_TO_FIGHT'
+  | 'OPPONENT_HEROES'
+  | 'NEXT_OPPONENT'
   | 'GAME_RANKING'
   | 'GAME_OVER';
 export interface Feature<T = string> {
@@ -191,8 +191,9 @@ export const stateFeatures: Feature<State>[] = [
   },
   // 本局对战中对手的英雄
   // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
+  // FULL_ENTITY - Updating [entityName=(.*) id=\d+ zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+] CardID=TB_BaconShop_HERO_\d+
   {
-    state: 'RIVAL_HEROES',
+    state: 'OPPONENT_HEROES',
     sequenceType: 'PowerTaskList.DebugDump',
     level: 0,
     bodyType: 'commandWithParameter',
@@ -205,7 +206,7 @@ export const stateFeatures: Feature<State>[] = [
     ],
     children: [
       {
-        state: 'RIVAL_HEROES',
+        state: 'OPPONENT_HEROES',
         sequenceType: 'PowerTaskList.DebugPrintPower',
         level: 1,
         bodyType: 'commandWithParameter',
@@ -242,34 +243,104 @@ export const stateFeatures: Feature<State>[] = [
         ],
       },
     ],
-    getResult: (line): { hero: string; playerId: string } | undefined => {
+    getResult: (line): { hero: string; playerId: string }[] | undefined => {
       if (Array.isArray(line.children) && line.children.length >= 2) {
-        const { body, children } = line.children[1];
-        if (body && children) {
-          const { parameter } = body;
-          const hero = parameter?.find((v) => v.key === 'entityName')?.value;
-          // @ts-ignore
-          const playerId = children.find((child) => {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const { parameter: childParameter } = child.body!;
-            if (Array.isArray(childParameter)) {
-              if (
-                childParameter[0].key === 'tag' &&
-                childParameter[0].value === 'PLAYER_ID' &&
-                childParameter[1].key === 'value'
-              ) {
-                return true;
+        // @ts-ignore
+        return line.children
+          .map((c) => {
+            const { body, children } = c;
+            if (body && children) {
+              const { parameter } = body;
+              const hero = parameter?.find((v) => v.key === 'entityName')
+                ?.value;
+              // @ts-ignore
+              const playerId = children.find((child) => {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const { parameter: childParameter } = child.body!;
+                if (Array.isArray(childParameter)) {
+                  if (
+                    childParameter[0].key === 'tag' &&
+                    childParameter[0].value === 'PLAYER_ID' &&
+                    childParameter[1].key === 'value'
+                  ) {
+                    return true;
+                  }
+                }
+                return false;
+              })?.body?.parameter[1]?.value;
+              if (hero && playerId) {
+                return {
+                  hero,
+                  playerId,
+                };
               }
             }
-            return false;
-          })?.body?.parameter[1]?.value;
-          if (hero && playerId) {
-            return {
-              hero,
-              playerId,
-            };
-          }
-        }
+            return null;
+          })
+          .filter((v) => !!v);
+      }
+      return undefined;
+    },
+  },
+  // 下一个对手
+  // D 12:04:35.5855977 GameState.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[entityName=战棋商店8玩家强化 id=47 zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=2] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=2 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
+  // D 12:04:35.5855977 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=天空上尉库拉格 id=76 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_68 player=2] tag=NEXT_OPPONENT_PLAYER_ID value=4
+  // D 12:04:35.5855977 GameState.DebugPrintPower() - BLOCK_END
+  {
+    state: 'NEXT_OPPONENT',
+    sequenceType: 'GameState.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      {
+        key: 'Entity',
+        value: /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\].*/,
+      },
+      {
+        key: 'EffectIndex',
+        value: /\d+/,
+      },
+      {
+        key: 'Target',
+        value: /\d+/,
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+      {
+        key: 'TriggerKeyword',
+        value: 'TAG_NOT_SET',
+      },
+    ],
+    children: [
+      {
+        state: 'NEXT_OPPONENT',
+        sequenceType: 'GameState.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: 'NEXT_OPPONENT_PLAYER_ID',
+          },
+          {
+            key: 'value',
+            value: /\d/,
+          },
+        ],
+      },
+    ],
+    getResult: (line): string | undefined => {
+      const child = line?.children?.[0];
+      if (child) {
+        return child?.body?.parameter?.find((v) => v.key === 'value')?.value;
       }
       return undefined;
     },

@@ -62,7 +62,7 @@ export const filter = (features: Feature<State>[] | Feature<BoxState>[]) => (
       ) {
         return match(features, block.data);
       }
-      return [];
+      return null;
     }),
     filterOperator((v) => !!v && !!v.length),
     catchError((err) => {

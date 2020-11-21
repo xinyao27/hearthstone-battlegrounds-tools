@@ -53,7 +53,7 @@ export default class LogLine implements Line {
         (bodyString.match(childrenReg) || bodyString.match(childrenReg2))
       ) {
         // 根据开头的缩进数量 判断嵌套深度（level）
-        const length = bodyString.length - bodyString?.trim().length;
+        const length = bodyString.trimEnd().length - bodyString?.trim().length;
         const level = Math.round(length / 4);
         return {
           date,

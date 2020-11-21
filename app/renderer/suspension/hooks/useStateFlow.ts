@@ -2,8 +2,8 @@ import React from 'react';
 import { createModel } from 'hox';
 
 import type { State } from '@logHandler/features';
-import type { MatchResult } from '@logHandler/utils';
 import { stateFeatures } from '@logHandler/features';
+import type { MatchResult } from '@logHandler/utils';
 
 export type StateFlow = Record<
   State,
@@ -42,20 +42,34 @@ function useStateFlow(): [
             [value.state]: data,
             current: value.state,
           };
-        case 'RIVAL_HEROES':
+        case 'OPPONENT_HEROES':
           return {
             ...prevState,
             [value.state]: {
               ...data,
               result: [
                 ...new Set([
-                  ...(prevState?.RIVAL_HEROES?.result || []),
-                  data?.result,
+                  ...(prevState?.OPPONENT_HEROES?.result ?? []),
+                  ...(data?.result ?? []),
                 ]),
               ],
             },
             current: value.state,
           };
+        case 'NEXT_OPPONENT':
+          if (data?.result && prevState?.OPPONENT_HEROES?.result?.length) {
+            // 通常 NEXT_OPPONENT 的 result 为下一场对战英雄的 id。这里根据 id 查到对应英雄
+            data.result = prevState?.OPPONENT_HEROES.result.find(
+              (v: { hero: string; playerId: string }) =>
+                v.playerId === data.result
+            );
+            return {
+              ...prevState,
+              [value.state]: data,
+              current: value.state,
+            };
+          }
+          return prevState;
         default:
           return {
             ...prevState,

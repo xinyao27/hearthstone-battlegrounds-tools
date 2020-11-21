@@ -6,7 +6,7 @@ import { logManager } from './manager';
 
 function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
   return {
-    next: (value: MatchResult[]) => {
+    next: (value: MatchResult[] | null) => {
       logManager(type, value, cb);
     },
     complete: () => {

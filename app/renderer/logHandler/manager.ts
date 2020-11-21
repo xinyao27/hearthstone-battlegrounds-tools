@@ -17,7 +17,7 @@ let observable: Subscription | null | undefined = null;
  */
 export function logManager(
   type: 'box' | 'state',
-  source: MatchResult[],
+  source: MatchResult[] | null,
   cb?: () => Subscription
 ) {
   if (source && source.length) {
