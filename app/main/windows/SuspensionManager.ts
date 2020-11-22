@@ -65,17 +65,15 @@ class SuspensionManager extends EventEmitter {
     this.window.loadURL(getAppHTML('suspension'));
     onInit(this.window);
 
-    this.window.on('resize', () => {
+    let boundWidth: number | null = null;
+    this.window.on('will-resize', (e, newBounds) => {
       if (!is.development) {
         // 禁止横向拖动改变大小
-        // TODO 这里会造成抖动，但是 will-resize 不知怎么返回的 newBounds 不对，待解决
-        if (this.window?.getSize()[0] !== winSize[0]) {
-          this.window?.setBounds({
-            width: winSize[0],
-            height: winSize[1],
-            x,
-            y,
-          });
+        if (!boundWidth) {
+          boundWidth = newBounds.width;
+          e.preventDefault();
+        } else if (boundWidth !== newBounds.width) {
+          e.preventDefault();
         }
       }
     });
