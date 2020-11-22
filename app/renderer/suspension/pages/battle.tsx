@@ -7,22 +7,44 @@ import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import { getHeroId } from '@suspension/utils';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   round: {
-    fontSize: 22,
-    textAlign: 'center',
-  },
-  head: {
     height: 40,
     fontSize: 18,
     lineHeight: '42px',
     textAlign: 'center',
+    margin: `${theme.spacing(2)}px 0`,
     background: `url(${
       require('@shared/assets/images/class_headers_wild.png').default
     }) no-repeat`,
     backgroundSize: 500,
     backgroundPosition: '-22px -10px',
   },
+  container: {
+    minHeight: 400,
+    borderStyle: 'solid',
+    borderWidth: 12,
+    borderImage: `url("${
+      require('@shared/assets/images/battle_border.png').default
+    }") 27 27 27 fill stretch`,
+    margin: '0 -27px',
+    padding: '0 27px',
+    position: 'relative',
+  },
+  head: {
+    width: 120,
+    fontSize: 14,
+    textAlign: 'center',
+    background: `url(${
+      require('@shared/assets/images/battle_title.png').default
+    }) no-repeat`,
+    backgroundSize: '100% 100%',
+    position: 'absolute',
+    left: '50%',
+    top: -12,
+    transform: 'translateX(-50%)',
+  },
+  opponent: {},
 }));
 
 const Battle: React.FC = () => {
@@ -36,11 +58,18 @@ const Battle: React.FC = () => {
     return (
       <Layout>
         <Text className={classes.round}>{`第${turn}回合`}</Text>
-        <Text className={classes.head}>你的对手</Text>
-        <HeroCard
-          heroId={getHeroId(opponent?.hero || '辛达苟萨')}
-          displayData={false}
-        />
+
+        <div className={classes.container}>
+          <Text className={classes.head} stroke={false}>
+            你的对手
+          </Text>
+          <div className={classes.opponent}>
+            <HeroCard
+              heroId={getHeroId(opponent?.hero || '辛达苟萨')}
+              displayData={false}
+            />
+          </div>
+        </div>
       </Layout>
     );
   }
