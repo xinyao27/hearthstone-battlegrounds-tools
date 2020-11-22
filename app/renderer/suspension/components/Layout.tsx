@@ -84,6 +84,9 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
                 <Link to={routes.HEROSELECTION}>heroes</Link>
               </div>
               <div>
+                <Link to={routes.BATTLE}>battle</Link>
+              </div>
+              <div>
                 <Link to={routes.GAMEOVER}>gameover</Link>
               </div>
             </>

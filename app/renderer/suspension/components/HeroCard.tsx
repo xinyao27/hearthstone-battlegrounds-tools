@@ -69,6 +69,7 @@ const Chart: React.FC<ChartProps> = ({ hero }) => {
 
 interface HeroCardProps {
   heroId: number;
+  displayData?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -170,7 +171,7 @@ const useStylesTooltip = makeStyles((theme) => ({
   },
 }));
 
-const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
+const HeroCard: React.FC<HeroCardProps> = ({ heroId, displayData = true }) => {
   const classes = useStyles();
   const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
@@ -206,63 +207,65 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
             <div className={classes.name}>{hero.name}</div>
           </div>
 
-          {hero.heroData ? (
-            <>
-              <div className={classes.data}>
-                <Tooltip
-                  classes={tooltipClasses}
-                  title="英雄的平均最终排名"
-                  arrow
-                  placement="top"
-                >
-                  <div className={classes.card}>
-                    <Text
-                      className={classes.label}
-                      stroke={false}
-                      color="black"
-                    >
-                      平均排名
-                    </Text>
-                    <Text className={classes.value} isNumber>
-                      {hero.heroData.avg_final_placement.toFixed(2)}
-                    </Text>
-                  </div>
-                </Tooltip>
+          {displayData ? (
+            hero.heroData ? (
+              <>
+                <div className={classes.data}>
+                  <Tooltip
+                    classes={tooltipClasses}
+                    title="英雄的平均最终排名"
+                    arrow
+                    placement="top"
+                  >
+                    <div className={classes.card}>
+                      <Text
+                        className={classes.label}
+                        stroke={false}
+                        color="black"
+                      >
+                        平均排名
+                      </Text>
+                      <Text className={classes.value} isNumber>
+                        {hero.heroData.avg_final_placement.toFixed(2)}
+                      </Text>
+                    </div>
+                  </Tooltip>
 
+                  <Tooltip
+                    classes={tooltipClasses}
+                    title="对局开始出现该英雄时 该英雄被选取的百分率"
+                    arrow
+                    placement="top"
+                  >
+                    <div className={classes.card}>
+                      <Text
+                        className={classes.label}
+                        stroke={false}
+                        color="black"
+                      >
+                        选择率
+                      </Text>
+                      <Text className={classes.value} isNumber>
+                        {`${hero.heroData.pick_rate.toFixed(2)}%`}
+                      </Text>
+                    </div>
+                  </Tooltip>
+                </div>
                 <Tooltip
                   classes={tooltipClasses}
-                  title="对局开始出现该英雄时 该英雄被选取的百分率"
+                  title="每一条代表该英雄得到这个名次的频率"
                   arrow
-                  placement="top"
+                  placement="bottom"
                 >
-                  <div className={classes.card}>
-                    <Text
-                      className={classes.label}
-                      stroke={false}
-                      color="black"
-                    >
-                      选择率
-                    </Text>
-                    <Text className={classes.value} isNumber>
-                      {`${hero.heroData.pick_rate.toFixed(2)}%`}
-                    </Text>
+                  <div className={classes.chart}>
+                    <Chart hero={hero} />
                   </div>
                 </Tooltip>
-              </div>
-              <Tooltip
-                classes={tooltipClasses}
-                title="每一条代表该英雄得到这个名次的频率"
-                arrow
-                placement="bottom"
-              >
-                <div className={classes.chart}>
-                  <Chart hero={hero} />
-                </div>
-              </Tooltip>
-            </>
-          ) : (
-            <Text className={classes.noData}>没有足够的数据</Text>
-          )}
+              </>
+            ) : (
+              <Text className={classes.noData}>没有足够的数据</Text>
+            )
+          ) : null}
         </div>
       </Grow>
     );

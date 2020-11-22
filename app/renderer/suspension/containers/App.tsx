@@ -128,6 +128,10 @@ export default function App(props: Props) {
         hideSuspension();
       }
     }
+    // 切换对手信息
+    if (stateFlow?.current === 'NEXT_OPPONENT') {
+      history.push(routes.BATTLE);
+    }
     // 对局结束 显示悬浮展示战绩
     if (stateFlow?.current === 'GAME_OVER') {
       // 当开启 enableGameResult 选项时展示对局结果，如果不做这层限制会导致最后决战时提前知晓排名，影响游戏体验

@@ -13,6 +13,7 @@ export type State =
   | 'OPPONENT_HEROES'
   | 'NEXT_OPPONENT'
   | 'GAME_RANKING'
+  | 'TURN'
   | 'GAME_OVER';
 export interface Feature<T = string> {
   state: T;
@@ -369,6 +370,111 @@ export const stateFeatures: Feature<State>[] = [
     ],
     getResult: (line): string | undefined => {
       return line.body?.parameter?.find((item) => item.key === 'value')?.value;
+    },
+  },
+  // 第几轮
+  // D 17:39:27.6654174 GameState.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=GameEntity EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=6 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=鲍勃的酒馆 tag=1292 value=1
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=鲍勃的酒馆 tag=1292 value=0
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=走夜路#51810 tag=1292 value=1
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=鲍勃的酒馆 tag=CURRENT_PLAYER value=0
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=走夜路#51810 tag=CURRENT_PLAYER value=1
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=TURN value=1
+  // D 17:39:27.6654174 GameState.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=NEXT_STEP value=MAIN_READY
+  // D 17:39:27.6654174 GameState.DebugPrintPower() - BLOCK_END
+  {
+    state: 'TURN',
+    sequenceType: 'GameState.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      {
+        key: 'BlockType',
+        value: 'TRIGGER',
+      },
+      {
+        key: 'Entity',
+        value: /.*/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
+      },
+      {
+        key: 'EffectIndex',
+        value: '-1',
+      },
+      {
+        key: 'Target',
+        value: '0',
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+      {
+        key: 'TriggerKeyword',
+        value: 'TAG_NOT_SET',
+      },
+    ],
+    children: [
+      {
+        state: 'TURN',
+        sequenceType: 'GameState.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: 'GameEntity',
+          },
+          {
+            key: 'tag',
+            value: 'NUM_TURNS_IN_PLAY',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+      {
+        state: 'TURN',
+        sequenceType: 'GameState.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: 'GameEntity',
+          },
+          {
+            key: 'tag',
+            value: 'NEXT_STEP',
+          },
+          {
+            key: 'value',
+            value: 'MAIN_START_TRIGGERS',
+          },
+        ],
+      },
+    ],
+    getResult: (line): number | undefined => {
+      const child = line.children?.find(
+        (v) =>
+          !!v.body?.parameter?.find(
+            (c) => c.key === 'tag' && c.value === 'NUM_TURNS_IN_PLAY'
+          )
+      );
+      const turn = child?.body?.parameter?.find((v) => v.key === 'value')
+        ?.value;
+      if (turn) {
+        return Math.round(parseInt(turn, 10) / 2);
+      }
+      return undefined;
     },
   },
   // 对局结束
