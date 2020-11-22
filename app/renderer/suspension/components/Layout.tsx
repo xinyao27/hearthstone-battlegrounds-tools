@@ -5,6 +5,8 @@ import { is } from 'electron-util';
 import { Link } from 'react-router-dom';
 
 import routes from '@suspension/constants/routes.json';
+import Text from '@suspension/components/Text';
+import { hideSuspension } from '@suspension/utils';
 
 interface LayoutProps {
   className?: string;
@@ -43,20 +45,61 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: '100%',
     overflow: 'hidden',
     borderRadius: 25,
+    paddingTop: 80,
     display: 'flex',
     flexDirection: 'column',
   },
-  header: {
-    width: '100%',
-    height: 142,
-    padding: 27,
-    background: `url('${
-      require('@shared/assets/images/logo.png').default
-    }') no-repeat center`,
-    backgroundSize: '80%',
-    marginTop: theme.spacing(4),
+  title: {
+    position: 'absolute',
+    top: -6,
+    left: -9,
+    zIndex: 3,
+    width: 'calc(100% + 18px)',
+    height: 80,
+    borderStyle: 'solid',
+    borderWidth: '27px 27px 31px',
+    borderImage: `url("${
+      require('@shared/assets/images/border2.png').default
+    }") 27 27 31 fill stretch`,
     '-webkit-app-region': 'drag',
   },
+  titleText: {
+    maxWidth: '80%',
+    paddingLeft: theme.spacing(1),
+    letterSpacing: 3,
+    fontSize: 18,
+    lineHeight: '20px',
+  },
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 4,
+    zIndex: 4,
+    width: 24,
+    height: 24,
+    background: `url('${
+      require('@shared/assets/images/close.png').default
+    }') no-repeat center`,
+    backgroundSize: '100%',
+    cursor: 'pointer',
+    '-webkit-app-region': 'no-drag',
+    transition: `all ${theme.transitions.easing.sharp} ${theme.transitions.duration.shortest}ms`,
+    filter: 'brightness(0.7)',
+    '&:hover': {
+      filter: 'brightness(1)',
+    },
+  },
+  // header: {
+  //   width: '100%',
+  //   height: 142,
+  //   padding: 27,
+  //   background: `url('${
+  //     require('@shared/assets/images/logo.png').default
+  //   }') no-repeat center`,
+  //   backgroundSize: '80%',
+  //   marginTop: theme.spacing(4),
+  //   '-webkit-app-region': 'drag',
+  // },
   content: {
     width: '100%',
     flex: 1,
@@ -72,8 +115,11 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
   return (
     <div className={classes.root}>
       <div className={classes.border} />
+      <div className={classes.title}>
+        <Text className={classes.titleText}>HBT</Text>
+        <div className={classes.close} onClick={hideSuspension} />
+      </div>
       <div className={classes.container}>
-        <div className={classes.header} />
         <div className={clsx(classes.content, className)}>
           {is.development && (
             <>

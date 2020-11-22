@@ -7,7 +7,7 @@ import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import { getHeroId } from '@suspension/utils';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   round: {
     fontSize: 22,
     textAlign: 'center',

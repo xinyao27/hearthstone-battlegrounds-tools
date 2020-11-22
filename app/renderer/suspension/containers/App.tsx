@@ -63,9 +63,6 @@ const theme = createMuiTheme({
           overflow: 'hidden',
           background: 'none !important',
           userSelect: 'none',
-          cursor: `url("${
-            require('@shared/assets/images/hand.png').default
-          }") 0 0,auto`,
         },
         '#root': {
           height: '100%',
@@ -74,6 +71,11 @@ const theme = createMuiTheme({
         img: {
           display: 'block',
           width: '100%',
+        },
+        '*': {
+          cursor: `url("${
+            require('@shared/assets/images/hand.png').default
+          }") 0 0,auto`,
         },
       },
     },
