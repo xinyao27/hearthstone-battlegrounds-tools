@@ -198,13 +198,23 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId, displayData = true }) => {
   if (data && hero) {
     return (
       <Grow in={!!hero} style={{ transformOrigin: '0 0 0' }} timeout={300}>
-        <div className={classes.root}>
+        <div
+          className={classes.root}
+          style={!displayData ? { marginBottom: 0 } : {}}
+        >
           <div className={classes.title}>
             <div className={classes.avatar}>
               <img src={hero.battlegrounds.image} alt={hero.name} />
             </div>
             <div className={classes.nameBar} />
-            <div className={classes.name}>{hero.name}</div>
+            <Tooltip
+              classes={tooltipClasses}
+              title={hero.name}
+              arrow
+              placement="top"
+            >
+              <div className={classes.name}>{hero.name}</div>
+            </Tooltip>
           </div>
 
           {displayData ? (

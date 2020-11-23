@@ -77,6 +77,9 @@ const theme = createMuiTheme({
             require('@shared/assets/images/hand.png').default
           }") 0 0,auto`,
         },
+        '*::-webkit-scrollbar': {
+          display: 'none',
+        },
       },
     },
   },

@@ -14,7 +14,7 @@ export function matchChildren(
 ): boolean {
   // eslint-disable-next-line @typescript-eslint/no-use-before-define,@typescript-eslint/no-non-null-assertion
   const matched = match(featureChildren!, lineChildren!);
-  return !!matched.length;
+  return !!matched.length && matched.length >= (featureChildren?.length ?? 1);
 }
 
 export function matchCommand(feature: Feature, line: LogLine): boolean {

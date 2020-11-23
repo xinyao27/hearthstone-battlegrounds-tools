@@ -4,6 +4,7 @@ import { createModel } from 'hox';
 import type { State } from '@logHandler/features';
 import { stateFeatures } from '@logHandler/features';
 import type { MatchResult } from '@logHandler/utils';
+import { is } from 'electron-util';
 
 export type StateFlow = Record<
   State,
@@ -70,6 +71,53 @@ function useStateFlow(): [
             };
           }
           return prevState;
+        case 'OPPONENT_LINEUP':
+          if (data?.result) {
+            const { hero, minions } = data.result;
+            // 加入当场的回合数，回溯用
+            data.result.turn = prevState?.TURN?.result;
+            const prev: {
+              hero: string;
+              turn: string;
+              minions: {
+                name: string;
+                id: string;
+                props: {
+                  [tag: string]: string;
+                };
+              }[];
+            }[] = prevState?.OPPONENT_LINEUP?.result;
+            if (prev?.length) {
+              const target = prev.find((v) => v.hero === hero);
+              console.log({ result: data.result, target });
+              if (target) {
+                prev.forEach((v) => {
+                  if (v.hero === hero) {
+                    v.minions = minions;
+                  }
+                });
+                data.result = prev;
+                return {
+                  ...prevState,
+                  [value.state]: data,
+                  current: value.state,
+                };
+              }
+              data.result = [...prev, data.result];
+              return {
+                ...prevState,
+                [value.state]: data,
+                current: value.state,
+              };
+            }
+            data.result = [data.result];
+            return {
+              ...prevState,
+              [value.state]: data,
+              current: value.state,
+            };
+          }
+          return prevState;
         default:
           return {
             ...prevState,
@@ -79,6 +127,11 @@ function useStateFlow(): [
       }
     });
   }, []);
+
+  if (is.development) {
+    // eslint-disable-next-line no-console
+    console.log(state);
+  }
 
   return [state, handleState];
 }

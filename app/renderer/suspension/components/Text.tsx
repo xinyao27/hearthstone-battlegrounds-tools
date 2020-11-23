@@ -33,6 +33,7 @@ const Text: React.FC<TextProps> = ({
   color = 'white',
   isNumber,
   style,
+  ...rest
 }) => {
   const classes = useStyles();
 
@@ -44,6 +45,7 @@ const Text: React.FC<TextProps> = ({
         [classes.stroke]: stroke,
       })}
       style={{ color, ...style }}
+      {...rest}
     >
       {children}
     </p>

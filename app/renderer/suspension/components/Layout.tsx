@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: '100%',
     overflow: 'hidden',
     borderRadius: 25,
-    paddingTop: 80,
+    paddingTop: 60,
     display: 'flex',
     flexDirection: 'column',
   },
@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     width: '100%',
     flex: 1,
-    padding: '0 27px',
+    padding: '20px 27px 20px',
     overflowX: 'hidden',
     overflowY: 'auto',
   },

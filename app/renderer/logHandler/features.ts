@@ -14,6 +14,7 @@ export type State =
   | 'NEXT_OPPONENT'
   | 'GAME_RANKING'
   | 'TURN'
+  | 'OPPONENT_LINEUP'
   | 'GAME_OVER';
 export interface Feature<T = string> {
   state: T;
@@ -24,6 +25,13 @@ export interface Feature<T = string> {
   parameter?: { key?: string | RegExp; value: string | RegExp }[];
   children?: Feature<T>[];
   getResult?: (line: Line) => any;
+}
+export interface Minion {
+  name: string;
+  id: string;
+  props: {
+    [tag: string]: string;
+  };
 }
 
 export const boxFeatures: Feature<BoxState>[] = [
@@ -475,6 +483,194 @@ export const stateFeatures: Feature<State>[] = [
         return Math.round(parseInt(turn, 10) / 2);
       }
       return undefined;
+    },
+  },
+  // 对手阵容(随从实际属性)
+  // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[entityName=战棋商店8玩家强化 id=63 zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=6] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=9 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
+  {
+    state: 'OPPONENT_LINEUP',
+    sequenceType: 'PowerTaskList.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      {
+        key: 'Entity',
+        value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+      },
+      {
+        key: 'EffectIndex',
+        // 不能是 -1
+        value: /^(?!-1)\d+/,
+      },
+      {
+        key: 'Target',
+        value: '0',
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+      {
+        key: 'TriggerKeyword',
+        value: 'TAG_NOT_SET',
+      },
+    ],
+    children: [
+      // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() -     FULL_ENTITY - Updating [entityName=雕文护卫者 id=712 zone=PLAY zonePos=1 cardId=BGS_045 player=14] CardID=BGS_045
+      {
+        state: 'OPPONENT_LINEUP',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'FULL_ENTITY',
+        parameter: [
+          {
+            key: 'entityName',
+            value: /.*/,
+          },
+          {
+            key: 'id',
+            value: /\d+/,
+          },
+          {
+            key: 'zone',
+            value: 'PLAY',
+          },
+          {
+            key: 'zonePos',
+            value: /\d+/,
+          },
+          {
+            key: 'cardId',
+            value: /^((?!TB_BaconShop).)*_\d+/,
+          },
+          {
+            key: 'player',
+            value: /\d+/,
+          },
+          {
+            key: 'CardID',
+            value: /^((?!TB_BaconShop).)*_\d+/,
+          },
+        ],
+      },
+      // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=雕文护卫者 id=712 zone=PLAY zonePos=1 cardId=BGS_045 player=14] tag=479 value=4
+      {
+        state: 'OPPONENT_LINEUP',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /^\[entityName=.* id=\d+ zone=PLAY zonePos=\d+ cardId=((?!TB_BaconShop).)*_\d+ player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: /.*/,
+          },
+          {
+            key: 'value',
+            value: /.*/,
+          },
+        ],
+      },
+      // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=炎魔之王拉格纳罗斯 id=719 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_11 player=14] tag=NUM_ATTACKS_THIS_TURN value=1
+      {
+        state: 'OPPONENT_LINEUP',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: 'NUM_ATTACKS_THIS_TURN',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+    ],
+    getResult: (line): { hero: string; minions: Minion[] } | undefined => {
+      let hero = '';
+      const minions: Minion[] = [];
+      line?.children?.forEach((v) => {
+        const original = v?.body?.original;
+        const minionMatched = original?.match(
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=((?!TB_BaconShop).)*_\d+ player=\d+\] CardID=((?!TB_BaconShop).)*_\d+/
+        );
+        const minionUpdateMatched = original?.match(
+          /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=.*_\d+ player=\d+\] tag=(.*) value=(.*)/
+        );
+        const heroMatched = original?.match(
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+\] CardID=TB_BaconShop_HERO_\d+/
+        );
+        if (minionMatched) {
+          const name = minionMatched[1];
+          const id = minionMatched[2];
+          if (name && id) {
+            const props =
+              v.children?.reduce((pre, cur) => {
+                if (cur.body?.parameter) {
+                  const prop = cur.body?.parameter.find((c) => c.key === 'tag')
+                    ?.value;
+                  const value = cur.body?.parameter.find(
+                    (c) => c.key === 'value'
+                  )?.value;
+                  if (prop && value) {
+                    return {
+                      ...pre,
+                      [prop]: value,
+                    };
+                  }
+                  return pre;
+                }
+                return pre;
+              }, {}) ?? {};
+            // eslint-disable-next-line prefer-destructuring
+            if (
+              !minions.length ||
+              !minions.find((c) => c.name === name && c.id === id)
+            ) {
+              minions.push({
+                name,
+                id,
+                props,
+              });
+            } else {
+              minions.forEach((c) => {
+                if (c.name === name && c.id === id) {
+                  c.props = props;
+                }
+              });
+            }
+          }
+        }
+        if (minionUpdateMatched) {
+          const name = minionUpdateMatched[1];
+          const id = minionUpdateMatched[2];
+          const prop = minionUpdateMatched[3];
+          const value = minionUpdateMatched[4];
+          const minion = minions.find((c) => c.name === name && c.id === id);
+          if (prop && value && minion) {
+            minion.props[prop] = value;
+          }
+        }
+        if (heroMatched) {
+          // eslint-disable-next-line prefer-destructuring
+          hero = heroMatched[1];
+        }
+      });
+      return { hero, minions };
     },
   },
   // 对局结束
