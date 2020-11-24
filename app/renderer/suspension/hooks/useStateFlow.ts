@@ -72,10 +72,11 @@ function useStateFlow(): [
           }
           return prevState;
         case 'OPPONENT_LINEUP':
-          if (data?.result) {
+          if (data?.result && data.result.hero) {
             const { hero, minions } = data.result;
             // 加入当场的回合数，回溯用
-            data.result.turn = prevState?.TURN?.result;
+            const turn = prevState?.TURN?.result;
+            data.result.turn = turn;
             const prev: {
               hero: string;
               turn: string;
@@ -89,14 +90,17 @@ function useStateFlow(): [
             }[] = prevState?.OPPONENT_LINEUP?.result;
             if (prev?.length) {
               const target = prev.find((v) => v.hero === hero);
-              console.log({ result: data.result, target });
               if (target) {
-                prev.forEach((v) => {
+                data.result = prev.map((v) => {
                   if (v.hero === hero) {
-                    v.minions = minions;
+                    return {
+                      ...v,
+                      minions,
+                      turn,
+                    };
                   }
+                  return v;
                 });
-                data.result = prev;
                 return {
                   ...prevState,
                   [value.state]: data,

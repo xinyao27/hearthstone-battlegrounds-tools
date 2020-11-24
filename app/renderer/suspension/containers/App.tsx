@@ -6,7 +6,6 @@ import red from '@material-ui/core/colors/red';
 import { useMount, useUpdateEffect } from 'ahooks';
 import { useHistory } from 'react-router-dom';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { is } from 'electron-util';
 
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
@@ -127,12 +126,6 @@ export default function App(props: Props) {
         history.push(routes.HEROSELECTION);
       }
     }
-    // 英雄选择后 隐藏悬浮
-    if (stateFlow?.current === 'HERO_CHOICES') {
-      if (!is.development) {
-        hideSuspension();
-      }
-    }
     // 切换对手信息
     if (stateFlow?.current === 'NEXT_OPPONENT') {
       history.push(routes.BATTLE);
@@ -150,12 +143,7 @@ export default function App(props: Props) {
     // 游戏结束 关闭悬浮
     if (boxFlow?.current === 'BOX_GAME_OVER') {
       if (stateFlow?.current === 'GAME_OVER' && stateFlow.GAME_OVER) {
-        if (!is.development) {
-          hideSuspension();
-        }
-      } else {
-        history.push(routes.GAMEOVER);
-        showSuspension();
+        hideSuspension();
       }
     }
   }, [boxFlow?.current, stateFlow?.current]);

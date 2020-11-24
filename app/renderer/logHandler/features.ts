@@ -543,7 +543,7 @@ export const stateFeatures: Feature<State>[] = [
           },
           {
             key: 'cardId',
-            value: /^((?!TB_BaconShop).)*_\d+/,
+            value: /^TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?/,
           },
           {
             key: 'player',
@@ -551,7 +551,7 @@ export const stateFeatures: Feature<State>[] = [
           },
           {
             key: 'CardID',
-            value: /^((?!TB_BaconShop).)*_\d+/,
+            value: /^TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?/,
           },
         ],
       },
@@ -565,7 +565,7 @@ export const stateFeatures: Feature<State>[] = [
         parameter: [
           {
             key: 'Entity',
-            value: /^\[entityName=.* id=\d+ zone=PLAY zonePos=\d+ cardId=((?!TB_BaconShop).)*_\d+ player=\d+\]/,
+            value: /^\[entityName=.* id=\d+ zone=PLAY zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\]/,
           },
           {
             key: 'tag',
@@ -606,10 +606,10 @@ export const stateFeatures: Feature<State>[] = [
       line?.children?.forEach((v) => {
         const original = v?.body?.original;
         const minionMatched = original?.match(
-          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=((?!TB_BaconShop).)*_\d+ player=\d+\] CardID=((?!TB_BaconShop).)*_\d+/
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
         );
         const minionUpdateMatched = original?.match(
-          /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=.*_\d+ player=\d+\] tag=(.*) value=(.*)/
+          /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
         );
         const heroMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+\] CardID=TB_BaconShop_HERO_\d+/

@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import HeroCard from '@suspension/components/HeroCard';
 import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
-import { getHeroId, getMinionId } from '@suspension/utils';
+import { getHeroId } from '@suspension/utils';
 import type { Minion } from '@shared/types';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 
@@ -42,14 +42,18 @@ const Opponent: React.FC<OpponentProps> = ({ hero, opponentLineup }) => {
   if (hero) {
     return (
       <div className={classes.root}>
-        <HeroCard heroId={getHeroId(hero || '辛达苟萨')} displayData={false} />
+        <HeroCard
+          heroId={getHeroId(hero || '辛达苟萨')}
+          displayData={false}
+          mini
+        />
         {!!turn && !!opponentLineup?.minions?.length && (
           <Text className={classes.turn}>{`${turn}个回合前`}</Text>
         )}
         {opponentLineup?.minions?.length ? (
           opponentLineup?.minions?.map((minion: any) => (
             <MinionCard
-              minionId={getMinionId(minion.name)}
+              minionName={minion.name}
               props={minion.props}
               key={minion.id}
             />

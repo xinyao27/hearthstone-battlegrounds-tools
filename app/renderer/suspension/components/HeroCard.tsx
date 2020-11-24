@@ -70,6 +70,7 @@ const Chart: React.FC<ChartProps> = ({ hero }) => {
 interface HeroCardProps {
   heroId: number;
   displayData?: boolean;
+  mini?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -96,8 +97,8 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     position: 'absolute',
     left: 0,
-    top: 0,
-    width: 80,
+    top: (props: HeroCardProps) => (props.mini ? theme.spacing(2) : 0),
+    width: (props: HeroCardProps) => (props.mini ? 60 : 80),
     zIndex: 2,
   },
   nameBar: {
@@ -171,8 +172,9 @@ const useStylesTooltip = makeStyles((theme) => ({
   },
 }));
 
-const HeroCard: React.FC<HeroCardProps> = ({ heroId, displayData = true }) => {
-  const classes = useStyles();
+const HeroCard: React.FC<HeroCardProps> = (props) => {
+  const { heroId, displayData } = props;
+  const classes = useStyles(props);
   const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
   const hero = React.useMemo<Hero>(() => {
@@ -282,6 +284,11 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId, displayData = true }) => {
   }
 
   return null;
+};
+
+HeroCard.defaultProps = {
+  displayData: true,
+  mini: false,
 };
 
 export default HeroCard;

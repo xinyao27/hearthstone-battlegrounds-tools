@@ -4,7 +4,7 @@ import { Box, Grow, Tooltip } from '@material-ui/core';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 
-import { getMinion } from '@suspension/utils';
+import { getMinion, getMinionId } from '@suspension/utils';
 import Text from '@suspension/components/Text';
 import { Minion } from '@shared/types';
 
@@ -15,16 +15,16 @@ const ImgTooltip = withStyles(() => ({
 }))(Tooltip);
 
 interface MinionCardProps {
-  minionId: number;
+  minionName: string;
   props: Minion;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     width: '94%',
     margin: '0 auto',
     position: 'relative',
-    marginBottom: theme.spacing(3),
+    marginBottom: 18,
   },
   border: {
     position: 'absolute',
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     boxSizing: 'content-box',
   },
   container: {
-    height: 34,
+    height: 24,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -52,11 +52,11 @@ const useStyles = makeStyles((theme) => ({
   },
   gold: {
     zIndex: 100,
-    width: 38,
-    height: 38,
+    width: 30,
+    height: 30,
     textAlign: 'center',
-    lineHeight: '36px',
-    fontSize: 24,
+    lineHeight: '30px',
+    fontSize: 22,
     background: `url('${
       require('@shared/assets/images/gold.png').default
     }') no-repeat`,
@@ -116,10 +116,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MinionCard: React.FC<MinionCardProps> = ({ minionId, props }) => {
+const MinionCard: React.FC<MinionCardProps> = ({ minionName, props }) => {
   const classes = useStyles();
 
-  const minion = React.useMemo(() => getMinion(minionId), [minionId]);
+  const minion = React.useMemo(() => getMinion(getMinionId(minionName)), [
+    minionName,
+  ]);
   const {
     // 酒馆星级
     TECH_LEVEL,
@@ -142,9 +144,13 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionId, props }) => {
     ? minion?.battlegrounds?.imageGold
     : minion?.battlegrounds?.image;
 
-  if (minion) {
+  if (minionName) {
     return (
-      <Grow in={!!minionId} style={{ transformOrigin: '0 0 0' }} timeout={300}>
+      <Grow
+        in={!!minionName}
+        style={{ transformOrigin: '0 0 0' }}
+        timeout={300}
+      >
         <div className={classes.root}>
           <div
             className={classes.border}
@@ -154,7 +160,15 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionId, props }) => {
           />
           <ImgTooltip
             title={
-              <img className={classes.tooltip} src={imgSrc} alt={minion.name} />
+              imgSrc ? (
+                <img
+                  className={classes.tooltip}
+                  src={imgSrc}
+                  alt={minionName}
+                />
+              ) : (
+                ''
+              )
             }
             placement="bottom"
           >
@@ -167,7 +181,7 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionId, props }) => {
               }}
             >
               {TECH_LEVEL && <Text className={classes.gold}>{TECH_LEVEL}</Text>}
-              <Text className={classes.name}>{minion.name}</Text>
+              <Text className={classes.name}>{minionName}</Text>
 
               {ATK && HEALTH && (
                 <Box display="flex" alignItems="center">
