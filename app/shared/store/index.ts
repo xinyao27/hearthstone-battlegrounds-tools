@@ -21,7 +21,6 @@ interface Config {
       max: number;
     };
   };
-  enableGameResult: boolean;
 }
 
 // 存储配置文件
@@ -42,7 +41,6 @@ export const config = {
           max: 12,
         },
       },
-      enableGameResult: false,
     },
   }),
   get(key: keyof Config | string) {
