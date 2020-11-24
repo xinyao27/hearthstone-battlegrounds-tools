@@ -174,11 +174,15 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props }) => {
           >
             <div
               className={classes.container}
-              style={{
-                backgroundImage: `url(${imgSrc})`,
-                backgroundPosition: '38% 28%',
-                backgroundSize: '200%',
-              }}
+              style={
+                imgSrc
+                  ? {
+                      backgroundImage: `url(${imgSrc})`,
+                      backgroundPosition: '38% 28%',
+                      backgroundSize: '200%',
+                    }
+                  : {}
+              }
             >
               {TECH_LEVEL && <Text className={classes.gold}>{TECH_LEVEL}</Text>}
               <Text className={classes.name}>{minionName}</Text>
