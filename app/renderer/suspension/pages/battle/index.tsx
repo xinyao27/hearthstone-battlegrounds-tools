@@ -4,9 +4,9 @@ import { useToggle } from 'ahooks';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
-import useStateFlow from '@suspension/hooks/useStateFlow';
+import useBattleState from '@suspension/hooks/useBattleState';
 
-import Opponent, { OpponentProps } from './Opponent';
+import Opponent from './Opponent';
 
 const useStyles = makeStyles((theme) => ({
   round: {
@@ -65,37 +65,16 @@ const useStyles = makeStyles((theme) => ({
 
 const Battle: React.FC = () => {
   const classes = useStyles();
-  const [stateFlow] = useStateFlow();
+
+  const {
+    currentTurn,
+    currentOpponent,
+    currentOpponentLineup,
+    allOpponentLineup,
+  } = useBattleState();
+
   const [visible, { toggle: toggleVisible }] = useToggle<'current' | 'all'>(
     'current'
-  );
-
-  const currentTurn = stateFlow?.TURN?.result;
-  const opponentHeroes = stateFlow?.OPPONENT_HEROES?.result;
-  const opponentLineup = stateFlow?.OPPONENT_LINEUP?.result;
-  const allOpponentLineup = React.useMemo<
-    Array<OpponentProps['opponentLineup']>
-  >(
-    () =>
-      opponentHeroes?.map((v: { hero: string }) => {
-        const result = opponentLineup?.find(
-          (l: { hero: string }) => l.hero === v.hero
-        );
-        return {
-          hero: v?.hero,
-          turn: result?.turn,
-          minions: result?.minions,
-        };
-      }),
-    [opponentHeroes, opponentLineup]
-  );
-  const currentOpponent = stateFlow?.NEXT_OPPONENT?.result;
-  const currentOpponentLineup = React.useMemo(
-    () =>
-      opponentLineup?.find(
-        (v: { hero: string }) => v.hero === currentOpponent.hero
-      ),
-    [opponentLineup, currentOpponent]
   );
 
   return (

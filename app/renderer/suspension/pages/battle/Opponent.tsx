@@ -5,8 +5,8 @@ import HeroCard from '@suspension/components/HeroCard';
 import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
 import { getHeroId } from '@suspension/utils';
-import type { Minion } from '@shared/types';
 import useStateFlow from '@suspension/hooks/useStateFlow';
+import type { OpponentLineup } from '@suspension/types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,23 +22,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface OpponentProps {
-  hero: string;
-  opponentLineup: {
-    hero: string;
-    turn: string;
-    minions: {
-      name: string;
-      id: string;
-      props: Minion;
-    }[];
-  };
+  hero?: string;
+  opponentLineup?: OpponentLineup;
 }
 
 const Opponent: React.FC<OpponentProps> = ({ hero, opponentLineup }) => {
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
   const currentTurn = stateFlow?.TURN?.result;
-  const turn = parseInt(currentTurn, 10) - parseInt(opponentLineup?.turn, 10);
+  const turn =
+    parseInt(currentTurn, 10) - parseInt(opponentLineup?.turn as string, 10);
   if (hero) {
     return (
       <div className={classes.root}>

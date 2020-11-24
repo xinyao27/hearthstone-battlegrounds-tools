@@ -1,10 +1,11 @@
 import React from 'react';
 import { createModel } from 'hox';
+import { is } from 'electron-util';
 
 import type { State } from '@logHandler/features';
 import { stateFeatures } from '@logHandler/features';
 import type { MatchResult } from '@logHandler/utils';
-import { is } from 'electron-util';
+import type { OpponentLineup } from '@suspension/types';
 
 export type StateFlow = Record<
   State,
@@ -77,17 +78,7 @@ function useStateFlow(): [
             // 加入当场的回合数，回溯用
             const turn = prevState?.TURN?.result;
             data.result.turn = turn;
-            const prev: {
-              hero: string;
-              turn: string;
-              minions: {
-                name: string;
-                id: string;
-                props: {
-                  [tag: string]: string;
-                };
-              }[];
-            }[] = prevState?.OPPONENT_LINEUP?.result;
+            const prev: OpponentLineup[] = prevState?.OPPONENT_LINEUP?.result;
             if (prev?.length) {
               const target = prev.find((v) => v.hero === hero);
               if (target) {
