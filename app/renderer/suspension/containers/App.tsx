@@ -105,10 +105,10 @@ export default function App(props: Props) {
       const { type, payload } = action;
       if (type === Topic.FLOW) {
         if (payload.type === 'box') {
-          setBoxFlow(payload.source);
+          setBoxFlow(payload);
         }
         if (payload.type === 'state') {
-          setStateFlow(payload.source);
+          setStateFlow(payload);
         }
       }
     });

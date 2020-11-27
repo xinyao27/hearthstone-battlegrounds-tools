@@ -3,6 +3,7 @@ import log from 'electron-log';
 
 import { Topic } from '@shared/constants/topic';
 import { getStore } from '@shared/store';
+import type { LogData } from '@shared/types';
 
 import type { MatchResult } from './utils';
 
@@ -22,7 +23,15 @@ export function logManager(
 ) {
   if (source && source.length) {
     source.forEach((item) => {
-      log.info(type, item);
+      const result = item.feature?.getResult?.(item.line);
+      const data: LogData = {
+        type,
+        date: item.date,
+        state: item.state,
+        original: item.line?.original,
+        result,
+      };
+      log.info(data);
       if (type === 'box') {
         // 对局开始 开始监控 Power.log 以及加载悬浮框
         if (item.state === 'BOX_GAME_START') {
@@ -36,10 +45,7 @@ export function logManager(
       }
       store.dispatch<Topic.FLOW>({
         type: Topic.FLOW,
-        payload: {
-          type,
-          source: item,
-        },
+        payload: data,
       });
     });
   }

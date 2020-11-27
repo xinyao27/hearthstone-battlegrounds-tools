@@ -201,7 +201,6 @@ export const stateFeatures: Feature<State>[] = [
   },
   // 本局对战中对手的英雄
   // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
-  // FULL_ENTITY - Updating [entityName=(.*) id=\d+ zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+] CardID=TB_BaconShop_HERO_\d+
   {
     state: 'OPPONENT_HEROES',
     sequenceType: 'PowerTaskList.DebugDump',
@@ -263,6 +262,7 @@ export const stateFeatures: Feature<State>[] = [
               const { parameter } = body;
               const hero = parameter?.find((v) => v.key === 'entityName')
                 ?.value;
+              const id = parameter?.find((v) => v.key === 'id')?.value;
               // @ts-ignore
               const playerId = children.find((child) => {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -278,9 +278,10 @@ export const stateFeatures: Feature<State>[] = [
                 }
                 return false;
               })?.body?.parameter[1]?.value;
-              if (hero && playerId) {
+              if (hero && id && playerId) {
                 return {
                   hero,
+                  id,
                   playerId,
                 };
               }
@@ -613,7 +614,7 @@ export const stateFeatures: Feature<State>[] = [
           /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
         );
         const heroMatched = original?.match(
-          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+\] CardID=TB_BaconShop_HERO_\d+/
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+[a-z]? player=\d+\] CardID=TB_BaconShop_HERO_\d+[a-z]?/
         );
         if (minionMatched) {
           const name = minionMatched[1];
@@ -707,28 +708,6 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     children: [
-      // D 13:44:36.0831795 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=1453 value=1
-      {
-        state: 'BACK_TO_SHOP',
-        sequenceType: 'PowerTaskList.DebugPrintPower',
-        level: 1,
-        bodyType: 'commandWithParameter',
-        command: 'TAG_CHANGE',
-        parameter: [
-          {
-            key: 'Entity',
-            value: 'GameEntity',
-          },
-          {
-            key: 'tag',
-            value: '1453',
-          },
-          {
-            key: 'value',
-            value: '1',
-          },
-        ],
-      },
       // D 13:44:36.0831795 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=BOARD_VISUAL_STATE value=1
       {
         state: 'BACK_TO_SHOP',
@@ -747,7 +726,7 @@ export const stateFeatures: Feature<State>[] = [
           },
           {
             key: 'value',
-            value: '1',
+            value: /\d+/,
           },
         ],
       },
@@ -769,29 +748,7 @@ export const stateFeatures: Feature<State>[] = [
           },
           {
             key: 'value',
-            value: '1',
-          },
-        ],
-      },
-      // D 13:44:36.0831795 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=1488 value=1
-      {
-        state: 'BACK_TO_SHOP',
-        sequenceType: 'PowerTaskList.DebugPrintPower',
-        level: 1,
-        bodyType: 'commandWithParameter',
-        command: 'TAG_CHANGE',
-        parameter: [
-          {
-            key: 'Entity',
-            value: 'GameEntity',
-          },
-          {
-            key: 'tag',
-            value: '1488',
-          },
-          {
-            key: 'value',
-            value: '1',
+            value: /\d+/,
           },
         ],
       },
@@ -868,44 +825,6 @@ export const stateFeatures: Feature<State>[] = [
           {
             key: 'CardID',
             value: 'TB_BaconShopLockAll_Button',
-          },
-        ],
-      },
-      // D 13:44:36.0831795 PowerTaskList.DebugPrintPower() -     FULL_ENTITY - Updating [entityName=等级2 id=317 zone=PLAY zonePos=0 cardId=TB_BaconShopTechUp02_Button player=2] CardID=TB_BaconShopTechUp02_Button
-      {
-        state: 'BACK_TO_SHOP',
-        sequenceType: 'PowerTaskList.DebugPrintPower',
-        level: 1,
-        bodyType: 'commandWithParameter',
-        command: 'FULL_ENTITY',
-        parameter: [
-          {
-            key: 'entityName',
-            value: /等级\d/,
-          },
-          {
-            key: 'id',
-            value: /\d+/,
-          },
-          {
-            key: 'zone',
-            value: 'PLAY',
-          },
-          {
-            key: 'zonePos',
-            value: '0',
-          },
-          {
-            key: 'cardId',
-            value: /TB_BaconShopTechUp0\d_Button/,
-          },
-          {
-            key: 'player',
-            value: /\d+/,
-          },
-          {
-            key: 'CardID',
-            value: /TB_BaconShopTechUp0\d_Button/,
           },
         ],
       },
@@ -1008,9 +927,6 @@ export const stateFeatures: Feature<State>[] = [
         ],
       },
     ],
-    getResult: (line): any | undefined => {
-      return line;
-    },
   },
   // 对局结束
   // D 21:21:43.7370339 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER

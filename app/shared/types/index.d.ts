@@ -88,3 +88,11 @@ export interface Minion {
   // 奖金（应该是指三连奖励）
   PREMIUM?: '1';
 }
+
+export interface LogData<S = string, R = any> {
+  type: 'box' | 'state';
+  date: string;
+  state: S;
+  original: string;
+  result: R;
+}

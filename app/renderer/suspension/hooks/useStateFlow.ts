@@ -2,87 +2,64 @@ import React from 'react';
 import { createModel } from 'hox';
 import { is } from 'electron-util';
 
+import type { LogData } from '@shared/types';
 import type { State } from '@logHandler/features';
-import { stateFeatures } from '@logHandler/features';
-import type { MatchResult } from '@logHandler/utils';
 import type { OpponentLineup } from '@suspension/types';
 
-export type StateFlow = Record<
-  State,
-  {
-    date: MatchResult<State>['date'];
-    line: MatchResult<State>['line'];
-    feature: MatchResult<State>['feature'];
-    result: any;
-  }
-> & {
+export type StateFlow = Record<State, LogData> & {
   current: State;
 };
 
-function getStateFeature(state: State) {
-  return stateFeatures.find((v) => v.state === state);
-}
-
-function useStateFlow(): [
-  StateFlow | null,
-  (value: MatchResult<State>) => void
-] {
+function useStateFlow(): [StateFlow | null, (value: LogData<State>) => void] {
   const [state, setState] = React.useState<StateFlow | null>(null);
-  const handleState = React.useCallback((value: MatchResult<State>) => {
+  const handleState = React.useCallback((value: LogData<State>) => {
     // @ts-ignore
     setState((prevState) => {
-      const feature = getStateFeature(value.state);
-      const data = {
-        date: value.date,
-        line: value.line,
-        feature,
-        result: feature?.getResult?.(value.line),
-      };
       switch (value.state) {
         case 'GAME_START':
           return {
-            [value.state]: data,
+            [value.state]: value,
             current: value.state,
           };
         case 'OPPONENT_HEROES':
           return {
             ...prevState,
             [value.state]: {
-              ...data,
+              ...value,
               result: [
                 ...new Set([
                   ...(prevState?.OPPONENT_HEROES?.result ?? []),
-                  ...(data?.result ?? []),
+                  ...(value?.result ?? []),
                 ]),
               ],
             },
             current: value.state,
           };
         case 'NEXT_OPPONENT':
-          if (data?.result && prevState?.OPPONENT_HEROES?.result?.length) {
+          if (value?.result && prevState?.OPPONENT_HEROES?.result?.length) {
             // 通常 NEXT_OPPONENT 的 result 为下一场对战英雄的 id。这里根据 id 查到对应英雄
-            data.result = prevState?.OPPONENT_HEROES.result.find(
+            value.result = prevState?.OPPONENT_HEROES.result.find(
               (v: { hero: string; playerId: string }) =>
-                v.playerId === data.result
+                v.playerId === value.result
             );
             return {
               ...prevState,
-              [value.state]: data,
+              [value.state]: value,
               current: value.state,
             };
           }
           return prevState;
         case 'OPPONENT_LINEUP':
-          if (data?.result && data.result.hero) {
-            const { hero, minions } = data.result;
+          if (value?.result && value.result.hero) {
+            const { hero, minions } = value.result;
             // 加入当场的回合数，回溯用
             const turn = prevState?.TURN?.result;
-            data.result.turn = turn;
+            value.result.turn = turn;
             const prev: OpponentLineup[] = prevState?.OPPONENT_LINEUP?.result;
             if (prev?.length) {
               const target = prev.find((v) => v.hero === hero);
               if (target) {
-                data.result = prev.map((v) => {
+                value.result = prev.map((v) => {
                   if (v.hero === hero) {
                     return {
                       ...v,
@@ -94,21 +71,21 @@ function useStateFlow(): [
                 });
                 return {
                   ...prevState,
-                  [value.state]: data,
+                  [value.state]: value,
                   current: value.state,
                 };
               }
-              data.result = [...prev, data.result];
+              value.result = [...prev, value.result];
               return {
                 ...prevState,
-                [value.state]: data,
+                [value.state]: value,
                 current: value.state,
               };
             }
-            data.result = [data.result];
+            value.result = [value.result];
             return {
               ...prevState,
-              [value.state]: data,
+              [value.state]: value,
               current: value.state,
             };
           }
@@ -116,7 +93,7 @@ function useStateFlow(): [
         default:
           return {
             ...prevState,
-            [value.state]: data,
+            [value.state]: value,
             current: value.state,
           };
       }

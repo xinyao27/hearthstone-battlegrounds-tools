@@ -2,37 +2,20 @@ import React from 'react';
 import { createModel } from 'hox';
 
 import type { BoxState } from '@logHandler/features';
-import type { MatchResult } from '@logHandler/utils';
+import { LogData } from '@shared/types';
 
-export type BoxFlow = Record<
-  BoxState,
-  {
-    date: MatchResult<BoxState>['date'];
-    line: MatchResult<BoxState>['line'];
-    feature: MatchResult<BoxState>['feature'];
-    result: any;
-  }
-> & {
+export type BoxFlow = Record<BoxState, LogData> & {
   current: BoxState;
 };
 
-function useBoxFlow(): [
-  BoxFlow | null,
-  (value: MatchResult<BoxState>) => void
-] {
+function useBoxFlow(): [BoxFlow | null, (value: LogData<BoxState>) => void] {
   // @ts-ignore
   const [box, setBox] = React.useState<BoxFlow>({});
-  const handleBox = React.useCallback((value: MatchResult<BoxState>) => {
-    // @ts-ignore
+  const handleBox = React.useCallback((value: LogData<BoxState>) => {
     setBox((prevState) => {
-      const data = {
-        date: value.date,
-        line: value.line,
-        feature: value.feature,
-      };
       return {
         ...prevState,
-        [value.state]: data,
+        [value.state]: value,
         current: value.state,
       };
     });
