@@ -37,13 +37,13 @@ function useStateFlow(): [StateFlow | null, (value: LogData<State>) => void] {
           };
         case 'ALANNA_TRANSFORMATION':
           // eslint-disable-next-line no-case-declarations
-          const { oldHero, oldId, hero: newHero, id: newId } = value?.result;
+          const { oldHero, hero: newHero, id: newId } = value?.result;
           // eslint-disable-next-line no-case-declarations
           const OLD_OPPONENT_HEROES = prevState?.OPPONENT_HEROES?.result;
           // eslint-disable-next-line no-case-declarations
           const NEW_OPPONENT_HEROES = OLD_OPPONENT_HEROES.map(
             (v: { id: any; hero: any }) => {
-              if (v.id === oldId && v.hero === oldHero) {
+              if (v.hero === oldHero) {
                 return {
                   ...v,
                   hero: newHero,
