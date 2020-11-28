@@ -35,6 +35,33 @@ function useStateFlow(): [StateFlow | null, (value: LogData<State>) => void] {
             },
             current: value.state,
           };
+        case 'ALANNA_TRANSFORMATION':
+          // eslint-disable-next-line no-case-declarations
+          const { oldHero, oldId, hero: newHero, id: newId } = value?.result;
+          // eslint-disable-next-line no-case-declarations
+          const OLD_OPPONENT_HEROES = prevState?.OPPONENT_HEROES?.result;
+          // eslint-disable-next-line no-case-declarations
+          const NEW_OPPONENT_HEROES = OLD_OPPONENT_HEROES.map(
+            (v: { id: any; hero: any }) => {
+              if (v.id === oldId && v.hero === oldHero) {
+                return {
+                  ...v,
+                  hero: newHero,
+                  id: newId,
+                };
+              }
+              return v;
+            }
+          );
+          return {
+            ...prevState,
+            OPPONENT_HEROES: {
+              ...prevState?.OPPONENT_HEROES,
+              result: NEW_OPPONENT_HEROES,
+            },
+            [value.state]: value,
+            current: value.state,
+          };
         case 'NEXT_OPPONENT':
           if (value?.result && prevState?.OPPONENT_HEROES?.result?.length) {
             // 通常 NEXT_OPPONENT 的 result 为下一场对战英雄的 id。这里根据 id 查到对应英雄

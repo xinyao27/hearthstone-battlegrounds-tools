@@ -97,7 +97,9 @@ export default class LogLine implements Line {
       // 参数
       // tag=CARDTYPE value=GAME
       const parameterReg = /^\S+=\S+/;
-      const matchParameter = (string: string) => parameterReg.test(string);
+      const parameterReg2 = /^(\S+\[\d\]) = (\S+)/;
+      const matchParameter = (string: string) =>
+        parameterReg.test(string) || parameterReg2.test(string);
       // @ts-ignore
       const getParameter = (string: string) => {
         // 处理以下情况
@@ -115,6 +117,15 @@ export default class LogLine implements Line {
             ];
           }
           return [];
+        }
+        const match2 = string.match(parameterReg2);
+        if (match2) {
+          return [
+            {
+              key: match2[1],
+              value: match2[2],
+            },
+          ];
         }
         return string.split(' ').map((item) => {
           const [key, value] = item.split('=');

@@ -16,6 +16,7 @@ export type State =
   | 'TURN'
   | 'OPPONENT_LINEUP'
   | 'BACK_TO_SHOP'
+  | 'ALANNA_TRANSFORMATION'
   | 'GAME_OVER';
 export interface Feature<T = string> {
   state: T;
@@ -291,6 +292,88 @@ export const stateFeatures: Feature<State>[] = [
           .filter((v) => !!v);
       }
       return undefined;
+    },
+  },
+  // 阿兰娜变身
+  // D 16:26:34.5753062 GameState.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     SUB_SPELL_START - SpellPrefabGUID=BaconFX_HistoryTileGlow_DemonHunter_Super:a80f8077a6dc1b7469ae6726274a54e8 Source=0 TargetCount=1
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -                       Targets[0] = 600
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     SUB_SPELL_END
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] tag=1068 value=5
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] tag=1068 value=0
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] tag=ZONE value=REMOVEDFROMGAME
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] tag=1234 value=17
+  // D 16:26:34.5753062 GameState.DebugPrintPower() -     HIDE_ENTITY - Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] tag=ZONE value=REMOVEDFROMGAME
+  // D 16:26:34.5753062 GameState.DebugPrintPower() - BLOCK_END
+  {
+    state: 'ALANNA_TRANSFORMATION',
+    sequenceType: 'GameState.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      // Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
+      {
+        key: 'Entity',
+        value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+      },
+      {
+        key: 'EffectIndex',
+        value: '0',
+      },
+      {
+        key: 'Target',
+        value: '0',
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+      {
+        key: 'TriggerKeyword',
+        value: 'TAG_NOT_SET',
+      },
+    ],
+    children: [
+      {
+        state: 'ALANNA_TRANSFORMATION',
+        sequenceType: 'GameState.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          // TAG_CHANGE Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] tag=ZONE value=REMOVEDFROMGAME
+          {
+            key: 'Entity',
+            value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: 'ZONE',
+          },
+          {
+            key: 'value',
+            value: 'REMOVEDFROMGAME',
+          },
+        ],
+      },
+    ],
+    getResult: (line) => {
+      const oldHero = '阿兰娜·逐星';
+      const oldIdRegex = /\[entityName=.* id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/;
+      const matched = line.body?.parameter
+        ?.find((v) => v.key === 'Entity')
+        ?.value.match(oldIdRegex);
+      const oldId = matched?.[1];
+      // 返回变身后的英雄 ID
+      const id = line.children?.[0].children?.[0]?.body?.parameter?.[0]?.value;
+      const hero = '释放自我的阿兰娜';
+      return {
+        oldHero,
+        oldId,
+        hero,
+        id,
+      };
     },
   },
   // 下一个对手
