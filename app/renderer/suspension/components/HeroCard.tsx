@@ -15,7 +15,7 @@ import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 
 type Hero = typeof heroes[0] & {
-  heroData?: ListHeroesResult['series']['data'][0];
+  heroData?: ListHeroesResult[0];
 };
 interface ChartProps {
   hero: Hero;
@@ -179,7 +179,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
   const { data, loading, error, refresh } = useListHeroes();
   const hero = React.useMemo<Hero>(() => {
     const resource = heroes.find((v) => v.id === heroId);
-    const heroData = data?.series.data.find((v) => v.hero_dbf_id === heroId);
+    const heroData = data?.find((v) => v.hero_dbf_id === heroId);
     return Object.assign(resource, { heroData });
   }, [heroId, data]);
 
