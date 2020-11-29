@@ -15,8 +15,6 @@ CheckNodeEnv('production');
 DeleteSourceMaps();
 
 export default merge(baseConfig, {
-  devtool: process.env.DEBUG_PROD === 'true' ? 'source-map' : 'none',
-
   mode: 'production',
 
   target: 'electron-main',
@@ -34,8 +32,6 @@ export default merge(baseConfig, {
       : [
           new TerserPlugin({
             parallel: true,
-            sourceMap: true,
-            cache: true,
           }),
         ],
   },
