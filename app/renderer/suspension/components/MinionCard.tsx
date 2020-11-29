@@ -16,7 +16,7 @@ const ImgTooltip = withStyles(() => ({
 
 interface MinionCardProps {
   minionName: string;
-  props: Minion;
+  props?: Minion;
 }
 
 const useStyles = makeStyles(() => ({
@@ -116,7 +116,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MinionCard: React.FC<MinionCardProps> = ({ minionName, props }) => {
+const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
   const classes = useStyles();
 
   const minion = React.useMemo(() => getMinion(getMinionId(minionName)), [

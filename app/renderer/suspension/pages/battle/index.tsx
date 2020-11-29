@@ -4,6 +4,7 @@ import { useToggle } from 'ahooks';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
+import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook';
 import useBattleState from '@suspension/hooks/useBattleState';
 
 import Opponent from './Opponent';
@@ -79,6 +80,8 @@ const Battle: React.FC = () => {
 
   return (
     <Layout>
+      <SwitchBattleAndHandbook current="battle" />
+
       <Text className={classes.round}>{`第${currentTurn}回合`}</Text>
 
       <div className={classes.container}>

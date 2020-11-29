@@ -34,6 +34,15 @@ const BattlePage = (props: Record<string, any>) => (
     <LazyBattlePage {...props} />
   </React.Suspense>
 );
+const LazyHandbookPage = React.lazy(
+  () =>
+    import(/* webpackChunkName: "HandbookPage" */ '@suspension/pages/handbook')
+);
+const HandbookPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<Loading />}>
+    <LazyHandbookPage {...props} />
+  </React.Suspense>
+);
 const LazyGameOverPage = React.lazy(
   () =>
     import(/* webpackChunkName: "GameOverPage" */ '@suspension/pages/gameOver')
@@ -51,6 +60,7 @@ export default function Routes() {
         <Route exact path={routes.WELCOME} component={WelcomePage} />
         <Route path={routes.HEROSELECTION} component={HeroSelectionPage} />
         <Route path={routes.BATTLE} component={BattlePage} />
+        <Route path={routes.HANDBOOK} component={HandbookPage} />
         <Route path={routes.GAMEOVER} component={GameOverPage} />
       </Switch>
     </App>

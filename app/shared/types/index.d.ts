@@ -44,11 +44,11 @@ declare global {
 
 export interface Minion {
   // 攻击力
-  ATK: string;
+  ATK?: string;
   // 血量
-  HEALTH: string;
+  HEALTH?: string;
   // 站位（1-7位）
-  ZONE_POSITION: '1';
+  ZONE_POSITION?: '1';
   // 嘲讽
   TAUNT?: '1';
   // 风怒
@@ -60,11 +60,11 @@ export interface Minion {
   // 金色随从
   BACON_MINION_IS_LEVEL_TWO?: '1';
   // 指 upgradeId 见 minions.json 例如：63781
-  '1429': string;
+  '1429'?: string;
   // 随从星级 1-6
-  COST: string;
+  COST?: string;
   // 种族（野兽、鱼人、龙、融合怪等等）
-  CARDRACE:
+  CARDRACE?:
     | 'DEMON'
     | 'PIRATE'
     | 'MECH'
@@ -74,7 +74,7 @@ export interface Minion {
     | 'ELEMENTAL'
     | 'ALL';
   // 酒馆等级 1-6
-  TECH_LEVEL: string;
+  TECH_LEVEL?: string;
   // 是否为酒馆内的随从？
   IS_BACON_POOL_MINION?: '1';
   // 光环

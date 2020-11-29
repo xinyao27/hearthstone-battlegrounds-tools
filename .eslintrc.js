@@ -20,6 +20,7 @@ module.exports = {
     'no-new': 'off',
     'no-continue': 'off',
     'class-methods-use-this': 'off',
+    'import/no-dynamic-require': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
