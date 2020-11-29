@@ -121,6 +121,8 @@ export default function App(props: Props) {
     }
     // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
     if (stateFlow?.current === 'HERO_TOBE_CHOSEN') {
+      // 仍然是容错处理，有时候 GAME_START 会检测不到
+      showSuspension();
       if (history.location.pathname !== '/heroSelection') {
         history.push(routes.HEROSELECTION);
       }
