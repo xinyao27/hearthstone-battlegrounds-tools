@@ -15,7 +15,7 @@ import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 
 type Hero = typeof heroes[0] & {
-  heroData?: ListHeroesResult['series']['data'][0];
+  heroData?: ListHeroesResult[0];
 };
 interface ChartProps {
   hero: Hero;
@@ -69,6 +69,8 @@ const Chart: React.FC<ChartProps> = ({ hero }) => {
 
 interface HeroCardProps {
   heroId: number;
+  displayData?: boolean;
+  mini?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -95,8 +97,8 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     position: 'absolute',
     left: 0,
-    top: 0,
-    width: 80,
+    top: (props: HeroCardProps) => (props.mini ? theme.spacing(2) : 0),
+    width: (props: HeroCardProps) => (props.mini ? 60 : 80),
     zIndex: 2,
   },
   nameBar: {
@@ -170,13 +172,14 @@ const useStylesTooltip = makeStyles((theme) => ({
   },
 }));
 
-const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
-  const classes = useStyles();
+const HeroCard: React.FC<HeroCardProps> = (props) => {
+  const { heroId, displayData } = props;
+  const classes = useStyles(props);
   const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
   const hero = React.useMemo<Hero>(() => {
     const resource = heroes.find((v) => v.id === heroId);
-    const heroData = data?.series.data.find((v) => v.hero_dbf_id === heroId);
+    const heroData = data?.find((v) => v.hero_dbf_id === heroId);
     return Object.assign(resource, { heroData });
   }, [heroId, data]);
 
@@ -197,78 +200,95 @@ const HeroCard: React.FC<HeroCardProps> = ({ heroId }) => {
   if (data && hero) {
     return (
       <Grow in={!!hero} style={{ transformOrigin: '0 0 0' }} timeout={300}>
-        <div className={classes.root} onClick={refresh}>
+        <div
+          className={classes.root}
+          style={!displayData ? { marginBottom: 0 } : {}}
+        >
           <div className={classes.title}>
             <div className={classes.avatar}>
               <img src={hero.battlegrounds.image} alt={hero.name} />
             </div>
             <div className={classes.nameBar} />
-            <div className={classes.name}>{hero.name}</div>
+            <Tooltip
+              classes={tooltipClasses}
+              title={hero.name}
+              arrow
+              placement="top"
+            >
+              <div className={classes.name}>{hero.name}</div>
+            </Tooltip>
           </div>
 
-          {hero.heroData ? (
-            <>
-              <div className={classes.data}>
-                <Tooltip
-                  classes={tooltipClasses}
-                  title="英雄的平均最终排名"
-                  arrow
-                  placement="top"
-                >
-                  <div className={classes.card}>
-                    <Text
-                      className={classes.label}
-                      stroke={false}
-                      color="black"
-                    >
-                      平均排名
-                    </Text>
-                    <Text className={classes.value} isNumber>
-                      {hero.heroData.avg_final_placement.toFixed(2)}
-                    </Text>
-                  </div>
-                </Tooltip>
+          {displayData ? (
+            hero.heroData ? (
+              <>
+                <div className={classes.data}>
+                  <Tooltip
+                    classes={tooltipClasses}
+                    title="英雄的平均最终排名"
+                    arrow
+                    placement="top"
+                  >
+                    <div className={classes.card}>
+                      <Text
+                        className={classes.label}
+                        stroke={false}
+                        color="black"
+                      >
+                        平均排名
+                      </Text>
+                      <Text className={classes.value} isNumber>
+                        {hero.heroData.avg_final_placement.toFixed(2)}
+                      </Text>
+                    </div>
+                  </Tooltip>
 
+                  <Tooltip
+                    classes={tooltipClasses}
+                    title="对局开始出现该英雄时 该英雄被选取的百分率"
+                    arrow
+                    placement="top"
+                  >
+                    <div className={classes.card}>
+                      <Text
+                        className={classes.label}
+                        stroke={false}
+                        color="black"
+                      >
+                        选择率
+                      </Text>
+                      <Text className={classes.value} isNumber>
+                        {`${hero.heroData.pick_rate.toFixed(2)}%`}
+                      </Text>
+                    </div>
+                  </Tooltip>
+                </div>
                 <Tooltip
                   classes={tooltipClasses}
-                  title="对局开始出现该英雄时 该英雄被选取的百分率"
+                  title="每一条代表该英雄得到这个名次的频率"
                   arrow
-                  placement="top"
+                  placement="bottom"
                 >
-                  <div className={classes.card}>
-                    <Text
-                      className={classes.label}
-                      stroke={false}
-                      color="black"
-                    >
-                      选择率
-                    </Text>
-                    <Text className={classes.value} isNumber>
-                      {`${hero.heroData.pick_rate.toFixed(2)}%`}
-                    </Text>
+                  <div className={classes.chart}>
+                    <Chart hero={hero} />
                   </div>
                 </Tooltip>
-              </div>
-              <Tooltip
-                classes={tooltipClasses}
-                title="每一条代表该英雄得到这个名次的频率"
-                arrow
-                placement="bottom"
-              >
-                <div className={classes.chart}>
-                  <Chart hero={hero} />
-                </div>
-              </Tooltip>
-            </>
-          ) : (
-            <Text className={classes.noData}>没有足够的数据</Text>
-          )}
+              </>
+            ) : (
+              <Text className={classes.noData}>没有足够的数据</Text>
+            )
+          ) : null}
         </div>
       </Grow>
     );
   }
 
   return null;
+};
+
+HeroCard.defaultProps = {
+  displayData: true,
+  mini: false,
 };
 
 export default HeroCard;

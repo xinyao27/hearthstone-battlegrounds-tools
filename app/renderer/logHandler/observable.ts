@@ -7,14 +7,15 @@ import log from 'electron-log';
  * 读取 Log 创建 Observable
  */
 function createObservable(filePath: string) {
-  return new Observable<{ filePath: string; cur: fs.Stats; prev: fs.Stats }>(
+  return new Observable<{ fd: number; cur: fs.Stats; prev: fs.Stats }>(
     (observer) => {
       const watcher = chokidar.watch(filePath, {
         persistent: true,
         usePolling: true,
         alwaysStat: true,
-        interval: 20,
+        interval: 50,
       });
+      let fd: number | undefined;
       let prev: fs.Stats | undefined;
       let cur: fs.Stats | undefined;
       log.info('监控准备开始', filePath);
@@ -24,20 +25,28 @@ function createObservable(filePath: string) {
           prev = stats;
           cur = stats;
           if (prev && cur) {
-            observer.next({ filePath, cur, prev });
+            fd = fs.openSync(filePath, 'r');
+            observer.next({ fd, cur, prev });
           }
         })
         .on('change', (_, stats) => {
           prev = cur;
           cur = stats;
           if (prev && cur) {
-            observer.next({ filePath, cur, prev });
+            if (!fd) {
+              fd = fs.openSync(filePath, 'r');
+            }
+            observer.next({ fd, cur, prev });
           }
+        })
+        .on('unlink', (path) => {
+          log.info(`File ${path} has been removed`);
+          observer.unsubscribe();
         });
       return {
         unsubscribe() {
           log.info('unsubscribe', filePath);
-          watcher.close();
+          watcher.unwatch(filePath);
         },
       };
     }

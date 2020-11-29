@@ -61,6 +61,7 @@ const Row: React.FC<RowProps> = ({ row }) => {
             <span>{row.heroName}</span>
           </div>
         </TableCell>
+        <TableCell align="right">{row.ranks.length}</TableCell>
         <TableCell align="right">{row.averageRanking}</TableCell>
         <TableCell align="right">
           {(row.selectRate * 100).toFixed(2)}%
@@ -115,6 +116,7 @@ export default function Statistics() {
           <TableRow>
             <TableCell />
             <TableCell>英雄</TableCell>
+            <TableCell align="right">选择次数</TableCell>
             <TableCell align="right">平均排名</TableCell>
             <TableCell align="right">选择率</TableCell>
           </TableRow>

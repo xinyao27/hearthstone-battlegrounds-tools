@@ -1,23 +1,21 @@
 import fs from 'fs';
-import { Observable, bindNodeCallback, of } from 'rxjs';
+import { bindNodeCallback, Observable, of } from 'rxjs';
 import {
   catchError,
-  mergeMap,
-  map,
   filter as filterOperator,
+  map,
+  mergeMap,
 } from 'rxjs/operators';
 
-import type { BoxRegex, BoxState, State, StateRegex } from './regex';
+import type { BoxState, Feature, State } from './features';
+import LogBlock from './LogBlock';
+import { match } from './utils';
 
 const read = bindNodeCallback(fs.read);
-const open = bindNodeCallback(fs.open);
 export const readFile = () => (
-  source: Observable<{ filePath: string; cur: fs.Stats; prev: fs.Stats }>
+  source: Observable<{ fd: number; cur: fs.Stats; prev: fs.Stats }>
 ) =>
   source.pipe(
-    mergeMap(({ filePath, cur, prev }) => {
-      return open(filePath, 'r').pipe(map((fd) => ({ fd, cur, prev })));
-    }),
     mergeMap(({ fd, cur, prev }) => {
       const length = cur.size - prev.size;
       if (length > 0) {
@@ -29,88 +27,45 @@ export const readFile = () => (
       return of(Buffer.alloc(0));
     }),
     catchError((err) => {
-      throw `readFile: ${err}`;
+      throw err;
     })
   );
 
-export type Line = {
-  date: string;
-  fn: string;
-  params: string;
-};
-/**
- * 对日志逐行读取
- */
-export const readline = () => (source: Observable<Buffer>) =>
+export const parser = () => (source: Observable<Buffer>) =>
   source.pipe(
-    map((buffer) =>
-      buffer
-        .toString()
-        .split('\n')
-        .map((v) =>
-          v.split(' ').filter((v2) => v2 !== '' && v2 !== 'D' && v2 !== '-')
-        )
-        .map((item) => {
-          const [date, fn, ...params] = item;
-          return { date, fn, params: params.join(' ') };
-        })
-    ),
-    mergeMap((v) => v),
-    catchError((err) => {
-      throw `readline: ${err}`;
-    })
-  );
-
-export interface Filtered {
-  date: string;
-  state: State | BoxState;
-  result?: any;
-  line: Line;
-}
-/**
- * 过滤掉无用日志
- * @param regexes
- */
-export const filter = (regexes: StateRegex[] | BoxRegex[]) => (
-  source: Observable<Line>
-) =>
-  source.pipe(
-    map((line) => {
-      if (line.date && line.fn) {
-        // eslint-disable-next-line no-restricted-syntax
-        for (const { state, fn, regex, index = 0 } of regexes) {
-          const fnMatched = line.fn.match(fn);
-          if (fnMatched) {
-            if (line.params.length) {
-              if (regex) {
-                const paramsMatched = line.params.match(regex);
-                // eslint-disable-next-line no-nested-ternary
-                if (paramsMatched) {
-                  const result = Array.isArray(index)
-                    ? index.map((i) => paramsMatched[i])
-                    : paramsMatched[index];
-                  return {
-                    date: line.date,
-                    state,
-                    result,
-                    line,
-                  };
-                }
-              }
-            } else {
-              return {
-                date: line.date,
-                state,
-                line,
-              };
-            }
-          }
-        }
+    map((buffer) => {
+      const string = buffer.toString();
+      if (string) {
+        return new LogBlock(string);
       }
       return null;
     }),
-    filterOperator((v) => !!v),
     catchError((err) => {
-      throw `filter: ${err}`;
+      throw err;
+    })
+  );
+
+/**
+ * 过滤掉无用日志
+ * @param features
+ */
+export const filter = (features: Feature<State>[] | Feature<BoxState>[]) => (
+  source: Observable<LogBlock | null>
+) =>
+  source.pipe(
+    map((block) => {
+      if (
+        block &&
+        block.original &&
+        Array.isArray(block.data) &&
+        block.data.length
+      ) {
+        return match(features, block.data);
+      }
+      return null;
+    }),
+    filterOperator((v) => !!v && !!v.length),
+    catchError((err) => {
+      throw err;
     })
   );

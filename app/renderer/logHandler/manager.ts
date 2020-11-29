@@ -1,9 +1,14 @@
-import { remote, ipcRenderer } from 'electron';
 import { Subscription } from 'rxjs';
+import log from 'electron-log';
 
-import { LOGHANDLER_SUSPENSION_MESSAGE } from '@shared/constants/topic';
+import { Topic } from '@shared/constants/topic';
+import { getStore } from '@shared/store';
+import type { LogData } from '@shared/types';
 
-import type { Filtered } from './parser';
+import type { MatchResult } from './utils';
+
+const store = getStore();
+let observable: Subscription | null | undefined = null;
 
 /**
  * 负责将整理过的日志信息向外广播
@@ -13,32 +18,35 @@ import type { Filtered } from './parser';
  */
 export function logManager(
   type: 'box' | 'state',
-  source: Filtered | null,
+  source: MatchResult[] | null,
   cb?: () => Subscription
 ) {
-  if (source) {
-    if (type === 'box') {
-      let observable = null;
-      // 对局开始 开始监控 Power.log 以及加载悬浮框
-      if (source.state === 'GAME_START') {
-        observable = cb?.();
-      }
-      // 对局结束 结束监控 Power.log 以及关闭悬浮框
-      if (source.state === 'GAME_OVER') {
-        observable?.unsubscribe();
-      }
-    }
-
-    const { suspensionWindow } = remote.getGlobal('windows');
-    if (suspensionWindow !== undefined) {
-      ipcRenderer.sendTo(
-        suspensionWindow.webContents?.id,
-        LOGHANDLER_SUSPENSION_MESSAGE,
-        {
-          type,
-          source,
+  if (source && source.length) {
+    source.forEach((item) => {
+      const result = item.feature?.getResult?.(item.line);
+      const data: LogData = {
+        type,
+        date: item.date,
+        state: item.state,
+        original: item.line?.original,
+        result,
+      };
+      log.info(data);
+      if (type === 'box') {
+        // 对局开始 开始监控 Power.log 以及加载悬浮框
+        if (item.state === 'BOX_GAME_START') {
+          observable = cb?.();
         }
-      );
-    }
+        // 对局结束 结束监控 Power.log 以及关闭悬浮框
+        if (item.state === 'BOX_GAME_OVER') {
+          observable?.unsubscribe();
+          observable = null;
+        }
+      }
+      store.dispatch<Topic.FLOW>({
+        type: Topic.FLOW,
+        payload: data,
+      });
+    });
   }
 }

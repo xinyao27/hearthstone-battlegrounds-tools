@@ -1,5 +1,5 @@
 module.exports = {
-  extends: 'erb/typescript',
+  extends: 'erb',
   plugins: ['prettier'],
   rules: {
     'prettier/prettier': 'error',
@@ -18,6 +18,9 @@ module.exports = {
     'no-nested-ternary': 'off',
     'react/jsx-wrap-multilines': 'off',
     'no-new': 'off',
+    'no-continue': 'off',
+    'class-methods-use-this': 'off',
+    'import/no-dynamic-require': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

@@ -34,9 +34,6 @@ class LogHandlerManager extends EventEmitter {
   ) {
     this.window = new BrowserWindow(options);
     this.window.loadURL(getAppHTML('logHandler'));
-    if (is.development) {
-      this.window.webContents.openDevTools();
-    }
     onInit(this.window);
 
     this.window.on('closed', () => {

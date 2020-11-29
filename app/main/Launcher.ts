@@ -17,24 +17,27 @@ class Launcher extends EventEmitter {
   constructor() {
     super();
 
-    this.makeSingleInstance(this.init);
-  }
-
-  init() {
-    global.windows = {
-      coreWindow: null,
-      logHandlerWindow: null,
-      suspensionWindow: null,
-    };
     global.managers = {
       coreManager: null,
       logHandlerManager: null,
       suspensionManager: null,
     };
 
+    this.makeSingleInstance(this.init);
+  }
+
+  init() {
     this.coreManager = new CoreManager({
       onInit: (window) => {
-        global.windows.coreWindow = window;
+        if (is.development) {
+          window.webContents.on('did-frame-finish-load', () => {
+            window.webContents.once('devtools-opened', () => {
+              window.focus();
+            });
+            window.webContents.openDevTools();
+          });
+          window.webContents.openDevTools();
+        }
       },
       onDestroy: () => {
         this.logHandlerManager?.destroy();
@@ -43,12 +46,22 @@ class Launcher extends EventEmitter {
     });
     this.logHandlerManager = new LogHandlerManager({
       onInit: (window) => {
-        global.windows.logHandlerWindow = window;
+        if (is.development) {
+          window.webContents.on('did-frame-finish-load', () => {
+            window.webContents.openDevTools();
+          });
+          window.webContents.openDevTools();
+        }
       },
     });
     this.suspensionManager = new SuspensionManager({
       onInit: (window) => {
-        global.windows.suspensionWindow = window;
+        if (is.development) {
+          window.webContents.on('did-frame-finish-load', () => {
+            window.webContents.openDevTools();
+          });
+          window.webContents.openDevTools();
+        }
       },
     });
 
@@ -69,11 +82,7 @@ class Launcher extends EventEmitter {
     }
 
     app.on('window-all-closed', async () => {
-      // Respect the OSX convention of having the application in memory even
-      // after all windows have been closed
-      if (!is.macos) {
-        app.quit();
-      }
+      app.quit();
     });
 
     if (process.env.E2E_BUILD === 'true') {
@@ -87,12 +96,6 @@ class Launcher extends EventEmitter {
     } else {
       app.on('ready', callback);
     }
-
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (!this.coreManager) callback();
-    });
   }
 }
 

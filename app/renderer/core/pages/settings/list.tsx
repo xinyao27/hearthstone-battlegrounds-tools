@@ -14,7 +14,6 @@ import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 import BuildIcon from '@material-ui/icons/Build';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import { useSnackbar } from 'notistack';
@@ -33,16 +32,17 @@ interface Item {
   action: React.ReactNode | React.Component;
 }
 function getList(): Item[] {
-  const { suspensionWindow } = remote.getGlobal('windows');
   const { suspensionManager } = remote.getGlobal('managers');
   const list: Item[] = [
     {
       icon: <DeveloperModeIcon />,
       label: '悬浮框展示',
       action: function Action() {
-        const [checked, { toggle }] = useBoolean(suspensionWindow.isVisible());
+        const [checked, { toggle }] = useBoolean(
+          suspensionManager?.window.isVisible()
+        );
         useMount(() => {
-          toggle(suspensionWindow.isVisible());
+          toggle(suspensionManager?.window.isVisible());
         });
         return (
           <Switch
@@ -51,9 +51,9 @@ function getList(): Item[] {
             onChange={(_, value) => {
               toggle(value);
               if (value) {
-                suspensionManager.show();
+                suspensionManager?.show();
               } else {
-                suspensionManager.hide();
+                suspensionManager?.hide();
               }
             }}
           />
@@ -87,27 +87,6 @@ function getList(): Item[] {
             >
               <SettingsIcon />
             </IconButton>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      icon: <VideogameAssetIcon />,
-      label: '提前展示游戏排名结果',
-      action: function Action() {
-        const [checked, { toggle }] = useBoolean(
-          config.get('enableGameResult') as boolean
-        );
-        return (
-          <Tooltip title="提前看到排名可能会影响游戏体验，请谨慎开启" arrow>
-            <Switch
-              edge="end"
-              checked={checked}
-              onChange={(_, value) => {
-                toggle(value);
-                config.set('enableGameResult', value);
-              }}
-            />
           </Tooltip>
         );
       },

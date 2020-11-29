@@ -1,11 +1,10 @@
 import React, { ReactNode } from 'react';
-import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import { CssBaseline, Box } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { Box, CssBaseline } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import { SnackbarProvider } from 'notistack';
 import { useMount, useUpdateEffect } from 'ahooks';
-import { ipcRenderer } from 'electron';
 import { useHistory } from 'react-router-dom';
 
 import Header from '@core/components/Header';
@@ -13,7 +12,8 @@ import Navigation from '@core/components/Navigation';
 import useRecord from '@core/hooks/useRecord';
 import useInit from '@core/hooks/useInit';
 import routes from '@core/constants/routes.json';
-import { SUSPENSION_CORE_MESSAGE } from '@shared/constants/topic';
+import { getStore } from '@shared/store';
+import { Topic } from '@shared/constants/topic';
 
 type Props = {
   children: ReactNode;
@@ -51,6 +51,8 @@ const muiTheme = createMuiTheme({
   },
 });
 
+const store = getStore();
+
 export default function App({ children }: Props) {
   const history = useHistory();
   const [, { addRecord }] = useRecord();
@@ -64,14 +66,11 @@ export default function App({ children }: Props) {
   }, [correctDirectory, history]);
 
   useMount(() => {
-    ipcRenderer.on(
-      SUSPENSION_CORE_MESSAGE,
-      (_event, args: { type: string; data: any }) => {
-        if (args.type === 'addRecord') {
-          addRecord(args.data);
-        }
+    store.subscribe<Topic.ADD_RECORD>((action) => {
+      if (action.type === Topic.ADD_RECORD) {
+        addRecord(action.payload);
       }
-    );
+    });
   });
 
   return (

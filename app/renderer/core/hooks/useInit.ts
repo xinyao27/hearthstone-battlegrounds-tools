@@ -3,14 +3,13 @@ import { createModel } from 'hox';
 import { useBoolean, useMount } from 'ahooks';
 import { is } from 'electron-util';
 import { promises as fsPromises } from 'fs';
-import { ipcRenderer, remote } from 'electron';
 
-import { config } from '@shared/store';
-import { CORE_LOGHANDLER_MESSAGE } from '@shared/constants/topic';
+import { config, getStore } from '@shared/store';
+import { Topic } from '@shared/constants/topic';
 
 function useInit(): [boolean, { check: () => Promise<boolean> }] {
+  const store = getStore();
   const [correctDirectory, { toggle: setCorrectDirectory }] = useBoolean(true);
-
   const check = React.useCallback(async () => {
     try {
       // 检测默认炉石路径是否正确
@@ -35,15 +34,10 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
         return false;
       });
       // 如果是合法目录开始监控 Logs
-      const { logHandlerWindow } = remote.getGlobal('windows');
-      if (result && logHandlerWindow !== undefined) {
-        ipcRenderer.sendTo(
-          logHandlerWindow.webContents?.id,
-          CORE_LOGHANDLER_MESSAGE,
-          {
-            type: 'startWatch',
-          }
-        );
+      if (result) {
+        store.dispatch<Topic.START_WATCH>({
+          type: Topic.START_WATCH,
+        });
       }
       setCorrectDirectory(result);
       return result;
