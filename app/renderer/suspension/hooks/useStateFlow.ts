@@ -21,6 +21,11 @@ function useStateFlow(): [StateFlow | null, (value: LogData<State>) => void] {
             [value.state]: value,
             current: value.state,
           };
+        case 'HERO_TOBE_CHOSEN':
+          return {
+            [value.state]: value,
+            current: value.state,
+          };
         case 'OPPONENT_HEROES':
           return {
             ...prevState,
