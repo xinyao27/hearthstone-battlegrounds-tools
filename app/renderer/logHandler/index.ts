@@ -26,16 +26,14 @@ function startWatch() {
 
 function run() {
   const store = getStore();
-  let isWatching = false;
-  let subscription: Subscription;
+  let subscription: Subscription | null | undefined = null;
   store.subscribe<Topic.START_WATCH>((action) => {
     if (action.type === Topic.START_WATCH) {
-      if (isWatching) {
-        subscription?.unsubscribe();
-        isWatching = false;
+      if (subscription) {
+        subscription.unsubscribe();
+        subscription = null;
       }
       subscription = startWatch();
-      isWatching = true;
       log.info(`${Topic.START_WATCH} - started`);
     }
   });

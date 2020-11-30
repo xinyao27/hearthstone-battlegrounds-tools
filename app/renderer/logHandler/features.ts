@@ -835,6 +835,28 @@ export const stateFeatures: Feature<State>[] = [
           },
         ],
       },
+      // D 11:50:52.0748816 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=GameEntity tag=1488 value=1
+      {
+        state: 'BACK_TO_SHOP',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: 'GameEntity',
+          },
+          {
+            key: 'tag',
+            value: '1488',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
       // D 13:44:36.0831795 PowerTaskList.DebugPrintPower() -     FULL_ENTITY - Updating [entityName=刷新 id=315 zone=PLAY zonePos=0 cardId=TB_BaconShop_8p_Reroll_Button player=2] CardID=TB_BaconShop_8p_Reroll_Button
       {
         state: 'BACK_TO_SHOP',

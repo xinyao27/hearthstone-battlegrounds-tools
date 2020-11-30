@@ -35,6 +35,10 @@ export function logManager(
       if (type === 'box') {
         // 对局开始 开始监控 Power.log 以及加载悬浮框
         if (item.state === 'BOX_GAME_START') {
+          if (observable) {
+            observable.unsubscribe();
+            observable = null;
+          }
           observable = cb?.();
         }
         // 对局结束 结束监控 Power.log 以及关闭悬浮框

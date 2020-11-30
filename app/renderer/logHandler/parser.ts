@@ -2,9 +2,10 @@ import fs from 'fs';
 import { bindNodeCallback, Observable, of } from 'rxjs';
 import {
   catchError,
-  filter as filterOperator,
   map,
   mergeMap,
+  scan,
+  filter as filterOperator,
 } from 'rxjs/operators';
 
 import type { BoxState, Feature, State } from './features';
@@ -33,8 +34,33 @@ export const readFile = () => (
 
 export const parser = () => (source: Observable<Buffer>) =>
   source.pipe(
-    map((buffer) => {
-      const string = buffer.toString();
+    scan((acc, cur) => {
+      const curString = cur.toString();
+      if (curString) {
+        const accArray = acc.split('\n').filter((v) => v);
+        const curArray = curString.split('\n').filter((v) => v);
+        if (curArray.length) {
+          const lastOne = accArray[accArray.length - 1];
+          if (lastOne) {
+            const firstOne = curArray[0];
+            const [, lastOneDate] = lastOne.split(' ');
+            const [, firstOneDate] = firstOne.split(' ');
+            // acc 的最后一项 与 cur 的第一项日期相同 => 合并
+            if (lastOneDate === firstOneDate) {
+              return `${acc}${curString}`;
+            }
+            // acc 的最后一项 与 cur 的第一项日期不同 => 直接返回 cur
+            return curString;
+          }
+          // 初始化
+          return curString;
+        }
+        // cur 为 null
+        return acc;
+      }
+      return acc;
+    }, ''),
+    map((string) => {
       if (string) {
         return new LogBlock(string);
       }
