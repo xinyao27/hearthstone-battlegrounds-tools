@@ -10,7 +10,11 @@ export type StateFlow = Record<State, LogData> & {
   current: State;
 };
 
-function useStateFlow(): [StateFlow | null, (value: LogData<State>) => void] {
+function useStateFlow(): [
+  StateFlow | null,
+  (value: LogData<State>) => void,
+  () => void
+] {
   const [state, setState] = React.useState<StateFlow | null>(null);
   const handleState = React.useCallback((value: LogData<State>) => {
     // @ts-ignore
@@ -131,13 +135,16 @@ function useStateFlow(): [StateFlow | null, (value: LogData<State>) => void] {
       }
     });
   }, []);
+  const resetState = React.useCallback(() => {
+    setState(null);
+  }, []);
 
   if (is.development) {
     // eslint-disable-next-line no-console
     console.log(state);
   }
 
-  return [state, handleState];
+  return [state, handleState, resetState];
 }
 
 export default createModel(useStateFlow);

@@ -97,7 +97,7 @@ const store = getStore();
 export default function App(props: Props) {
   const { children } = props;
   const history = useHistory();
-  const [stateFlow, setStateFlow] = useStateFlow();
+  const [stateFlow, setStateFlow, resetStateFlow] = useStateFlow();
   const [boxFlow, setBoxFlow] = useBoxFlow();
 
   useMount(() => {
@@ -137,9 +137,10 @@ export default function App(props: Props) {
     }
   }, [stateFlow || {}]);
   useUpdateEffect(() => {
-    // 游戏结束 关闭悬浮
     if (boxFlow?.current === 'BOX_GAME_OVER') {
-      hideSuspension();
+      // 游戏结束 关闭悬浮
+      resetStateFlow();
+      setTimeout(hideSuspension, 300);
     }
   }, [boxFlow?.current]);
 

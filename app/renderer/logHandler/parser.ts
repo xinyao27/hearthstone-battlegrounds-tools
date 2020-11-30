@@ -4,6 +4,7 @@ import {
   catchError,
   map,
   mergeMap,
+  buffer as bufferOperator,
   scan,
   filter as filterOperator,
 } from 'rxjs/operators';
@@ -34,6 +35,7 @@ export const readFile = () => (
 
 export const parser = () => (source: Observable<Buffer>) =>
   source.pipe(
+    bufferOperator(source),
     scan((acc, cur) => {
       const curString = cur.toString();
       if (curString) {
