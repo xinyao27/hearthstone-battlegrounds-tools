@@ -33,6 +33,10 @@ $ yarn build
 $ yarn dev
 ```
 
+## Git commit
+
+请使用 [git cz](https://github.com/commitizen/cz-cli) 取代 `git commit` 以便获得更加清晰的 commit 信息。
+
 ## 打包
 
 ```bash
