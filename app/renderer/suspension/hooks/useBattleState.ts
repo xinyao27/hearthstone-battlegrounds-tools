@@ -15,11 +15,15 @@ function useBattleState() {
     playerId: string;
   }>();
   // 所有对手的阵容（不显示）
-  const [opponentLineup, setOpponentLineup] = React.useState<
-    OpponentLineup[]
-  >();
+  const [opponentLineup, setOpponentLineup] = React.useState<{
+    opponent: OpponentLineup[];
+    own: {
+      turn: string;
+      minions: OpponentLineup['minions'];
+    };
+  }>();
   // 当前对手的阵容（显示）
-  const currentOpponentLineup = opponentLineup?.find(
+  const currentOpponentLineup = opponentLineup?.opponent?.find(
     (v: { hero: string }) => v.hero === currentOpponent?.hero
   );
   // 所有对手的英雄（不显示）
@@ -27,7 +31,7 @@ function useBattleState() {
   // 所有对手的阵容（显示）
   const allOpponentLineup: OpponentLineup[] = opponentHeroes?.map(
     (v: { hero: string }) => {
-      const result = opponentLineup?.find(
+      const result = opponentLineup?.opponent?.find(
         (l: { hero: string }) => l.hero === v.hero
       );
       return {
@@ -51,8 +55,8 @@ function useBattleState() {
       setCurrentOpponent(stateFlow?.NEXT_OPPONENT?.result);
     }
 
-    if (stateFlow?.current === 'OPPONENT_LINEUP') {
-      setOpponentLineup(stateFlow?.OPPONENT_LINEUP?.result);
+    if (stateFlow?.current === 'LINEUP') {
+      setOpponentLineup(stateFlow?.LINEUP?.result);
     }
   }, [stateFlow || {}]);
 

@@ -177,10 +177,13 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
   const classes = useStyles(props);
   const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
-  const hero = React.useMemo<Hero>(() => {
+  const hero = React.useMemo<Hero | null>(() => {
     const resource = heroes.find((v) => v.id === heroId);
     const heroData = data?.find((v) => v.hero_dbf_id === heroId);
-    return Object.assign(resource, { heroData });
+    if (resource && heroData) {
+      return Object.assign(resource ?? {}, { heroData });
+    }
+    return null;
   }, [heroId, data]);
 
   if (loading) return <Loading />;

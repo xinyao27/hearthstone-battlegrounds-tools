@@ -14,9 +14,12 @@ export type State =
   | 'NEXT_OPPONENT'
   | 'GAME_RANKING'
   | 'TURN'
-  | 'OPPONENT_LINEUP'
+  | 'LINEUP'
+  | 'LINEUP2'
   | 'BACK_TO_SHOP'
   | 'ALANNA_TRANSFORMATION'
+  | 'OWN_LINEUP'
+  | 'OWN_LINEUP2'
   | 'GAME_OVER';
 export interface Feature<T = string> {
   state: T;
@@ -570,10 +573,10 @@ export const stateFeatures: Feature<State>[] = [
       return undefined;
     },
   },
-  // 对手阵容(随从实际属性)
+  // 阵容 包含对手以及自己(随从实际属性)
   // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=TRIGGER Entity=[entityName=战棋商店8玩家强化 id=63 zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=6] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=9 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
   {
-    state: 'OPPONENT_LINEUP',
+    state: 'LINEUP',
     sequenceType: 'PowerTaskList.DebugPrintPower',
     level: 0,
     bodyType: 'commandWithParameter',
@@ -604,7 +607,7 @@ export const stateFeatures: Feature<State>[] = [
     children: [
       // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() -     FULL_ENTITY - Updating [entityName=雕文护卫者 id=712 zone=PLAY zonePos=1 cardId=BGS_045 player=14] CardID=BGS_045
       {
-        state: 'OPPONENT_LINEUP',
+        state: 'LINEUP',
         sequenceType: 'PowerTaskList.DebugPrintPower',
         level: 1,
         bodyType: 'commandWithParameter',
@@ -642,7 +645,7 @@ export const stateFeatures: Feature<State>[] = [
       },
       // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=雕文护卫者 id=712 zone=PLAY zonePos=1 cardId=BGS_045 player=14] tag=479 value=4
       {
-        state: 'OPPONENT_LINEUP',
+        state: 'LINEUP',
         sequenceType: 'PowerTaskList.DebugPrintPower',
         level: 1,
         bodyType: 'commandWithParameter',
@@ -664,7 +667,7 @@ export const stateFeatures: Feature<State>[] = [
       },
       // D 16:43:20.1493759 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=炎魔之王拉格纳罗斯 id=719 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_11 player=14] tag=NUM_ATTACKS_THIS_TURN value=1
       {
-        state: 'OPPONENT_LINEUP',
+        state: 'LINEUP',
         sequenceType: 'PowerTaskList.DebugPrintPower',
         level: 1,
         bodyType: 'commandWithParameter',
@@ -685,23 +688,32 @@ export const stateFeatures: Feature<State>[] = [
         ],
       },
     ],
-    getResult: (line): { hero: string; minions: Minion[] } | undefined => {
-      let hero = '';
-      const minions: Minion[] = [];
+    getResult: (
+      line
+    ):
+      | {
+          opponent: { hero: string; minions: Minion[] };
+          own: { hero: string; minions: Minion[] };
+        }
+      | undefined => {
+      let opponentHero = '';
+      const opponentMinions: Minion[] = [];
+      let ownHero = '';
+      const ownMinions: Minion[] = [];
       line?.children?.forEach((v) => {
         const original = v?.body?.original;
-        const minionMatched = original?.match(
+        const opponentMinionMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
         );
-        const minionUpdateMatched = original?.match(
+        const opponentMinionUpdateMatched = original?.match(
           /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
         );
-        const heroMatched = original?.match(
+        const opponentHeroMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+[a-z]? player=\d+\] CardID=TB_BaconShop_HERO_\d+[a-z]?/
         );
-        if (minionMatched) {
-          const name = minionMatched[1];
-          const id = minionMatched[2];
+        if (opponentMinionMatched) {
+          const name = opponentMinionMatched[1];
+          const id = opponentMinionMatched[2];
           if (name && id) {
             const props =
               v.children?.reduce((pre, cur) => {
@@ -723,16 +735,16 @@ export const stateFeatures: Feature<State>[] = [
               }, {}) ?? {};
             // eslint-disable-next-line prefer-destructuring
             if (
-              !minions.length ||
-              !minions.find((c) => c.name === name && c.id === id)
+              !opponentMinions.length ||
+              !opponentMinions.find((c) => c.name === name && c.id === id)
             ) {
-              minions.push({
+              opponentMinions.push({
                 name,
                 id,
                 props,
               });
             } else {
-              minions.forEach((c) => {
+              opponentMinions.forEach((c) => {
                 if (c.name === name && c.id === id) {
                   c.props = props;
                 }
@@ -740,25 +752,463 @@ export const stateFeatures: Feature<State>[] = [
             }
           }
         }
-        if (minionUpdateMatched) {
-          const name = minionUpdateMatched[1];
-          const id = minionUpdateMatched[2];
-          const prop = minionUpdateMatched[3];
-          const value = minionUpdateMatched[4];
-          const minion = minions.find((c) => c.name === name && c.id === id);
+        if (opponentMinionUpdateMatched) {
+          const name = opponentMinionUpdateMatched[1];
+          const id = opponentMinionUpdateMatched[2];
+          const prop = opponentMinionUpdateMatched[3];
+          const value = opponentMinionUpdateMatched[4];
+          const minion = opponentMinions.find(
+            (c) => c.name === name && c.id === id
+          );
           if (prop && value && minion) {
             minion.props[prop] = value;
           }
         }
-        if (heroMatched) {
+        if (opponentHeroMatched) {
           // eslint-disable-next-line prefer-destructuring
-          hero = heroMatched[1];
+          opponentHero = opponentHeroMatched[1];
+        }
+
+        const ownMinionMatched = original?.match(
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
+        );
+        const ownMinionUpdateMatched = original?.match(
+          /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
+        );
+        const ownHeroMatched = original?.match(
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_\d+[a-z]? player=\d+\] CardID=TB_BaconShop_HERO_\d+[a-z]?/
+        );
+        if (ownMinionMatched) {
+          const name = ownMinionMatched[1];
+          const id = ownMinionMatched[2];
+          if (name && id) {
+            const props =
+              v.children?.reduce((pre, cur) => {
+                if (cur.body?.parameter) {
+                  const prop = cur.body?.parameter.find((c) => c.key === 'tag')
+                    ?.value;
+                  const value = cur.body?.parameter.find(
+                    (c) => c.key === 'value'
+                  )?.value;
+                  if (prop && value) {
+                    return {
+                      ...pre,
+                      [prop]: value,
+                    };
+                  }
+                  return pre;
+                }
+                return pre;
+              }, {}) ?? {};
+            // eslint-disable-next-line prefer-destructuring
+            if (
+              !ownMinions.length ||
+              !ownMinions.find((c) => c.name === name && c.id === id)
+            ) {
+              ownMinions.push({
+                name,
+                id,
+                props,
+              });
+            } else {
+              ownMinions.forEach((c) => {
+                if (c.name === name && c.id === id) {
+                  c.props = props;
+                }
+              });
+            }
+          }
+        }
+        if (ownMinionUpdateMatched) {
+          const name = ownMinionUpdateMatched[1];
+          const id = ownMinionUpdateMatched[2];
+          const prop = ownMinionUpdateMatched[3];
+          const value = ownMinionUpdateMatched[4];
+          const minion = ownMinions.find((c) => c.name === name && c.id === id);
+          if (prop && value && minion) {
+            minion.props[prop] = value;
+          }
+        }
+        if (ownHeroMatched) {
+          // eslint-disable-next-line prefer-destructuring
+          ownHero = ownHeroMatched[1];
         }
       });
-      if (hero) {
-        return { hero, minions };
+
+      if (opponentHero) {
+        return {
+          opponent: {
+            hero: opponentHero,
+            minions: opponentMinions,
+          },
+          own: { hero: ownHero, minions: ownMinions },
+        };
       }
       return undefined;
+    },
+  },
+  // 阵容 只包含自己的阵容详情。通常作为 LINEUP 的替补
+  // D 20:30:07.8524131 PowerTaskList.DebugDump() - Block Start=(null)
+  {
+    state: 'LINEUP2',
+    sequenceType: 'PowerTaskList.DebugDump',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'Block',
+    parameter: [
+      {
+        key: 'Start',
+        value: '(null)',
+      },
+    ],
+    children: [
+      // D 20:30:07.8524131 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=炎魔之王拉格纳罗斯 id=1781 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_11 player=15] tag=DAMAGE value=28
+      {
+        state: 'LINEUP2',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+ player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: 'DAMAGE',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+      // D 20:30:07.8524131 PowerTaskList.DebugPrintPower() -     FULL_ENTITY - Updating [entityName=海盗无赖 id=1783 zone=SETASIDE zonePos=0 cardId=BGS_061 player=7] CardID=BGS_061
+      {
+        state: 'LINEUP2',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'FULL_ENTITY',
+        parameter: [
+          {
+            key: 'entityName',
+            value: /.*/,
+          },
+          {
+            key: 'id',
+            value: /\d+/,
+          },
+          {
+            key: 'zone',
+            value: 'SETASIDE',
+          },
+          {
+            key: 'zonePos',
+            value: /\d+/,
+          },
+          {
+            key: 'cardId',
+            value: /^TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?/,
+          },
+          {
+            key: 'player',
+            value: /\d+/,
+          },
+          {
+            key: 'CardID',
+            value: /^TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?/,
+          },
+        ],
+      },
+      // D 20:30:07.8524131 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=海盗无赖 id=1783 zone=SETASIDE zonePos=0 cardId=BGS_061 player=7] tag=LAST_AFFECTED_BY value=549
+      {
+        state: 'LINEUP2',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /^\[entityName=.* id=\d+ zone=SETASIDE zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: 'LAST_AFFECTED_BY',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+    ],
+    getResult: (line): Minion[] | undefined => {
+      const ownMinions: Minion[] = [];
+      line?.children?.forEach((v) => {
+        const original = v?.body?.original;
+
+        const ownMinionMatched = original?.match(
+          /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
+        );
+        const ownMinionUpdateMatched = original?.match(
+          /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
+        );
+        if (ownMinionMatched) {
+          const name = ownMinionMatched[1];
+          const id = ownMinionMatched[2];
+          if (name && id) {
+            const props =
+              v.children?.reduce((pre, cur) => {
+                if (cur.body?.parameter) {
+                  const prop = cur.body?.parameter.find((c) => c.key === 'tag')
+                    ?.value;
+                  const value = cur.body?.parameter.find(
+                    (c) => c.key === 'value'
+                  )?.value;
+                  if (prop && value) {
+                    return {
+                      ...pre,
+                      [prop]: value,
+                    };
+                  }
+                  return pre;
+                }
+                return pre;
+              }, {}) ?? {};
+            // eslint-disable-next-line prefer-destructuring
+            if (
+              !ownMinions.length ||
+              !ownMinions.find((c) => c.name === name && c.id === id)
+            ) {
+              ownMinions.push({
+                name,
+                id,
+                props,
+              });
+            } else {
+              ownMinions.forEach((c) => {
+                if (c.name === name && c.id === id) {
+                  c.props = props;
+                }
+              });
+            }
+          }
+        }
+        if (ownMinionUpdateMatched) {
+          const name = ownMinionUpdateMatched[1];
+          const id = ownMinionUpdateMatched[2];
+          const prop = ownMinionUpdateMatched[3];
+          const value = ownMinionUpdateMatched[4];
+          const minion = ownMinions.find((c) => c.name === name && c.id === id);
+          if (prop && value && minion) {
+            minion.props[prop] = value;
+          }
+        }
+      });
+
+      if (ownMinions) {
+        return ownMinions;
+      }
+      return undefined;
+    },
+  },
+  // 自己阵容（不包含属性 仅为随从种类以及站位）
+  {
+    state: 'OWN_LINEUP',
+    sequenceType: 'GameState.DebugPrintOptions',
+    level: 0,
+    bodyType: 'parameter',
+    parameter: [
+      {
+        key: 'id',
+        value: /\d+/,
+      },
+    ],
+    children: [
+      // D 16:01:52.1140146 GameState.DebugPrintOptions() -   option 13 type=POWER mainEntity=[entityName=微型木乃伊 id=220 zone=HAND zonePos=1 cardId=ULD_217 player=2] error=REQ_ATTACKER_CAN_ATTACK errorParam=
+      {
+        state: 'OWN_LINEUP',
+        sequenceType: 'GameState.DebugPrintOptions',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: /^option \d+$/,
+        parameter: [
+          {
+            key: 'mainEntity',
+            value: /\[entityName=.* id=\d+ zone=(HAND|PLAY) zonePos=\d+ cardId=.* player=\d+\]/,
+          },
+          {
+            key: 'error',
+            value: 'REQ_ATTACKER_CAN_ATTACK',
+          },
+          {
+            key: 'errorParam',
+            value: '',
+          },
+        ],
+      },
+    ],
+    getResult: (line) => {
+      const reg = /option \d+ type=POWER mainEntity=\[entityName=(.*) id=(\d+) zone=(HAND|PLAY) zonePos=(\d+) cardId=.* player=\d+\] error=REQ_ATTACKER_CAN_ATTACK errorParam=/;
+      const result: {
+        minion: string;
+        id: string;
+        zone: string;
+        position: string;
+      }[] = [];
+      line.children?.forEach((item) => {
+        const matched = item.original.match(reg);
+        if (matched) {
+          const minion = matched[1];
+          const id = matched[2];
+          const zone = matched[3];
+          const position = matched[4];
+          result.push({
+            minion,
+            id,
+            zone,
+            position,
+          });
+        }
+      });
+      return result;
+    },
+  },
+  // 自己阵容2（通常表现为手牌到场上 导致站位变化）
+  // D 16:01:52.4126408 PowerTaskList.DebugPrintPower() - BLOCK_START BlockType=PLAY Entity=[entityName=微型木乃伊 id=220 zone=HAND zonePos=1 cardId=ULD_217 player=2] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1
+  {
+    state: 'OWN_LINEUP2',
+    sequenceType: 'PowerTaskList.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      {
+        key: 'Entity',
+        value: /\[entityName=.* id=\d+ zone=HAND zonePos=\d+ cardId=.* player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+      },
+      {
+        key: 'EffectIndex',
+        value: '0',
+      },
+      {
+        key: 'Target',
+        value: '0',
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+    ],
+    children: [
+      // D 16:01:52.4126408 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=走夜路#51810 tag=NUM_CARDS_PLAYED_THIS_TURN value=1
+      {
+        state: 'OWN_LINEUP2',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /.*/,
+          },
+          {
+            key: 'tag',
+            value: 'NUM_CARDS_PLAYED_THIS_TURN',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+      // D 16:01:52.4126408 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=走夜路#51810 tag=NUM_MINIONS_PLAYED_THIS_TURN value=1
+      {
+        state: 'OWN_LINEUP2',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /.*/,
+          },
+          {
+            key: 'tag',
+            value: 'NUM_MINIONS_PLAYED_THIS_TURN',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+      // D 16:01:52.4126408 PowerTaskList.DebugPrintPower() -     TAG_CHANGE Entity=[entityName=微型木乃伊 id=220 zone=HAND zonePos=1 cardId=ULD_217 player=2] tag=1068 value=1
+      {
+        state: 'OWN_LINEUP2',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: /\[entityName=.* id=\d+ zone=(HAND|PLAY) zonePos=\d+ cardId=.* player=\d+\]/,
+          },
+          {
+            key: 'tag',
+            value: /\d+/,
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+    ],
+    getResult: (line) => {
+      const result: Record<
+        string,
+        {
+          minion: string;
+          zone: 'PLAY' | 'HAND';
+          position: string;
+          data: Record<string, any>;
+        }
+      > = {};
+      const reg = /TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=(HAND|PLAY) zonePos=(\d+) cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(\d+)/;
+      line.children?.forEach?.((item) => {
+        const matched = item.original.match(reg);
+        if (matched) {
+          const minion = matched[1];
+          const id = matched[2];
+          const zone = matched[3] as 'PLAY' | 'HAND';
+          const position = matched[4];
+          const tag = matched[5];
+          const value = matched[6];
+          if (result[id]) {
+            result[id].data = {
+              ...result[id].data,
+              [tag]: value,
+            };
+          } else {
+            result[id] = {
+              minion,
+              zone,
+              position,
+              data: {
+                [tag]: value,
+              },
+            };
+          }
+        }
+      });
+      return result;
     },
   },
   // 回到酒馆（主要用于定位战斗动画完毕的时机）

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createModel } from 'hox';
 import { is } from 'electron-util';
+import _ from 'lodash';
 
 import type { LogData } from '@shared/types';
 import type { State } from '@logHandler/features';
@@ -85,42 +86,90 @@ function useStateFlow(): [
             };
           }
           return prevState;
-        case 'OPPONENT_LINEUP':
-          if (value?.result && value.result.hero) {
-            const { hero, minions } = value.result;
+        case 'LINEUP':
+          if (
+            value?.result &&
+            value.result.opponent?.hero &&
+            value.result.own?.minions
+          ) {
+            const {
+              hero: opponentHero,
+              minions: opponentMinions,
+            } = value.result.opponent;
+            const { minions: ownMinions } = value.result.own;
+
             // 加入当场的回合数，回溯用
             const turn = prevState?.TURN?.result;
             value.result.turn = turn;
-            const prev: OpponentLineup[] = prevState?.OPPONENT_LINEUP?.result;
+
+            const prev: OpponentLineup[] = prevState?.LINEUP?.result.opponent;
             if (prev?.length) {
-              const target = prev.find((v) => v.hero === hero);
+              const target = prev.find((v) => v.hero === opponentHero);
               if (target) {
-                value.result = prev.map((v) => {
-                  if (v.hero === hero) {
+                const opponent = prev.map((v) => {
+                  if (v.hero === opponentHero) {
                     return {
                       ...v,
-                      minions,
+                      minions: opponentMinions,
                       turn,
                     };
                   }
                   return v;
                 });
+                value.result = {
+                  opponent,
+                  own: {
+                    turn,
+                    minions: ownMinions,
+                  },
+                };
                 return {
                   ...prevState,
                   [value.state]: value,
                   current: value.state,
                 };
               }
-              value.result = [...prev, value.result];
+              const opponent = [...prev, value.result.opponent];
+              value.result = {
+                opponent,
+                own: {
+                  turn,
+                  minions: ownMinions,
+                },
+              };
               return {
                 ...prevState,
                 [value.state]: value,
                 current: value.state,
               };
             }
-            value.result = [value.result];
+
+            value.result = {
+              opponent: [value.result.opponent],
+              own: {
+                turn,
+                minions: ownMinions,
+              },
+            };
             return {
               ...prevState,
+              [value.state]: value,
+              current: value.state,
+            };
+          }
+          return prevState;
+        case 'LINEUP2':
+          if (
+            value?.result &&
+            Array.isArray(value.result) &&
+            value.result.length
+          ) {
+            if (prevState) {
+              prevState.LINEUP.result.own.minions = value.result;
+            }
+            return {
+              ...prevState,
+              LINEUP: prevState?.LINEUP,
               [value.state]: value,
               current: value.state,
             };
@@ -141,7 +190,7 @@ function useStateFlow(): [
 
   if (is.development) {
     // eslint-disable-next-line no-console
-    console.log(state);
+    console.log(_.cloneDeep(state));
   }
 
   return [state, handleState, resetState];
