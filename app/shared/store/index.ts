@@ -1,6 +1,8 @@
 import { remote } from 'electron';
 import Store from 'electron-store';
 import { is } from 'electron-util';
+import NEDBStore from 'nedb-promises';
+import path from 'path';
 
 import type { RecordItem } from '@core/hooks/useStatistics';
 import type { RequestMethodReturnMap } from '@core/pages/settings/OBS/types';
@@ -51,16 +53,26 @@ export const config = {
   },
 };
 
-export const records = {
-  store: new Store<{ data: RecordItem[] }>({
-    name: 'records',
-    defaults: { data: [] },
-  }),
-  get() {
-    return this.store.get('data');
+const dbPath = path.join(
+  remote.app.getPath('userData'),
+  remote.app.getName(),
+  'ne.db'
+);
+const db = NEDBStore.create({ filename: dbPath, autoload: true });
+export const records: any = {
+  store: db,
+  find(query: any): Promise<RecordItem[]> {
+    // @ts-ignore
+    return this.store.find<RecordItem>(query);
   },
-  set(payload: RecordItem[]) {
-    return this.store.set('data', payload);
+  insert(payload: RecordItem) {
+    return this.store.insert(payload);
+  },
+  remove(payload: RecordItem) {
+    return this.store.remove({ _id: payload._id }, {});
+  },
+  update(payload: RecordItem) {
+    return this.store.update({ _id: payload._id }, payload);
   },
 };
 

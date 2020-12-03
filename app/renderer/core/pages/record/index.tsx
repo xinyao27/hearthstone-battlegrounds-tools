@@ -129,10 +129,10 @@ export default function Record() {
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
           .map((value) => {
-            const selected = selectedItem === value.id;
+            const selected = selectedItem === value._id;
             return (
               <Item
-                key={value.id}
+                key={value._id}
                 value={value}
                 selected={selected}
                 onClick={handleItemClick}

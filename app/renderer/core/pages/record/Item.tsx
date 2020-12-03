@@ -71,7 +71,7 @@ const Item: React.FC<ItemProps> = ({
       className={classes.root}
       button
       selected={selected}
-      onClick={() => onClick(value.id)}
+      onClick={() => onClick(value._id)}
     >
       <ListItemAvatar>
         <Avatar

@@ -8,7 +8,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
-import { v4 as uuid } from 'uuid';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
@@ -61,8 +60,8 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
         return;
       }
       if (hero) {
+        // @ts-ignore
         onSubmit({
-          id: uuid(),
           hero: {
             id: hero.id,
             name: hero.name,

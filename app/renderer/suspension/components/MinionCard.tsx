@@ -133,6 +133,8 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
     TAUNT,
     // 风怒
     // WINDFURY,
+    // 超级风怒
+    // MEGA_WINDFURY,
     // 圣盾
     DIVINE_SHIELD,
     // 剧毒

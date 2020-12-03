@@ -1,5 +1,6 @@
 import React from 'react';
 import { remote } from 'electron';
+import path from 'path';
 import { useMount, useBoolean } from 'ahooks';
 import {
   IconButton,
@@ -96,7 +97,9 @@ function getList(): Item[] {
       label: '打开缓存目录',
       action: function Action() {
         const handleClick = () => {
-          remote.shell.showItemInFolder(remote.app.getPath('userData'));
+          remote.shell.showItemInFolder(
+            path.join(remote.app.getPath('userData'), remote.app.getName())
+          );
         };
         return (
           <IconButton onClick={handleClick}>

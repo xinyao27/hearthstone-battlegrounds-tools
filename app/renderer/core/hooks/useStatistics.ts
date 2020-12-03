@@ -1,7 +1,7 @@
 import heroes from '@shared/constants/heroes.json';
 
 export interface RecordItem {
-  id: string;
+  _id: string;
   hero: {
     id: number;
     name: string;

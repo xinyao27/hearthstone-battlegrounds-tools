@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDebounceFn } from 'ahooks';
-import { v4 as uuid } from 'uuid';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import Layout from '@suspension/components/Layout';
@@ -134,7 +133,6 @@ const GameOver: React.FC = () => {
       if (_hero && _rank) {
         const date = new Date();
         const record = {
-          id: uuid(),
           hero: {
             id: _hero.id,
             name: _hero.name,
