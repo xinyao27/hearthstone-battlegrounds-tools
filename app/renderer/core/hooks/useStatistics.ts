@@ -1,4 +1,5 @@
 import heroes from '@shared/constants/heroes.json';
+import { Minion } from '@shared/types';
 
 export interface RecordItem {
   _id: string;
@@ -9,6 +10,10 @@ export interface RecordItem {
   rank: string;
   date: string | Date;
   remark?: string;
+  lineup?: {
+    turn: number;
+    minions: Minion[];
+  };
 }
 export interface ResultItem {
   heroId: number;

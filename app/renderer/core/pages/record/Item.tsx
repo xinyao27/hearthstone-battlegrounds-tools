@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
   ListItem,
   ListItemAvatar,
@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
   Grow,
+  Tooltip,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import dayjs from 'dayjs';
@@ -16,6 +17,13 @@ import { useUpdateEffect } from 'ahooks';
 
 import heroes from '@shared/constants/heroes.json';
 import type { RecordItem } from '@core/hooks/useStatistics';
+import MinionCard from '@suspension/components/MinionCard';
+
+const MinionTooltip = withStyles(() => ({
+  tooltip: {
+    background: 'none',
+  },
+}))(Tooltip);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,60 +75,78 @@ const Item: React.FC<ItemProps> = ({
   }, [selected]);
 
   return (
-    <ListItem
-      className={classes.root}
-      button
-      selected={selected}
-      onClick={() => onClick(value._id)}
+    <MinionTooltip
+      title={
+        Array.isArray(value?.lineup?.minions) ? (
+          <div>
+            {value?.lineup?.minions?.map((minion: any) => (
+              <MinionCard
+                minionName={minion.name}
+                props={minion.props}
+                key={minion.id}
+              />
+            ))}
+          </div>
+        ) : (
+          ''
+        )
+      }
     >
-      <ListItemAvatar>
-        <Avatar
-          src={currentHero?.battlegrounds.image}
-          alt={currentHero?.name}
-        />
-      </ListItemAvatar>
-      <div className={classes.content}>
-        <div>
-          <Typography className={classes.rank} display="inline">
-            {value.rank}
-          </Typography>
-          <Typography
-            className={classes.date}
-            variant="caption"
-            color="textSecondary"
-            display="inline"
-          >
-            {dayjs(value.date).format('YYYY-MM-DD HH:mm:ss')}
-          </Typography>
+      <ListItem
+        className={classes.root}
+        button
+        selected={selected}
+        onClick={() => onClick(value._id)}
+      >
+        <ListItemAvatar>
+          <Avatar
+            src={currentHero?.battlegrounds.image}
+            alt={currentHero?.name}
+          />
+        </ListItemAvatar>
+        <div className={classes.content}>
+          <div>
+            <Typography className={classes.rank} display="inline">
+              {value.rank}
+            </Typography>
+            <Typography
+              className={classes.date}
+              variant="caption"
+              color="textSecondary"
+              display="inline"
+            >
+              {dayjs(value.date).format('YYYY-MM-DD HH:mm:ss')}
+            </Typography>
+          </div>
+          {selected ? (
+            <Grow in={selected}>
+              <TextField
+                value={value.remark ?? ''}
+                onChange={handleRemarkChange}
+                inputRef={inputRef}
+                size="small"
+                placeholder="在这里输入备注"
+              />
+            </Grow>
+          ) : value.remark ? (
+            <Typography variant="caption" color="textSecondary">
+              {value.remark}
+            </Typography>
+          ) : null}
         </div>
-        {selected ? (
-          <Grow in={selected}>
-            <TextField
-              value={value.remark ?? ''}
-              onChange={handleRemarkChange}
-              inputRef={inputRef}
-              size="small"
-              placeholder="在这里输入备注"
-            />
-          </Grow>
-        ) : value.remark ? (
-          <Typography variant="caption" color="textSecondary">
-            {value.remark}
-          </Typography>
-        ) : null}
-      </div>
-      <ListItemSecondaryAction>
-        <IconButton
-          edge="end"
-          aria-label="delete"
-          onClick={() => {
-            onDelete(value);
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListItem>
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            onClick={() => {
+              onDelete(value);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    </MinionTooltip>
   );
 };
 

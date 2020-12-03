@@ -139,8 +139,10 @@ export default function App(props: Props) {
   useUpdateEffect(() => {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
       // 游戏结束 关闭悬浮
-      resetStateFlow();
-      setTimeout(hideSuspension, 300);
+      setTimeout(() => {
+        resetStateFlow();
+        hideSuspension();
+      }, 300);
     }
   }, [boxFlow?.current]);
 

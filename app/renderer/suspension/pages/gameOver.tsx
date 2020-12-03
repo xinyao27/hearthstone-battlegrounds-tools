@@ -2,10 +2,12 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDebounceFn } from 'ahooks';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import _ from 'lodash';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useCurrentHero from '@suspension/hooks/useCurrentHero';
+import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 
 import { getStore } from '@shared/store';
@@ -125,6 +127,7 @@ const GameOver: React.FC = () => {
   const classes = useStyles();
   const currentHero = useCurrentHero();
   const { hero, rank, reset } = currentHero;
+  const [stateFlow] = useStateFlow();
   const [boxFlow] = useBoxFlow();
 
   // 战绩发送至 core 添加战绩
@@ -139,6 +142,7 @@ const GameOver: React.FC = () => {
           },
           rank: _rank,
           date,
+          lineup: _.cloneDeep(stateFlow?.LINEUP?.result?.own),
         };
         store.dispatch<Topic.ADD_RECORD>({
           type: Topic.ADD_RECORD,
@@ -147,13 +151,13 @@ const GameOver: React.FC = () => {
         reset();
       }
     },
-    { wait: 500 }
+    { wait: 100 }
   );
   useDeepCompareEffect(() => {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
       run(currentHero.hero, currentHero.rank);
     }
-  }, [currentHero, boxFlow]);
+  }, [currentHero, boxFlow, stateFlow]);
 
   if (hero && rank) {
     return (

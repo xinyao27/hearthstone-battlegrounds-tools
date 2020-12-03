@@ -21,6 +21,7 @@ interface MinionCardProps {
 
 const useStyles = makeStyles(() => ({
   root: {
+    minWidth: 140,
     width: '94%',
     margin: '0 auto',
     position: 'relative',
