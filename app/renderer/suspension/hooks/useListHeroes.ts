@@ -16,7 +16,7 @@ export type ListHeroesResult = {
 
 async function getHeroes(): Promise<ListHeroesResult> {
   return ajax
-    .getJSON<ListHeroesResult>(`http://116.62.156.13:23333/heroes`)
+    .getJSON<ListHeroesResult>(`https://hs.chenyueban.com/api/analysis/heroes`)
     .toPromise<ListHeroesResult>();
 }
 
