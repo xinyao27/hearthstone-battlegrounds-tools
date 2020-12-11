@@ -13,6 +13,7 @@ import useListHeroes, {
 } from '@suspension/hooks/useListHeroes';
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
+import { getImageUrl } from '@suspension/utils';
 
 type Hero = typeof heroes[0] & {
   heroData?: ListHeroesResult[0];
@@ -178,7 +179,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
   const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
   const hero = React.useMemo<Hero | null>(() => {
-    const resource = heroes.find((v) => v.id === heroId);
+    const resource = heroes.find((v) => parseInt(v.id, 10) === heroId);
     const heroData = data?.find((v) => v.hero_dbf_id === heroId);
     if (resource && heroData) {
       return Object.assign(resource ?? {}, { heroData });
@@ -209,7 +210,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
         >
           <div className={classes.title}>
             <div className={classes.avatar}>
-              <img src={hero.battlegrounds.image} alt={hero.name} />
+              <img src={getImageUrl(hero.image)} alt={hero.name} />
             </div>
             <div className={classes.nameBar} />
             <Tooltip

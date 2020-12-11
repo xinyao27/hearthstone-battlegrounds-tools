@@ -11,7 +11,7 @@ import useConnect from '@core/pages/settings/OBS/useConnect';
 import useCommand from '@core/pages/settings/OBS/useCommand';
 import useObsText from '@core/pages/settings/OBS/useObsText';
 import useObsImage from '@core/pages/settings/OBS/useObsImage';
-import { getHero } from '@suspension/utils';
+import { getHero, getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
 
 import type { RecordItem } from './useStatistics';
@@ -35,7 +35,7 @@ function createImage(result: RecordItem[], dir: string) {
             >
               <img
                 style={{ width: 40 }}
-                src={hero.battlegrounds.image}
+                src={getImageUrl(hero.image)}
                 alt={hero.name}
               />
               <Text

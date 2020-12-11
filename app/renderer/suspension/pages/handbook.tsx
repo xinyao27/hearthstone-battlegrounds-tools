@@ -12,7 +12,7 @@ interface TierList {
 }
 function groupByTier(list: typeof minions) {
   return list.reduce<TierList>((acc, cur) => {
-    const { tier } = cur.battlegrounds;
+    const tier = parseInt(cur.tier, 10);
     return {
       ...acc,
       [tier]: Array.isArray(acc[tier]) ? [...acc[tier], cur] : [cur],

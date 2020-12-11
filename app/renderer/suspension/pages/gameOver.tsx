@@ -12,6 +12,7 @@ import useBoxFlow from '@suspension/hooks/useBoxFlow';
 
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
+import { getImageUrl } from '@suspension/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -171,7 +172,7 @@ const GameOver: React.FC = () => {
                 </Text>
               </div>
               <div className={classes.avatar}>
-                <img src={hero.battlegrounds.image} alt={hero.name} />
+                <img src={getImageUrl(hero.image)} alt={hero.name} />
               </div>
               <Text className={classes.name}>{hero.name}</Text>
             </div>

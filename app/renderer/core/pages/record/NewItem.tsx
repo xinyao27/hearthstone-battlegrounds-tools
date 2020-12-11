@@ -13,6 +13,7 @@ import clsx from 'clsx';
 
 import heroes from '@shared/constants/heroes.json';
 import type { RecordItem } from '@core/hooks/useStatistics';
+import { getImageUrl } from '@suspension/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,7 +64,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
         // @ts-ignore
         onSubmit({
           hero: {
-            id: hero.id,
+            id: parseInt(hero.id, 10),
             name: hero.name,
           },
           rank,
@@ -85,7 +86,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
             <MenuItem className={classes.item} key={hero.id} value={hero.id}>
               <img
                 className={classes.img}
-                src={hero.battlegrounds.image}
+                src={getImageUrl(hero.image)}
                 alt={hero.name}
               />
               <span>{hero.name}</span>

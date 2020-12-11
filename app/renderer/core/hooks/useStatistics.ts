@@ -1,5 +1,6 @@
 import heroes from '@shared/constants/heroes.json';
 import { Minion } from '@shared/types';
+import { getImageUrl } from '@suspension/utils';
 
 export interface RecordItem {
   _id: string;
@@ -46,8 +47,8 @@ function useStatistics(recordList: RecordItem[]) {
   return Object.keys(reSummarized)
     .reduce<ResultItem[]>((pre, cur) => {
       const heroId = parseInt(cur, 10);
-      const hero = heroes.find((v) => v.id === heroId);
-      const heroAvatar = hero ? hero.battlegrounds.image : '';
+      const hero = heroes.find((v) => parseInt(v.id, 10) === heroId);
+      const heroAvatar = hero ? getImageUrl(hero.image) : '';
       const heroName = hero ? hero.name : '';
       const ranks = reSummarized[heroId];
       const averageRanking = (

@@ -18,6 +18,7 @@ import { useUpdateEffect } from 'ahooks';
 import heroes from '@shared/constants/heroes.json';
 import type { RecordItem } from '@core/hooks/useStatistics';
 import MinionCard from '@suspension/components/MinionCard';
+import { getImageUrl } from '@suspension/utils';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
@@ -64,7 +65,7 @@ const Item: React.FC<ItemProps> = ({
     [onChange, value]
   );
   const currentHero = React.useMemo(
-    () => heroes.find((h) => h.id === value.hero.id),
+    () => heroes.find((h) => parseInt(h.id, 10) === value.hero.id),
     [value]
   );
 
@@ -100,7 +101,7 @@ const Item: React.FC<ItemProps> = ({
       >
         <ListItemAvatar>
           <Avatar
-            src={currentHero?.battlegrounds.image}
+            src={getImageUrl(currentHero?.image ?? '')}
             alt={currentHero?.name}
           />
         </ListItemAvatar>
