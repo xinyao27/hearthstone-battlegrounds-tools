@@ -61,6 +61,9 @@ const dbPath = path.join(
 const db = NEDBStore.create({ filename: dbPath, autoload: true });
 export const records: any = {
   store: db,
+  bulk(payload: RecordItem[]) {
+    return this.store.insert(payload);
+  },
   find(query: any): Promise<RecordItem[]> {
     // @ts-ignore
     return this.store.find<RecordItem>(query);
