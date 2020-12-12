@@ -13,7 +13,7 @@ function createObservable(filePath: string) {
         persistent: true,
         usePolling: true,
         alwaysStat: true,
-        interval: 50,
+        interval: 120,
       });
       let fd: number | undefined;
       let prev: fs.Stats | undefined;
