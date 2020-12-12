@@ -47,7 +47,7 @@ function useStatistics(recordList: RecordItem[]) {
   return Object.keys(reSummarized)
     .reduce<ResultItem[]>((pre, cur) => {
       const heroId = parseInt(cur, 10);
-      const hero = heroes.find((v) => parseInt(v.id, 10) === heroId);
+      const hero = heroes.find((v) => v.id === heroId);
       const heroAvatar = hero ? getImageUrl(hero.image) : '';
       const heroName = hero ? hero.name : '';
       const ranks = reSummarized[heroId];

@@ -64,7 +64,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
         // @ts-ignore
         onSubmit({
           hero: {
-            id: parseInt(hero.id, 10),
+            id: hero.id,
             name: hero.name,
           },
           rank,
