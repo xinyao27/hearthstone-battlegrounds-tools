@@ -561,6 +561,20 @@
   },
   {
     "cardClass": 12,
+    "cardId": "TB_BaconShop_HERO_59t",
+    "cardRace": 0,
+    "cardSet": 1453,
+    "cardType": 3,
+    "HEALTH": 40,
+    "id": 61911,
+    "image": "/hearthstone/images/heroes/TB_BaconShop_HERO_59t.png",
+    "name": "释放自我的阿兰娜",
+    "nameI18n": "Aranna, Unleashed",
+    "skillIds": [62035],
+    "slug": "61911-aranna-unleashed"
+  },
+  {
+    "cardClass": 12,
     "cardId": "TB_BaconShop_HERO_59",
     "cardRace": 0,
     "cardSet": 1453,

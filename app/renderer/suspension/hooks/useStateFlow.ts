@@ -17,7 +17,8 @@ function useStateFlow(): [
   () => void
 ] {
   const [state, setState] = React.useState<StateFlow | null>(null);
-  const handleState = React.useCallback((value: LogData<State>) => {
+  const handleState = React.useCallback((baseValue: LogData<State>) => {
+    const value = _.cloneDeep(baseValue);
     // @ts-ignore
     setState((prevState) => {
       switch (value.state) {
@@ -36,12 +37,13 @@ function useStateFlow(): [
             ...prevState,
             [value.state]: {
               ...value,
-              result: [
-                ...new Set([
+              result: _.uniqWith(
+                [
                   ...(prevState?.OPPONENT_HEROES?.result ?? []),
                   ...(value?.result ?? []),
-                ]),
-              ],
+                ],
+                _.isEqual
+              ),
             },
             current: value.state,
           };
@@ -100,7 +102,6 @@ function useStateFlow(): [
 
             // 加入当场的回合数，回溯用
             const turn = prevState?.TURN?.result;
-            value.result.opponent.turn = turn;
 
             const prev: OpponentLineup[] = prevState?.LINEUP?.result.opponent;
             if (prev?.length) {
@@ -129,7 +130,7 @@ function useStateFlow(): [
                   current: value.state,
                 };
               }
-              const opponent = [...prev, value.result.opponent];
+              const opponent = [...prev, { ...value.result.opponent, turn }];
               value.result = {
                 opponent,
                 own: {
@@ -145,7 +146,7 @@ function useStateFlow(): [
             }
 
             value.result = {
-              opponent: [value.result.opponent],
+              opponent: [{ ...value.result.opponent, turn }],
               own: {
                 turn,
                 minions: ownMinions,
@@ -190,7 +191,7 @@ function useStateFlow(): [
 
   if (is.development) {
     // eslint-disable-next-line no-console
-    console.log(_.cloneDeep(state));
+    console.log(state);
   }
 
   return [state, handleState, resetState];
