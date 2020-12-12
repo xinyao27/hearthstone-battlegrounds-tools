@@ -100,7 +100,7 @@ function useStateFlow(): [
 
             // 加入当场的回合数，回溯用
             const turn = prevState?.TURN?.result;
-            value.result.turn = turn;
+            value.result.opponent.turn = turn;
 
             const prev: OpponentLineup[] = prevState?.LINEUP?.result.opponent;
             if (prev?.length) {
