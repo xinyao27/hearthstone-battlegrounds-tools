@@ -4,7 +4,7 @@ import { Box, Grow, Tooltip } from '@material-ui/core';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 
-import { getMinion, getMinionId } from '@suspension/utils';
+import { getImageUrl, getMinion, getMinionId } from '@suspension/utils';
 import Text from '@suspension/components/Text';
 import { Minion } from '@shared/types';
 
@@ -21,6 +21,7 @@ interface MinionCardProps {
 
 const useStyles = makeStyles(() => ({
   root: {
+    minWidth: 140,
     width: '94%',
     margin: '0 auto',
     position: 'relative',
@@ -133,6 +134,8 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
     TAUNT,
     // 风怒
     // WINDFURY,
+    // 超级风怒
+    // MEGA_WINDFURY,
     // 圣盾
     DIVINE_SHIELD,
     // 剧毒
@@ -140,10 +143,10 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
     // 金色随从
     BACON_MINION_IS_LEVEL_TWO,
   } = props;
-  const imgSrc = BACON_MINION_IS_LEVEL_TWO
-    ? minion?.battlegrounds?.imageGold
-    : minion?.battlegrounds?.image;
-
+  const baseImgSrc = BACON_MINION_IS_LEVEL_TWO
+    ? minion?.imageGold
+    : minion?.image;
+  const imgSrc = getImageUrl(baseImgSrc ?? '');
   if (minionName) {
     return (
       <Grow

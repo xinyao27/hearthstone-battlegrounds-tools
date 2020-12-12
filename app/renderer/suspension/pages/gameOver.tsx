@@ -1,16 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDebounceFn } from 'ahooks';
-import { v4 as uuid } from 'uuid';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import _ from 'lodash';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useCurrentHero from '@suspension/hooks/useCurrentHero';
+import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
+import { getImageUrl } from '@suspension/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -126,6 +128,7 @@ const GameOver: React.FC = () => {
   const classes = useStyles();
   const currentHero = useCurrentHero();
   const { hero, rank, reset } = currentHero;
+  const [stateFlow] = useStateFlow();
   const [boxFlow] = useBoxFlow();
 
   // 战绩发送至 core 添加战绩
@@ -134,13 +137,13 @@ const GameOver: React.FC = () => {
       if (_hero && _rank) {
         const date = new Date();
         const record = {
-          id: uuid(),
           hero: {
             id: _hero.id,
             name: _hero.name,
           },
           rank: _rank,
           date,
+          lineup: _.cloneDeep(stateFlow?.LINEUP?.result?.own),
         };
         store.dispatch<Topic.ADD_RECORD>({
           type: Topic.ADD_RECORD,
@@ -149,13 +152,13 @@ const GameOver: React.FC = () => {
         reset();
       }
     },
-    { wait: 500 }
+    { wait: 100 }
   );
   useDeepCompareEffect(() => {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
       run(currentHero.hero, currentHero.rank);
     }
-  }, [currentHero, boxFlow]);
+  }, [currentHero, boxFlow, stateFlow]);
 
   if (hero && rank) {
     return (
@@ -169,7 +172,7 @@ const GameOver: React.FC = () => {
                 </Text>
               </div>
               <div className={classes.avatar}>
-                <img src={hero.battlegrounds.image} alt={hero.name} />
+                <img src={getImageUrl(hero.image)} alt={hero.name} />
               </div>
               <Text className={classes.name}>{hero.name}</Text>
             </div>

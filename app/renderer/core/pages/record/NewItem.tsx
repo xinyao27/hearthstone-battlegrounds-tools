@@ -8,12 +8,12 @@ import {
   IconButton,
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
-import { v4 as uuid } from 'uuid';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
 import heroes from '@shared/constants/heroes.json';
 import type { RecordItem } from '@core/hooks/useStatistics';
+import { getImageUrl } from '@suspension/utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,8 +61,8 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
         return;
       }
       if (hero) {
+        // @ts-ignore
         onSubmit({
-          id: uuid(),
           hero: {
             id: hero.id,
             name: hero.name,
@@ -86,7 +86,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
             <MenuItem className={classes.item} key={hero.id} value={hero.id}>
               <img
                 className={classes.img}
-                src={hero.battlegrounds.image}
+                src={getImageUrl(hero.image)}
                 alt={hero.name}
               />
               <span>{hero.name}</span>

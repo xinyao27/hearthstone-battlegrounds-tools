@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { useDebounceFn } from 'ahooks';
+import { useMount, useDebounceFn } from 'ahooks';
 import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
 import fs from 'fs';
@@ -11,11 +11,12 @@ import useConnect from '@core/pages/settings/OBS/useConnect';
 import useCommand from '@core/pages/settings/OBS/useCommand';
 import useObsText from '@core/pages/settings/OBS/useObsText';
 import useObsImage from '@core/pages/settings/OBS/useObsImage';
-import { getHero } from '@suspension/utils';
+import { getHero, getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
-import crystal from '@shared/assets/images/crystal.png';
 
 import type { RecordItem } from './useStatistics';
+
+const crystal = require('@shared/assets/images/crystal.png').default;
 
 function createImage(result: RecordItem[], dir: string) {
   const dom = document.createElement('div');
@@ -29,12 +30,12 @@ function createImage(result: RecordItem[], dir: string) {
         if (hero) {
           return (
             <div
-              key={record.id}
+              key={record._id}
               style={{ display: 'flex', alignItems: 'center' }}
             >
               <img
                 style={{ width: 40 }}
-                src={hero.battlegrounds.image}
+                src={getImageUrl(hero.image)}
                 alt={hero.name}
               />
               <Text
@@ -101,9 +102,11 @@ function useRecord(
     max: textMax,
   } = useObsText();
   const { enable: imageEnable, dir: imageDir, max: imageMax } = useObsImage();
-  const [recordList, setRecordList] = React.useState<RecordItem[]>(() =>
-    records.get()
-  );
+  const [recordList, setRecordList] = React.useState<RecordItem[]>([]);
+  useMount(async () => {
+    const data = await records.find({});
+    setRecordList(data);
+  });
   const handleCallback = React.useCallback(
     (result: RecordItem[]) => {
       callback?.(result);
@@ -156,12 +159,16 @@ function useRecord(
   );
   const { run: handleAddRecord } = useDebounceFn(
     (item: RecordItem) => {
-      setRecordList((previousState) => {
-        const result = [item, ...previousState];
-        records.set(result);
-        handleCallback(result);
-        return result;
-      });
+      records
+        .insert(item)
+        .then(() => records.find({}))
+        .then((result: RecordItem[]) => {
+          setRecordList(result);
+          return handleCallback(result);
+        })
+        .catch((err: Error) => {
+          throw err;
+        });
     },
     {
       wait: 300,
@@ -169,33 +176,37 @@ function useRecord(
   );
   const handleDeleteRecord = React.useCallback(
     (item: RecordItem) => {
-      setRecordList((previousState) => {
-        const result = previousState.filter((v) => v.id !== item.id);
-        records.set(result);
-        handleCallback(result);
-        return result;
-      });
+      records
+        .remove(item)
+        .then(() => records.find({}))
+        .then((result: RecordItem[]) => {
+          setRecordList(result);
+          return handleCallback(result);
+        })
+        .catch((err: Error) => {
+          throw err;
+        });
     },
     [handleCallback]
   );
   const handleEditRecord = React.useCallback(
     (item: RecordItem) => {
-      setRecordList((previousState) => {
-        const result = previousState.map((v) => {
-          if (v.id === item.id) {
-            return item;
-          }
-          return v;
+      records
+        .update(item)
+        .then(() => records.find({}))
+        .then((result: RecordItem[]) => {
+          setRecordList(result);
+          return handleCallback(result);
+        })
+        .catch((err: Error) => {
+          throw err;
         });
-        records.set(result);
-        handleCallback(result);
-        return result;
-      });
     },
     [handleCallback]
   );
-  const handleRefresh = React.useCallback(() => {
-    setRecordList(records.get());
+  const handleRefresh = React.useCallback(async () => {
+    const data = await records.find({});
+    setRecordList(data);
   }, []);
 
   return [

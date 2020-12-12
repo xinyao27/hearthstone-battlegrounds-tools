@@ -85,8 +85,14 @@ export default class LogLine implements Line {
       // 命令
       // CREATE_GAME
       const commandReg = /^\S+$/;
-      const matchCommand = (string: string) =>
-        commandReg.test(string) && !string.includes('=');
+      // option 0 / target 0
+      const commandReg2 = /^(option|target) (\d+)$/;
+      const matchCommand = (string: string) => {
+        return (
+          (commandReg.test(string) && !string.includes('=')) ||
+          commandReg2.test(string)
+        );
+      };
       if (matchCommand(target)) {
         return {
           type: 'command',
@@ -151,6 +157,17 @@ export default class LogLine implements Line {
           const [p1, ...args] = string.split(' - Updating ');
           return matchCommand(p1) && matchParameter(args.join(' '));
         }
+        // option 0 / target 0
+        const reg1 = /^(option|target) (\d+) (.*)$/;
+        const matched1 = string.match(reg1);
+        if (matched1) {
+          const command = matched1[1];
+          const commandIndex = matched1[2];
+          const args = matched1[3].split(' ');
+          const p1 = `${command} ${commandIndex}`;
+          return matchCommand(p1) && matchParameter(args.join(' '));
+        }
+        // default
         const [p1, ...args] = string.split(' ');
         return matchCommand(p1) && matchParameter(args.join(' '));
       };
@@ -167,6 +184,22 @@ export default class LogLine implements Line {
             parameter: getParameter(args.join(' ')),
           };
         }
+        // option 0 / target 0
+        const reg1 = /^(option|target) (\d+) (.*)$/;
+        const matched1 = target.match(reg1);
+        if (matched1) {
+          const command = matched1[1];
+          const commandIndex = matched1[2];
+          const args = matched1[3].split(' ');
+          const p1 = `${command} ${commandIndex}`;
+          return {
+            type: 'commandWithParameter',
+            original: body,
+            command: p1,
+            parameter: getParameter(args.join(' ')),
+          };
+        }
+        // default
         const [p1, ...args] = target.split(' ');
         return {
           type: 'commandWithParameter',

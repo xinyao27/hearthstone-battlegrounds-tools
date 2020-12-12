@@ -36,6 +36,7 @@ export function matchCommand(feature: Feature, line: LogLine): boolean {
       }
       return false;
     }
+    return result;
   }
   return false;
 }

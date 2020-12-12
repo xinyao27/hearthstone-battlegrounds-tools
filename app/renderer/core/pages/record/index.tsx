@@ -14,6 +14,7 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
+import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import type { TransitionProps } from '@material-ui/core/transitions';
 import dayjs from 'dayjs';
 import {
@@ -22,8 +23,11 @@ import {
   useInViewport,
   useUpdateEffect,
 } from 'ahooks';
+import { remote } from 'electron';
+import fs from 'fs';
 
 import useRecord from '@core/hooks/useRecord';
+import { records } from '@shared/store';
 
 import NewItem from './NewItem';
 import Item from './Item';
@@ -79,6 +83,40 @@ export default function Record() {
     }
   }, [inViewPort, documentVisibility]);
 
+  const handleImportRecords = React.useCallback(() => {
+    remote.dialog
+      .showOpenDialog({ properties: ['openFile'] })
+      .then((result) => {
+        if (!result.canceled && result.filePaths[0]) {
+          const targetPath = result.filePaths[0];
+          const json = fs.readFileSync(targetPath, { encoding: 'utf8' });
+          const data = JSON.parse(json);
+          if (Array.isArray(data.data)) {
+            records.bulk(
+              data.data.map(
+                (v: {
+                  hero: any;
+                  rank: any;
+                  date: any;
+                  remark: any;
+                  lineup: any;
+                }) => ({
+                  hero: v.hero,
+                  rank: v.rank,
+                  date: dayjs(v.date).toDate(),
+                  mark: v.remark,
+                  lineup: v.lineup,
+                })
+              )
+            );
+          }
+        }
+        return result;
+      })
+      // eslint-disable-next-line no-console
+      .catch(console.log);
+  }, []);
+
   const handleNewItem = React.useCallback(
     (item) => {
       addRecord(item);
@@ -129,10 +167,10 @@ export default function Record() {
         {listData
           .sort((a, b) => (dayjs(a.date).isBefore(b.date) ? 1 : -1))
           .map((value) => {
-            const selected = selectedItem === value.id;
+            const selected = selectedItem === value._id;
             return (
               <Item
-                key={value.id}
+                key={value._id}
                 value={value}
                 selected={selected}
                 onClick={handleItemClick}
@@ -162,6 +200,12 @@ export default function Record() {
             title="手动添加战绩"
             tooltipTitle="手动添加战绩"
             onClick={() => newItemToggle(true)}
+          />
+          <SpeedDialAction
+            icon={<SystemUpdateAltIcon />}
+            title="导入战绩"
+            tooltipTitle="导入战绩"
+            onClick={handleImportRecords}
           />
         </SpeedDial>
       </Zoom>

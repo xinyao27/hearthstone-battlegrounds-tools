@@ -23,11 +23,11 @@ const JianLiBianFont = {
   fontStyle: 'normal',
   src: `
     url(${
-      require('@shared/assets/fonts/JianLiBian.woff2').default
-    }) format('woff2'),
-    url(${
       require('@shared/assets/fonts/JianLiBian.woff').default
     }) format('woff'),
+    url(${
+      require('@shared/assets/fonts/JianLiBian.woff2').default
+    }) format('woff2'),
     url(${
       require('@shared/assets/fonts/JianLiBian.ttf').default
     }) format('truetype')
@@ -38,12 +38,14 @@ const BelweBoldFont = {
   fontStyle: 'normal',
   src: `
     url(${
+      require('@shared/assets/fonts/Belwe-Bold.woff').default
+    }) format('woff'),
+    url(${
       require('@shared/assets/fonts/Belwe-Bold.woff2').default
     }) format('woff2'),
     url(${
-      require('@shared/assets/fonts/Belwe-Bold.woff').default
-    }) format('woff'),
-    url(${require('@shared/assets/fonts/Belwe-Bold.ttf').default})
+      require('@shared/assets/fonts/Belwe-Bold.ttf').default
+    }) format('woff2')
   `,
 };
 const theme = createMuiTheme({
@@ -139,8 +141,10 @@ export default function App(props: Props) {
   useUpdateEffect(() => {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
       // 游戏结束 关闭悬浮
-      resetStateFlow();
-      setTimeout(hideSuspension, 300);
+      setTimeout(() => {
+        resetStateFlow();
+        hideSuspension();
+      }, 300);
     }
   }, [boxFlow?.current]);
 
