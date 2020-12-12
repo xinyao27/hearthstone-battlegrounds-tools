@@ -1,7 +1,7 @@
 {
   "name": "hearthstone-battlegrounds-tools",
   "productName": "HearthstoneBattlegroundsTools",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "HBT - 炉石传说酒馆战棋战绩统计工具",
   "author": "chenyueban <jasonchan0527@gmail.com>",
   "main": "./dist/main.prod.js",
