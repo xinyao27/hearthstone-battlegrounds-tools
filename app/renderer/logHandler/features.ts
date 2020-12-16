@@ -1225,7 +1225,7 @@ export const stateFeatures: Feature<State>[] = [
       },
       {
         key: 'EffectIndex',
-        value: '-1',
+        value: /\d+/,
       },
       {
         key: 'Target',

@@ -726,5 +726,47 @@
     "nameI18n": "Silas Darkmoon",
     "skillIds": [64481],
     "slug": "64480-silas-darkmoon"
+  },
+  {
+    "cardClass": 12,
+    "cardId": "TB_BaconShop_HERO_29",
+    "cardRace": 0,
+    "cardSet": 1453,
+    "cardType": 3,
+    "HEALTH": 40,
+    "id": 58535,
+    "image": "/hearthstone/images/heroes/TB_BaconShop_HERO_29.png",
+    "name": "克苏恩",
+    "nameI18n": "C'Thun",
+    "skillIds": [66246],
+    "slug": "58535-cthun"
+  },
+  {
+    "cardClass": 12,
+    "cardId": "TB_BaconShop_HERO_92",
+    "cardRace": 0,
+    "cardSet": 1453,
+    "cardType": 3,
+    "HEALTH": 40,
+    "id": 66196,
+    "image": "/hearthstone/images/heroes/TB_BaconShop_HERO_92.png",
+    "name": "亚煞极",
+    "nameI18n": "Y'Shaarj",
+    "skillIds": [66197],
+    "slug": "66196-yshaarj"
+  },
+  {
+    "cardClass": 12,
+    "cardId": "TB_BaconShop_HERO_93",
+    "cardRace": 0,
+    "cardSet": 1453,
+    "cardType": 3,
+    "HEALTH": 40,
+    "id": 66483,
+    "image": "/hearthstone/images/heroes/TB_BaconShop_HERO_93.png",
+    "name": "恩佐斯",
+    "nameI18n": "N'Zoth",
+    "skillIds": [66484],
+    "slug": "66483-nzoth"
   }
 ]

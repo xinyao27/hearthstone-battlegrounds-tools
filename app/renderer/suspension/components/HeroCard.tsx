@@ -181,7 +181,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
   const hero = React.useMemo<Hero | null>(() => {
     const resource = heroes.find((v) => v.id === heroId);
     const heroData = data?.find((v) => v.hero_dbf_id === heroId);
-    if (resource && heroData) {
+    if (resource) {
       return Object.assign(resource ?? {}, { heroData });
     }
     return null;
