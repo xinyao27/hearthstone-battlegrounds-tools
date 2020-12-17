@@ -7,6 +7,7 @@ import { remote } from 'electron';
 import { exec as execBase } from 'child_process';
 import { promisify } from 'util';
 import { useBoolean, useMount } from 'ahooks';
+import clsx from 'clsx';
 
 import { config } from '@shared/store';
 
@@ -138,6 +139,10 @@ const useStyles = makeStyles((theme) => ({
       marginTop: -6,
     },
   },
+  active: {
+    top: 58,
+    filter: 'drop-shadow(0px 0px 6px #f9cd0d)',
+  },
   button: {
     width: 34,
     height: 34,
@@ -148,7 +153,16 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: '-103px -40px',
   },
 }));
+const useStylesTooltip = makeStyles((theme) => ({
+  arrow: {
+    color: theme.palette.common.black,
+  },
+  tooltip: {
+    backgroundColor: theme.palette.common.black,
+  },
+}));
 
+const defaultText = '一键拔线 (快捷键 F1)';
 const appDirPath = config.get('heartstoneRootPath') as string;
 const appName = is.windows
   ? 'Hearthstone.exe'
@@ -162,7 +176,8 @@ const timeOut = 3;
 const ruleName = 'HBT炉石拔线';
 const Unplug: React.FC = () => {
   const classes = useStyles();
-  const [tooltip, setTooltip] = React.useState<string>('一键拔线');
+  const tooltipClasses = useStylesTooltip();
+  const [tooltip, setTooltip] = React.useState<string>(defaultText);
   const [loading, { toggle: toggleLoading }] = useBoolean(false);
 
   const handleUnplug = React.useCallback(async () => {
@@ -187,7 +202,7 @@ const Unplug: React.FC = () => {
       setTimeout(async () => {
         await disableRule(ruleName, appPath, setTooltip);
         setTimeout(() => {
-          setTooltip('一键拔线');
+          setTooltip(defaultText);
           toggleLoading(false);
         }, 3000);
       }, timeOut * 1000);
@@ -198,8 +213,13 @@ const Unplug: React.FC = () => {
   });
 
   return (
-    <Tooltip title={tooltip} placement="top">
-      <div className={classes.root} onClick={handleUnplug}>
+    <Tooltip title={tooltip} classes={tooltipClasses} placement="top" arrow>
+      <div
+        className={clsx(classes.root, {
+          [classes.active]: loading,
+        })}
+        onClick={handleUnplug}
+      >
         {loading ? (
           <Loading size="small" />
         ) : (
