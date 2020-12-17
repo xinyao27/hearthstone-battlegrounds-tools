@@ -1,5 +1,5 @@
 <h1 align="center">
-  HBT - 炉石传说酒馆战棋战绩统计工具
+  <a href="https://hs.chenyueban.com" target="_blank">HBT - 炉石传说酒馆战棋战绩统计工具</a>
 </h1>
 
 <p align="center">
@@ -17,12 +17,22 @@
 - 📦 历史战绩查询
 - 🎉 数据分析，统计你所使用过的英雄，自动计算每个英雄的平均排名、选择率
 - 🙈 选择英雄时展示可选英雄的大数据选择率、平均排名等
+- 🃏 对局信息记录，记录对局过的对手阵容
+- ✈️ 一键拔线
 - 🚄 连接 OBS 自动同步当天战绩到 OBS
 - 😻 跨平台 同时支持 Windows MacOS
 
 ## 🍦 下载
 
 前往 [release](https://github.com/hbt-org/hearthstone-battlegrounds-tools/releases) 选择属于你平台的安装包
+
+## ⏳ 一键拔线
+
+拔线需要使用管理员权限打开插件。
+
+点击插件上方的拔线按钮或者按下快捷键 `F1`（推荐在倒计时 5-3 秒时拔线）
+
+![unplug](./docs/unplug.png)
 
 ## 😎 OBS 连接
 
