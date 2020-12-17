@@ -1,4 +1,4 @@
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import log from 'electron-log';
 
 import { getStore } from '@shared/store';
@@ -10,28 +10,40 @@ import { readFile, parser, filter } from './parser';
 import { boxFeatures, stateFeatures } from './features';
 import config from './config';
 
-const createPowerLogObservable = (observable: Observable<any>) => () =>
-  observable
-    .pipe(readFile(), parser(), filter(stateFeatures))
-    .subscribe(createObserver('state'));
-
 function startWatch() {
   const BoxSource$ = createObservable(config.heartstoneBoxLogFilePath);
-  const PowerLogSource$ = createObservable(config.heartstonePowerLogFilePath);
+  const StateSource$ = createObservable(config.heartstonePowerLogFilePath);
 
-  return BoxSource$.pipe(readFile(), parser(), filter(boxFeatures)).subscribe(
-    createObserver('box', createPowerLogObservable(PowerLogSource$))
-  );
+  return {
+    box: BoxSource$.pipe(readFile(), parser(), filter(boxFeatures)).subscribe(
+      createObserver('box')
+    ),
+    state: StateSource$.pipe(
+      readFile(),
+      parser(),
+      filter(stateFeatures)
+    ).subscribe(createObserver('state')),
+  };
 }
 
 function run() {
   const store = getStore();
-  let subscription: Subscription | null | undefined = null;
+  let subscription: {
+    box: Subscription | null | undefined;
+    state: Subscription | null | undefined;
+  } = {
+    box: null,
+    state: null,
+  };
   store.subscribe<Topic.START_WATCH>((action) => {
     if (action.type === Topic.START_WATCH) {
-      if (subscription) {
-        subscription.unsubscribe();
-        subscription = null;
+      if (subscription.box) {
+        subscription.box.unsubscribe();
+        subscription.box = null;
+      }
+      if (subscription.state) {
+        subscription.state.unsubscribe();
+        subscription.state = null;
       }
       subscription = startWatch();
       log.info(`${Topic.START_WATCH} - started`);

@@ -24,11 +24,13 @@ function useStateFlow(): [
       switch (value.state) {
         case 'GAME_START':
           return {
+            ...prevState,
             [value.state]: value,
             current: value.state,
           };
         case 'HERO_TOBE_CHOSEN':
           return {
+            ...prevState,
             [value.state]: value,
             current: value.state,
           };

@@ -1,13 +1,12 @@
-import { Subscription } from 'rxjs';
 import log from 'electron-log';
 
 import type { MatchResult } from './utils';
 import { logManager } from './manager';
 
-function createObserver(type: 'box' | 'state', cb?: () => Subscription) {
+function createObserver(type: 'box' | 'state') {
   return {
     next: (value: MatchResult[] | null) => {
-      logManager(type, value, cb);
+      logManager(type, value);
     },
     complete: () => {
       const message = `${type} 🔚 工作结束`;

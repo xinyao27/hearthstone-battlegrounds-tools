@@ -38,11 +38,11 @@ function createObservable(filePath: string) {
             }
             observer.next({ fd, cur, prev });
           }
-        })
-        .on('unlink', (path) => {
-          log.info(`File ${path} has been removed`);
-          observer.unsubscribe();
         });
+      // .on('unlink', (path) => {
+      //   log.info(`File ${path} has been removed`);
+      //   observer.unsubscribe();
+      // });
       return {
         unsubscribe() {
           log.info('unsubscribe', filePath);

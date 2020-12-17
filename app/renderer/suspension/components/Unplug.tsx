@@ -6,7 +6,7 @@ import { is } from 'electron-util';
 import { remote } from 'electron';
 import { exec as execBase } from 'child_process';
 import { promisify } from 'util';
-import { useBoolean, useMount } from 'ahooks';
+import { useBoolean } from 'ahooks';
 import clsx from 'clsx';
 
 import { config } from '@shared/store';
@@ -17,8 +17,8 @@ const exec = promisify(execBase);
 
 /**
  * 判断是否存在指定防火墙规则
- * windows
  * @param ruleName
+ * @param appPath
  */
 async function hasRule(ruleName: string, appPath: string) {
   try {
@@ -44,6 +44,12 @@ async function hasRule(ruleName: string, appPath: string) {
     return false;
   }
 }
+/**
+ * 添加防火墙规则
+ * @param ruleName
+ * @param appPath
+ * @param cb
+ */
 async function addRule(
   ruleName: string,
   appPath: string,
@@ -67,6 +73,12 @@ async function addRule(
     return false;
   }
 }
+/**
+ * 开启防火墙规则
+ * @param ruleName
+ * @param appPath
+ * @param cb
+ */
 async function enableRule(
   ruleName: string,
   appPath: string,
@@ -90,6 +102,12 @@ async function enableRule(
     return false;
   }
 }
+/**
+ * 关闭防火墙规则
+ * @param ruleName
+ * @param appPath
+ * @param cb
+ */
 async function disableRule(
   ruleName: string,
   appPath: string,
@@ -172,7 +190,7 @@ const appName = is.windows
 // 游戏路径
 const appPath = path.join(appDirPath, appName);
 // 断线时间
-const timeOut = 3;
+const timeOut = 5;
 const ruleName = 'HBT炉石拔线';
 const Unplug: React.FC = () => {
   const classes = useStyles();
@@ -208,9 +226,12 @@ const Unplug: React.FC = () => {
       }, timeOut * 1000);
     }
   }, [loading, toggleLoading]);
-  useMount(() => {
+  React.useEffect(() => {
     remote.globalShortcut.register('F1', handleUnplug);
-  });
+    return () => {
+      remote.globalShortcut.unregisterAll();
+    };
+  }, [handleUnplug]);
 
   return (
     <Tooltip title={tooltip} classes={tooltipClasses} placement="top" arrow>
