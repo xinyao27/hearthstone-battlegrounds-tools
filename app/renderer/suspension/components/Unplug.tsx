@@ -19,9 +19,25 @@ const exec = promisify(execBase);
  * windows
  * @param ruleName
  */
-async function hasRule(ruleName: string) {
+async function hasRule(ruleName: string, appPath: string) {
   try {
-    await exec(`netsh advfirewall firewall show rule name="${ruleName}" >nul`);
+    if (is.windows) {
+      await exec(
+        `netsh advfirewall firewall show rule name="${ruleName}" >nul`
+      );
+    }
+    if (is.macos) {
+      const { stderr, stdout } = await exec(
+        `/usr/libexec/ApplicationFirewall/socketfilterfw --getappblocked ${appPath}`
+      );
+      if (stderr) {
+        throw stderr;
+      }
+      if (stdout.includes('The file path you specified does not exist')) {
+        return false;
+      }
+    }
+
     return true;
   } catch (_) {
     return false;
@@ -33,9 +49,16 @@ async function addRule(
   cb: (title: string) => void
 ) {
   try {
-    await exec(
-      `netsh advfirewall firewall add rule name="${ruleName}"  dir=out  program="${appPath}" action=block`
-    );
+    if (is.windows) {
+      await exec(
+        `netsh advfirewall firewall add rule name="${ruleName}"  dir=out  program="${appPath}" action=block`
+      );
+    }
+    if (is.macos) {
+      await exec(
+        `/usr/libexec/ApplicationFirewall/socketfilterfw --add ${appPath}`
+      );
+    }
     cb(`防火墙规则 ${ruleName} 添加成功`);
     return true;
   } catch (_) {
@@ -49,9 +72,16 @@ async function enableRule(
   cb: (title: string) => void
 ) {
   try {
-    await exec(
-      `netsh advfirewall firewall set rule name="${ruleName}" new program="${appPath}" enable=yes`
-    );
+    if (is.windows) {
+      await exec(
+        `netsh advfirewall firewall set rule name="${ruleName}" new program="${appPath}" enable=yes`
+      );
+    }
+    if (is.macos) {
+      await exec(
+        `/usr/libexec/ApplicationFirewall/socketfilterfw --blockapp ${appPath}`
+      );
+    }
     cb('防火墙规则已经生效 等待恢复');
     return true;
   } catch (_) {
@@ -59,11 +89,22 @@ async function enableRule(
     return false;
   }
 }
-async function disableRule(ruleName: string, cb: (title: string) => void) {
+async function disableRule(
+  ruleName: string,
+  appPath: string,
+  cb: (title: string) => void
+) {
   try {
-    await exec(
-      `netsh advfirewall firewall set rule name="${ruleName}" new enable=no`
-    );
+    if (is.windows) {
+      await exec(
+        `netsh advfirewall firewall set rule name="${ruleName}" new enable=no`
+      );
+    }
+    if (is.macos) {
+      await exec(
+        `/usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp ${appPath}`
+      );
+    }
     cb('恢复炉石网络成功');
     return true;
   } catch (_) {
@@ -128,7 +169,7 @@ const Unplug: React.FC = () => {
     if (!loading) {
       toggleLoading(true);
       setTooltip('正在检查是否存在防火墙规则');
-      const has = await hasRule(ruleName);
+      const has = await hasRule(ruleName, appPath);
       if (has) {
         // 存在指定规则
         setTooltip('防火墙规则已存在');
@@ -144,7 +185,7 @@ const Unplug: React.FC = () => {
 
       // 等几秒后禁用防火墙规则
       setTimeout(async () => {
-        await disableRule(ruleName, setTooltip);
+        await disableRule(ruleName, appPath, setTooltip);
         setTimeout(() => {
           setTooltip('一键拔线');
           toggleLoading(false);
