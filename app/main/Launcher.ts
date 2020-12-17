@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, globalShortcut } from 'electron';
 import { is } from 'electron-util';
 import { EventEmitter } from 'events';
 import log from 'electron-log';
@@ -96,6 +96,10 @@ class Launcher extends EventEmitter {
     } else {
       app.on('ready', callback);
     }
+    app.on('will-quit', () => {
+      // 注销所有快捷键
+      globalShortcut.unregisterAll();
+    });
   }
 }
 

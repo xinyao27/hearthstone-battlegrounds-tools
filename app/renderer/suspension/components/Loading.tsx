@@ -1,5 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+
+interface LoadingProps {
+  size?: 'small' | 'normal';
+}
 
 const useStyles = makeStyles(() => ({
   '@keyframes spin': {
@@ -7,8 +12,6 @@ const useStyles = makeStyles(() => ({
     to: { transform: 'rotate(360deg)' },
   },
   root: {
-    width: 80,
-    height: 80,
     background: `url(${
       require('@shared/assets/images/loading_bg.png').default
     }) no-repeat`,
@@ -33,12 +36,27 @@ const useStyles = makeStyles(() => ({
     },
   },
   img: {},
+  sizeSmall: {
+    width: 34,
+    height: 34,
+  },
+  sizeNormal: {
+    width: 80,
+    height: 80,
+  },
 }));
 
-const Loading: React.FC = () => {
+const Loading: React.FC<LoadingProps> = ({ size = 'normal' }) => {
   const classes = useStyles();
 
-  return <div className={classes.root} />;
+  return (
+    <div
+      className={clsx(classes.root, {
+        [classes.sizeSmall]: size === 'small',
+        [classes.sizeNormal]: size === 'normal',
+      })}
+    />
+  );
 };
 
 export default Loading;

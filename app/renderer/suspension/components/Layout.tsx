@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import routes from '@suspension/constants/routes.json';
 import Text from '@suspension/components/Text';
+import Unplug from '@suspension/components/Unplug';
 import { hideSuspension } from '@suspension/utils';
 
 interface LayoutProps {
@@ -119,6 +120,7 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
         <Text className={classes.titleText}>HBT</Text>
         <div className={classes.close} onClick={hideSuspension} />
       </div>
+      {is.windows && <Unplug />}
       <div className={classes.container}>
         <div className={clsx(classes.content, className)}>
           {is.development && (

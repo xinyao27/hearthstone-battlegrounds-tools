@@ -10,7 +10,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 import routes from '@suspension/constants/routes.json';
-import { hideSuspension, showSuspension } from '@suspension/utils';
+import { showSuspension } from '@suspension/utils';
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
 
@@ -139,12 +139,8 @@ export default function App(props: Props) {
     }
   }, [stateFlow || {}]);
   useUpdateEffect(() => {
-    if (boxFlow?.current === 'BOX_GAME_OVER') {
-      // 游戏结束 关闭悬浮
-      setTimeout(() => {
-        resetStateFlow();
-        hideSuspension();
-      }, 300);
+    if (boxFlow?.current === 'BOX_GAME_START') {
+      resetStateFlow();
     }
   }, [boxFlow?.current]);
 
