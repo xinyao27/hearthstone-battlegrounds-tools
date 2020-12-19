@@ -152,7 +152,7 @@ const GameOver: React.FC = () => {
         reset();
       }
     },
-    { wait: 100 }
+    { wait: 1000 }
   );
   useDeepCompareEffect(() => {
     if (boxFlow?.current === 'BOX_GAME_OVER') {
