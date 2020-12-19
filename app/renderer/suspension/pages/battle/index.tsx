@@ -59,6 +59,12 @@ const useStyles = makeStyles((theme) => ({
   currentOpponent: {
     marginTop: theme.spacing(2),
   },
+  previous: {
+    marginTop: theme.spacing(7),
+    marginBottom: -theme.spacing(5),
+    textAlign: 'center',
+    fontSize: 16,
+  },
   allOpponents: {
     marginTop: theme.spacing(2),
   },
@@ -71,6 +77,8 @@ const Battle: React.FC = () => {
     currentTurn,
     currentOpponent,
     currentOpponentLineup,
+    previousOpponent,
+    previousOpponentLineup,
     allOpponentLineup,
   } = useBattleState();
 
@@ -103,10 +111,28 @@ const Battle: React.FC = () => {
         </div>
 
         {visible === 'current' && (
-          <Opponent
-            hero={currentOpponent?.hero}
-            opponentLineup={currentOpponentLineup}
-          />
+          <div>
+            <Opponent
+              hero={currentOpponent?.hero}
+              opponentLineup={currentOpponentLineup}
+            />
+            {previousOpponent && (
+              <>
+                <Text
+                  className={classes.previous}
+                  color="#45331d"
+                  stroke={false}
+                >
+                  上一次的对手
+                </Text>
+                <Opponent
+                  hero={previousOpponent?.hero}
+                  opponentLineup={previousOpponentLineup}
+                  simplified
+                />
+              </>
+            )}
+          </div>
         )}
         {visible === 'all' &&
           allOpponentLineup?.map((opponent) => (

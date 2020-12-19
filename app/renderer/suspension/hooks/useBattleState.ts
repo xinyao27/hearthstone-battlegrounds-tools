@@ -1,6 +1,7 @@
 import React from 'react';
 import { createModel } from 'hox';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import { usePrevious } from 'ahooks';
 
 import type { OpponentLineup } from '@suspension/types';
 import useStateFlow from './useStateFlow';
@@ -25,6 +26,15 @@ function useBattleState() {
   // 当前对手的阵容（显示）
   const currentOpponentLineup = opponentLineup?.opponent?.find(
     (v: { hero: string }) => v.hero === currentOpponent?.hero
+  );
+  // 上一个对手（显示）
+  const previousOpponent = usePrevious(currentOpponent, (prev, next) => {
+    if (!prev && next) return true;
+    return prev?.hero !== next?.hero && prev?.playerId !== next?.playerId;
+  });
+  // 上一个对手的阵容（显示）
+  const previousOpponentLineup = opponentLineup?.opponent?.find(
+    (v: { hero: string }) => v.hero === previousOpponent?.hero
   );
   // 所有对手的英雄（不显示）
   const opponentHeroes = stateFlow?.OPPONENT_HEROES?.result;
@@ -64,6 +74,8 @@ function useBattleState() {
     currentTurn,
     currentOpponent,
     currentOpponentLineup,
+    previousOpponent,
+    previousOpponentLineup,
     allOpponentLineup,
   };
 }
