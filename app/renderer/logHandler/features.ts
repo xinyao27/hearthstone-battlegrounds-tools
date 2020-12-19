@@ -70,7 +70,7 @@ export const boxFeatures: Feature<BoxState>[] = [
       { key: 'currMode', value: 'BACON' },
     ],
   },
-  // 对局开始（Power.log 生成，开始监控）
+  // 对局开始
   // D 21:04:58.5488393 LoadingScreen.OnScenePreUnload() - prevMode=BACON nextMode=GAMEPLAY m_phase=INVALID
   {
     state: 'BOX_GAME_START',
@@ -82,7 +82,7 @@ export const boxFeatures: Feature<BoxState>[] = [
       { key: 'nextMode', value: 'GAMEPLAY' },
     ],
   },
-  // 对局结束（停止 Power.log 监控）
+  // 对局结束
   // D 21:09:21.4353961 Gameplay.OnDestroy()
   {
     state: 'BOX_GAME_OVER',
@@ -141,7 +141,7 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line): string[] | undefined => {
-      return line.children
+      return line?.children
         ?.map((child) => {
           if (
             Array.isArray(child.body?.parameter) &&
@@ -204,7 +204,6 @@ export const stateFeatures: Feature<State>[] = [
     },
   },
   // 本局对战中对手的英雄
-  // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
   {
     state: 'OPPONENT_HEROES',
     sequenceType: 'PowerTaskList.DebugDump',
@@ -218,6 +217,7 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     children: [
+      // FULL_ENTITY - Updating [entityName=巫妖王 id=141 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_22 player=16] CardID=TB_BaconShop_HERO_22
       {
         state: 'OPPONENT_HEROES',
         sequenceType: 'PowerTaskList.DebugPrintPower',
@@ -315,10 +315,17 @@ export const stateFeatures: Feature<State>[] = [
     bodyType: 'commandWithParameter',
     command: 'BLOCK_START',
     parameter: [
-      // Entity=[entityName=阿兰娜技能监控 id=260 zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=6] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1 TriggerKeyword=TAG_NOT_SET
+      {
+        key: 'BlockType',
+        value: 'TRIGGER',
+      },
       {
         key: 'Entity',
-        value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+        value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
       },
       {
         key: 'EffectIndex',
@@ -391,8 +398,16 @@ export const stateFeatures: Feature<State>[] = [
     command: 'BLOCK_START',
     parameter: [
       {
+        key: 'BlockType',
+        value: 'TRIGGER',
+      },
+      {
         key: 'Entity',
-        value: /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\].*/,
+        value: /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
       },
       {
         key: 'EffectIndex',
@@ -583,8 +598,16 @@ export const stateFeatures: Feature<State>[] = [
     command: 'BLOCK_START',
     parameter: [
       {
+        key: 'BlockType',
+        value: 'TRIGGER',
+      },
+      {
         key: 'Entity',
-        value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+        value: /\[entityName=.* id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
       },
       {
         key: 'EffectIndex',
@@ -1037,6 +1060,10 @@ export const stateFeatures: Feature<State>[] = [
         command: /^option \d+$/,
         parameter: [
           {
+            key: 'type',
+            value: 'POWER',
+          },
+          {
             key: 'mainEntity',
             value: /\[entityName=.* id=\d+ zone=(HAND|PLAY) zonePos=\d+ cardId=.* player=\d+\]/,
           },
@@ -1087,8 +1114,16 @@ export const stateFeatures: Feature<State>[] = [
     command: 'BLOCK_START',
     parameter: [
       {
+        key: 'BlockType',
+        value: 'PLAY',
+      },
+      {
         key: 'Entity',
-        value: /\[entityName=.* id=\d+ zone=HAND zonePos=\d+ cardId=.* player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+        value: /\[entityName=.* id=\d+ zone=HAND zonePos=\d+ cardId=.* player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
       },
       {
         key: 'EffectIndex',
@@ -1220,8 +1255,16 @@ export const stateFeatures: Feature<State>[] = [
     command: 'BLOCK_START',
     parameter: [
       {
+        key: 'BlockType',
+        value: 'TRIGGER',
+      },
+      {
         key: 'Entity',
-        value: /\[entityName=战棋商店8玩家强化 id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/,
+        value: /\[entityName=战棋商店8玩家强化 id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShop_8P_PlayerE player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
       },
       {
         key: 'EffectIndex',

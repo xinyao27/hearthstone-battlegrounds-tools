@@ -26,6 +26,18 @@ export default class LogLine implements Line {
 
   children?: LogLine[];
 
+  // CREATE_GAME
+  private commandRegex1 = /^\S+$/;
+
+  // option 0 / target 0
+  private commandRegex2 = /^(option|target) (\d+)$/;
+
+  // zone=PLAY
+  private parameterRegex1 = /^\S+=\S+/;
+
+  // A = xxx
+  private parameterRegex2 = /^(\S+\[\d\]) = (\S+)/;
+
   constructor(line: string) {
     if (!line)
       throw new Error(
@@ -77,135 +89,135 @@ export default class LogLine implements Line {
     };
   }
 
+  private matchCommand(string: string) {
+    return (
+      (this.commandRegex1.test(string) && !string.includes('=')) ||
+      this.commandRegex2.test(string)
+    );
+  }
+
+  private matchParameter(string: string) {
+    return (
+      this.parameterRegex1.test(string) || this.parameterRegex2.test(string)
+    );
+  }
+
+  private matchCommandWithParameter(string: string) {
+    // 处理以下情况
+    // FULL_ENTITY - Updating [entityName=巴罗夫领主 id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=11] CardID=TB_BaconShop_HERO_72
+    if (string.includes(' - Updating ')) {
+      const [command, ...args] = string.split(' - Updating ');
+      return {
+        matched:
+          this.matchCommand(command) && this.matchParameter(args.join(' ')),
+        command,
+        args: args.map((v) => v.replace(/\[|\]/g, '')),
+      };
+    }
+
+    // option 0 / target 0
+    const reg1 = /^(option|target) (\d+) (.*)$/;
+    const matched = string.match(reg1);
+    if (matched) {
+      const baseCommand = matched[1];
+      const baseCommandIndex = matched[2];
+      const args = matched[3].split(' ');
+      const command = `${baseCommand} ${baseCommandIndex}`;
+      return {
+        matched:
+          this.matchCommand(command) && this.matchParameter(args.join(' ')),
+        command,
+        args,
+      };
+    }
+
+    // default
+    const [command, ...args] = string.split(' ');
+    return {
+      matched:
+        this.matchCommand(command) && this.matchParameter(args.join(' ')),
+      command,
+      args,
+    };
+  }
+
+  private getParameter(string: string): { key: string; value: string }[] {
+    // 处理以下情况
+    // Entity=[entityName=派对元素 id=1703 zone=HAND zonePos=2 cardId=TB_BaconUps_160 player=7]
+    // Entities[1]=[entityName=林地守护者欧穆 id=86 zone=HAND zonePos=2 cardId=TB_BaconShop_HERO_74 player=5]
+    if (string.includes('=[')) {
+      const regex = /\[(.*?)\]/g;
+      const replaceValue = '$hbt_replace$';
+      const originalValues: string[] = [];
+      const simplifiedString = string.replace(regex, (originalValue) => {
+        originalValues.push(originalValue);
+        return replaceValue;
+      });
+      return simplifiedString.split(' ').map((item) => {
+        const [key, value] = item.split('=');
+        return {
+          key: key?.includes(replaceValue)
+            ? key.replace(replaceValue, <string>originalValues.shift())
+            : key,
+          value: value?.includes(replaceValue)
+            ? value.replace(replaceValue, <string>originalValues.shift())
+            : value,
+        };
+      });
+    }
+
+    const matched = string.match(this.parameterRegex2);
+    if (matched) {
+      return [
+        {
+          key: matched[1],
+          value: matched[2],
+        },
+      ];
+    }
+
+    return string.split(' ').map((item) => {
+      const [key, value] = item.split('=');
+      return {
+        key,
+        value,
+      };
+    });
+  }
+
   bodyParser(body: string): LineBody | null {
     const target = body?.trim();
     if (target) {
       // 分为三种形式 命令 / 命令+参数 / 参数
 
       // 命令
-      // CREATE_GAME
-      const commandReg = /^\S+$/;
-      // option 0 / target 0
-      const commandReg2 = /^(option|target) (\d+)$/;
-      const matchCommand = (string: string) => {
-        return (
-          (commandReg.test(string) && !string.includes('=')) ||
-          commandReg2.test(string)
-        );
-      };
-      if (matchCommand(target)) {
+      if (this.matchCommand(target)) {
         return {
           type: 'command',
           original: body,
           command: target,
         };
       }
+
       // 参数
       // tag=CARDTYPE value=GAME
-      const parameterReg = /^\S+=\S+/;
-      const parameterReg2 = /^(\S+\[\d\]) = (\S+)/;
-      const matchParameter = (string: string) =>
-        parameterReg.test(string) || parameterReg2.test(string);
-      // @ts-ignore
-      const getParameter = (string: string) => {
-        // 处理以下情况
-        // Entity=[entityName=派对元素 id=1703 zone=HAND zonePos=2 cardId=TB_BaconUps_160 player=7]
-        if (string.includes('=[')) {
-          const regex = /(\S+)=(\[.*\])(.*)$/;
-          const matched = string.match(regex);
-          if (matched) {
-            return [
-              {
-                key: matched[1],
-                value: matched[2],
-              },
-              ...(matched[3] ? getParameter(matched[3].trim()) : []),
-            ];
-          }
-          return [];
-        }
-        const match2 = string.match(parameterReg2);
-        if (match2) {
-          return [
-            {
-              key: match2[1],
-              value: match2[2],
-            },
-          ];
-        }
-        return string.split(' ').map((item) => {
-          const [key, value] = item.split('=');
-          return {
-            key,
-            value,
-          };
-        });
-      };
-      if (matchParameter(target)) {
+      if (this.matchParameter(target)) {
         return {
           type: 'parameter',
           original: body,
-          parameter: getParameter(target),
+          parameter: this.getParameter(target),
         };
       }
+
       // 命令+参数
       // GameEntity EntityID=22
-      const matchCommandWithParameter = (string: string) => {
-        // 处理以下情况
-        // FULL_ENTITY - Updating [entityName=巴罗夫领主 id=146 zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_72 player=11] CardID=TB_BaconShop_HERO_72
-        if (string.includes(' - Updating ')) {
-          const [p1, ...args] = string.split(' - Updating ');
-          return matchCommand(p1) && matchParameter(args.join(' '));
-        }
-        // option 0 / target 0
-        const reg1 = /^(option|target) (\d+) (.*)$/;
-        const matched1 = string.match(reg1);
-        if (matched1) {
-          const command = matched1[1];
-          const commandIndex = matched1[2];
-          const args = matched1[3].split(' ');
-          const p1 = `${command} ${commandIndex}`;
-          return matchCommand(p1) && matchParameter(args.join(' '));
-        }
-        // default
-        const [p1, ...args] = string.split(' ');
-        return matchCommand(p1) && matchParameter(args.join(' '));
-      };
-      if (matchCommandWithParameter(target)) {
-        if (target.includes(' - Updating ')) {
-          const [p1, ...args] = target
-            .replace('[', '')
-            .replace(']', '')
-            .split(' - Updating ');
-          return {
-            type: 'commandWithParameter',
-            original: body,
-            command: p1,
-            parameter: getParameter(args.join(' ')),
-          };
-        }
-        // option 0 / target 0
-        const reg1 = /^(option|target) (\d+) (.*)$/;
-        const matched1 = target.match(reg1);
-        if (matched1) {
-          const command = matched1[1];
-          const commandIndex = matched1[2];
-          const args = matched1[3].split(' ');
-          const p1 = `${command} ${commandIndex}`;
-          return {
-            type: 'commandWithParameter',
-            original: body,
-            command: p1,
-            parameter: getParameter(args.join(' ')),
-          };
-        }
-        // default
-        const [p1, ...args] = target.split(' ');
+      const { matched, command, args } = this.matchCommandWithParameter(target);
+      if (matched) {
         return {
           type: 'commandWithParameter',
           original: body,
-          command: p1,
-          parameter: getParameter(args.join(' ')),
+          command,
+          parameter: this.getParameter(args.join(' ')),
         };
       }
     }
