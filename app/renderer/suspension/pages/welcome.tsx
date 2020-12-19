@@ -25,7 +25,7 @@ const Welcome: React.FC = () => {
   return (
     <Layout className={classes.root}>
       <Text className={classes.slogan}>欢迎使用</Text>
-      <Text className={classes.slogan2}>酒馆战棋统计工具</Text>
+      <Text className={classes.slogan2}>HBT 炉石战棋插件</Text>
     </Layout>
   );
 };
