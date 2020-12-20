@@ -11,76 +11,82 @@ import useConnect from '@core/pages/settings/OBS/useConnect';
 import useCommand from '@core/pages/settings/OBS/useCommand';
 import useObsText from '@core/pages/settings/OBS/useObsText';
 import useObsImage from '@core/pages/settings/OBS/useObsImage';
-import { getHero, getImageUrl } from '@suspension/utils';
+import { getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
+import useHeroes from '@shared/hooks/useHeroes';
 
 import type { RecordItem } from './useStatistics';
 
 const crystal = require('@shared/assets/images/crystal.png').default;
 
-function createImage(result: RecordItem[], dir: string) {
-  const dom = document.createElement('div');
-  dom.id = 'recordImage';
-  dom.setAttribute('style', 'position: fixed; left: 9999px; top: 9999px');
-  document.body.append(dom);
-  const image = (
-    <div style={{ width: 140, minHeight: 80 }}>
-      {result.map((record) => {
-        const hero = getHero(record.hero.id);
-        if (hero) {
-          return (
-            <div
-              key={record._id}
-              style={{ display: 'flex', alignItems: 'center' }}
-            >
-              <img
-                style={{ width: 40 }}
-                src={getImageUrl(hero.image)}
-                alt={hero.name}
-              />
-              <Text
-                style={{
-                  width: 40,
-                  height: 40,
-                  background: `url(${crystal}) no-repeat`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  textAlign: 'center',
-                  lineHeight: '36px',
-                  fontSize: 18,
-                  marginLeft: 12,
-                }}
+function useCreateImage() {
+  const { getHero } = useHeroes();
+  function run(result: RecordItem[], dir: string) {
+    const dom = document.createElement('div');
+    dom.id = 'recordImage';
+    dom.setAttribute('style', 'position: fixed; left: 9999px; top: 9999px');
+    document.body.append(dom);
+    const image = (
+      <div style={{ width: 140, minHeight: 80 }}>
+        {result.map((record) => {
+          const hero = getHero(record.hero.id);
+          if (hero) {
+            return (
+              <div
+                key={record._id}
+                style={{ display: 'flex', alignItems: 'center' }}
               >
-                {record.rank}
-              </Text>
-            </div>
-          );
-        }
-        return null;
-      })}
-    </div>
-  );
-  if (dom) {
-    ReactDOM.render(image, dom);
-    html2canvas(dom as HTMLElement, {
-      width: 140,
-      height: 663,
-      scale: 2,
-      backgroundColor: null,
-      useCORS: true,
-    })
-      .then((canvas) => {
-        const base64 = canvas
-          ?.toDataURL()
-          ?.replace(/^data:image\/\w+;base64,/, '');
-        const decode = Buffer.from(base64, 'base64');
-        fs.writeFileSync(path.resolve(dir, 'hbt-obs.png'), decode);
-        document.body.removeChild(dom);
-        return decode;
+                <img
+                  style={{ width: 40 }}
+                  src={getImageUrl(hero.image)}
+                  alt={hero.name}
+                />
+                <Text
+                  style={{
+                    width: 40,
+                    height: 40,
+                    background: `url(${crystal}) no-repeat`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    textAlign: 'center',
+                    lineHeight: '36px',
+                    fontSize: 18,
+                    marginLeft: 12,
+                  }}
+                >
+                  {record.rank}
+                </Text>
+              </div>
+            );
+          }
+          return null;
+        })}
+      </div>
+    );
+    if (dom) {
+      ReactDOM.render(image, dom);
+      html2canvas(dom as HTMLElement, {
+        width: 140,
+        height: 663,
+        scale: 2,
+        backgroundColor: null,
+        useCORS: true,
       })
-      // eslint-disable-next-line no-console
-      .catch(console.log);
+        .then((canvas) => {
+          const base64 = canvas
+            ?.toDataURL()
+            ?.replace(/^data:image\/\w+;base64,/, '');
+          const decode = Buffer.from(base64, 'base64');
+          fs.writeFileSync(path.resolve(dir, 'hbt-obs.png'), decode);
+          document.body.removeChild(dom);
+          return decode;
+        })
+        // eslint-disable-next-line no-console
+        .catch(console.log);
+    }
   }
+
+  return run;
 }
 
 function useRecord(
@@ -102,6 +108,7 @@ function useRecord(
     max: textMax,
   } = useObsText();
   const { enable: imageEnable, dir: imageDir, max: imageMax } = useObsImage();
+  const createImage = useCreateImage();
   const [recordList, setRecordList] = React.useState<RecordItem[]>([]);
   useMount(async () => {
     const data = await records.find({});

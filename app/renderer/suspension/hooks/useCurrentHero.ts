@@ -2,18 +2,16 @@ import React from 'react';
 import { createModel } from 'hox';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import heroes from '@shared/constants/heroes.json';
-import { getHero, getHeroId } from '@suspension/utils';
+import type { CacheHero } from '@shared/types';
+import useHeroes from '@shared/hooks/useHeroes';
 
 import useStateFlow from './useStateFlow';
 
-type Hero = typeof heroes[0];
-type HeroRank = string;
-
 function useCurrentHero() {
   const [stateFlow] = useStateFlow();
-  const [hero, setHero] = React.useState<Hero | null>(null);
-  const [rank, setRank] = React.useState<HeroRank>('8');
+  const { getHeroId, getHero } = useHeroes();
+  const [hero, setHero] = React.useState<CacheHero | null>(null);
+  const [rank, setRank] = React.useState<string>('8');
 
   useDeepCompareEffect(() => {
     if (stateFlow?.HERO_CHOICES?.result) {
@@ -29,7 +27,7 @@ function useCurrentHero() {
         }
       }
     }
-  }, [stateFlow || {}]);
+  }, [stateFlow || {}, getHeroId, getHero]);
 
   const handleReset = React.useCallback(() => {
     setHero(null);

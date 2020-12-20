@@ -11,9 +11,9 @@ import SendIcon from '@material-ui/icons/Send';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
-import heroes from '@shared/constants/heroes.json';
 import type { RecordItem } from '@core/hooks/useStatistics';
 import { getImageUrl } from '@suspension/utils';
+import useHeroes from '@shared/hooks/useHeroes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +44,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
   ({ className, onSubmit }, ref) => {
     const classes = useStyles();
     const { enqueueSnackbar } = useSnackbar();
+    const { heroes } = useHeroes();
 
     const [currentItem, setCurrentItem] = React.useState(() => heroes[0].id);
     const [rank, setRank] = React.useState('');
@@ -71,7 +72,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
           date,
         });
       }
-    }, [rank, currentItem, enqueueSnackbar, onSubmit]);
+    }, [heroes, rank, currentItem, enqueueSnackbar, onSubmit]);
 
     return (
       <Paper className={clsx(classes.root, className)} ref={ref}>

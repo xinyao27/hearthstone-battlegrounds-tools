@@ -2,6 +2,8 @@ import CoreManager from '@main/windows/CoreManager';
 import LogHandlerManager from '@main/windows/LogHandlerManager';
 import SuspensionManager from '@main/windows/SuspensionManager';
 import Store from '@shared/store/store';
+import type { CacheHero } from './hero';
+import type { CacheMinion } from './minion';
 
 declare module '*.jpg' {
   const value: any;
@@ -42,6 +44,18 @@ declare global {
   }
 }
 
+export interface CacheHeroData {
+  data: CacheHero[];
+  count: number;
+  version: number;
+}
+export interface CacheMinionData {
+  data: CacheMinion[];
+  count: number;
+  version: number;
+}
+export { CacheHero, CacheMinion };
+
 export interface Minion {
   // 攻击力
   ATK?: string;
@@ -59,7 +73,7 @@ export interface Minion {
   POISONOUS?: '1';
   // 金色随从
   BACON_MINION_IS_LEVEL_TWO?: '1';
-  // 指 upgradeId 见 minions.json 例如：63781
+  // 指 upgradeId 例如：63781
   '1429'?: string;
   // 随从星级 1-6
   COST?: string;

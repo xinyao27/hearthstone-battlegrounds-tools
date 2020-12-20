@@ -15,10 +15,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import dayjs from 'dayjs';
 import { useUpdateEffect } from 'ahooks';
 
-import heroes from '@shared/constants/heroes.json';
 import type { RecordItem } from '@core/hooks/useStatistics';
 import MinionCard from '@suspension/components/MinionCard';
 import { getImageUrl } from '@suspension/utils';
+import useHeroes from '@shared/hooks/useHeroes';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
@@ -57,6 +57,7 @@ const Item: React.FC<ItemProps> = ({
 }) => {
   const classes = useStyles();
   const inputRef = React.useRef<HTMLInputElement>();
+  const { heroes } = useHeroes();
 
   const handleRemarkChange = React.useCallback(
     (e) => {
@@ -66,7 +67,7 @@ const Item: React.FC<ItemProps> = ({
   );
   const currentHero = React.useMemo(
     () => heroes.find((h) => h.id === value.hero.id),
-    [value]
+    [heroes, value]
   );
 
   useUpdateEffect(() => {

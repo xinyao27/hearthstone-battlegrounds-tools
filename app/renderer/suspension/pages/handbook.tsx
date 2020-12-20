@@ -6,18 +6,22 @@ import Layout from '@suspension/components/Layout';
 import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook';
 import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
-import minions from '@shared/constants/minions.json';
+import type { CacheMinion } from '@shared/types';
+import useMinions from '@shared/hooks/useMinions';
 
 interface TierList {
-  [tier: number]: typeof minions;
+  [tier: number]: CacheMinion[];
 }
-function groupByTier(list: typeof minions) {
+function groupByTier(list: CacheMinion[]) {
   return list.reduce<TierList>((acc, cur) => {
     const { tier } = cur;
-    return {
-      ...acc,
-      [tier]: Array.isArray(acc[tier]) ? [...acc[tier], cur] : [cur],
-    };
+    if (tier) {
+      return {
+        ...acc,
+        [tier]: Array.isArray(acc[tier]) ? [...acc[tier], cur] : [cur],
+      };
+    }
+    return acc;
   }, {});
 }
 function getTierCN(tier: number) {
@@ -68,7 +72,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Handbook: React.FC = () => {
   const classes = useStyles();
-  const data = groupByTier(minions);
+  const { minions } = useMinions();
+  const data = groupByTier(minions.filter((v) => !!v.upgradeId && v.official));
   const [currentTier, setCurrentTier] = React.useState<number>(1);
 
   return (

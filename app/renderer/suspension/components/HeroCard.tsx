@@ -7,15 +7,16 @@ import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 import type { EChartOption } from 'echarts';
 
-import heroes from '@shared/constants/heroes.json';
 import useListHeroes, {
   ListHeroesResult,
 } from '@suspension/hooks/useListHeroes';
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 import { getImageUrl } from '@suspension/utils';
+import type { CacheHero } from '@shared/types';
+import useHeroes from '@shared/hooks/useHeroes';
 
-type Hero = typeof heroes[0] & {
+type Hero = CacheHero & {
   heroData?: ListHeroesResult[0];
 };
 interface ChartProps {
@@ -174,6 +175,7 @@ const useStylesTooltip = makeStyles((theme) => ({
 }));
 
 const HeroCard: React.FC<HeroCardProps> = (props) => {
+  const { heroes } = useHeroes();
   const { heroId, displayData } = props;
   const classes = useStyles(props);
   const tooltipClasses = useStylesTooltip();
@@ -185,7 +187,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
       return Object.assign(resource ?? {}, { heroData });
     }
     return null;
-  }, [heroId, data]);
+  }, [heroId, data, heroes]);
 
   if (loading) return <Loading />;
 

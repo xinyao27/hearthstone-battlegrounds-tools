@@ -4,9 +4,10 @@ import { Box, Grow, Tooltip } from '@material-ui/core';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 
-import { getImageUrl, getMinion, getMinionId } from '@suspension/utils';
+import { getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
-import { Minion } from '@shared/types';
+import type { Minion } from '@shared/types';
+import useMinions from '@shared/hooks/useMinions';
 
 const ImgTooltip = withStyles(() => ({
   tooltip: {
@@ -119,9 +120,12 @@ const useStyles = makeStyles(() => ({
 
 const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
   const classes = useStyles();
+  const { getMinion, getMinionId } = useMinions();
 
   const minion = React.useMemo(() => getMinion(getMinionId(minionName)), [
     minionName,
+    getMinion,
+    getMinionId,
   ]);
   const {
     // 酒馆星级

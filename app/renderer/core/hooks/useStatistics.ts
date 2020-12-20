@@ -1,5 +1,5 @@
-import heroes from '@shared/constants/heroes.json';
-import { Minion } from '@shared/types';
+import type { Minion } from '@shared/types';
+import useHeroes from '@shared/hooks/useHeroes';
 import { getImageUrl } from '@suspension/utils';
 
 export interface RecordItem {
@@ -29,6 +29,7 @@ export interface ResultItem {
 }
 
 function useStatistics(recordList: RecordItem[]) {
+  const { heroes } = useHeroes();
   const reSummarized = recordList.reduce<{
     [key: number]: {
       rank: string;

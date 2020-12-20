@@ -7,9 +7,9 @@ import clsx from 'clsx';
 import HeroCard from '@suspension/components/HeroCard';
 import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
-import { getHeroId } from '@suspension/utils';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import type { OpponentLineup } from '@suspension/types';
+import useHeroes from '@shared/hooks/useHeroes';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +57,7 @@ const Opponent: React.FC<OpponentProps> = ({
 }) => {
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
+  const { getHeroId } = useHeroes();
   const [unfolded, { toggle: toggleUnfolded }] = useBoolean(!simplified);
   const currentTurn = stateFlow?.TURN?.result;
   const turn =
