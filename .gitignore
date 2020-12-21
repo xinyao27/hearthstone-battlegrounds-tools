@@ -38,8 +38,11 @@ dll
 main.js
 main.js.map
 test
+.env*
+.sentryclirc
 
 .idea
+.vscode
 npm-debug.log.*
 *.css.d.ts
 *.sass.d.ts

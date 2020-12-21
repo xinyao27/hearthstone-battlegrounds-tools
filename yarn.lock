@@ -1559,6 +1559,17 @@
     "@sentry/utils" "5.27.6"
     tslib "^1.9.3"
 
+"@sentry/cli@^1.58.0":
+  version "1.61.0"
+  resolved "https://registry.npm.taobao.org/@sentry/cli/download/@sentry/cli-1.61.0.tgz#98be4cce2d61df91a8cb42afb740b46eba029925"
+  integrity sha1-mL5Mzi1h35Goy0Kvt0C0broCmSU=
+  dependencies:
+    https-proxy-agent "^5.0.0"
+    mkdirp "^0.5.5"
+    node-fetch "^2.6.0"
+    progress "^2.0.3"
+    proxy-from-env "^1.1.0"
+
 "@sentry/core@5.27.6":
   version "5.27.6"
   resolved "https://registry.npm.taobao.org/@sentry/core/download/@sentry/core-5.27.6.tgz#3ceeb58acd857f1e17d52d3087bfecb506adc1f7"
@@ -1639,6 +1650,13 @@
   dependencies:
     "@sentry/types" "5.27.6"
     tslib "^1.9.3"
+
+"@sentry/webpack-plugin@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.npm.taobao.org/@sentry/webpack-plugin/download/@sentry/webpack-plugin-1.14.0.tgz#58c51efdee731e3366dc2b40ca8eb7424b395e44"
+  integrity sha1-WMUe/e5zHjNm3CtAyo63Qks5XkQ=
+  dependencies:
+    "@sentry/cli" "^1.58.0"
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
@@ -10417,6 +10435,11 @@ node-addon-api@^1.6.0:
   resolved "https://registry.npm.taobao.org/node-addon-api/download/node-addon-api-1.7.2.tgz#3df30b95720b53c24e59948b49532b662444f54d"
   integrity sha1-PfMLlXILU8JOWZSLSVMrZiRE9U0=
 
+node-fetch@^2.6.0:
+  version "2.6.1"
+  resolved "https://registry.npm.taobao.org/node-fetch/download/node-fetch-2.6.1.tgz#045bd323631f76ed2e2b55573394416b639a0052"
+  integrity sha1-BFvTI2Mfdu0uK1VXM5RBa2OaAFI=
+
 node-forge@^0.10.0:
   version "0.10.0"
   resolved "https://registry.npm.taobao.org/node-forge/download/node-forge-0.10.0.tgz?cache=0&sync_timestamp=1599010730714&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnode-forge%2Fdownload%2Fnode-forge-0.10.0.tgz#32dea2afb3e9926f02ee5ce8794902691a676bf3"
@@ -11823,6 +11846,11 @@ proxy-addr@~2.0.5:
   dependencies:
     forwarded "~0.1.2"
     ipaddr.js "1.9.1"
+
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/proxy-from-env/download/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
+  integrity sha1-4QLxbKNVQkhldV0sno6k8k1Yw+I=
 
 proxyquire@^1.7.10:
   version "1.8.0"

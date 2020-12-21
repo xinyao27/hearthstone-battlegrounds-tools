@@ -19,6 +19,8 @@ DeleteSourceMaps();
 export default merge(baseConfig, {
   mode: 'production',
 
+  devtool: 'source-map',
+
   target:
     process.env.E2E_BUILD || process.env.ERB_SECURE !== 'true'
       ? 'electron-renderer'

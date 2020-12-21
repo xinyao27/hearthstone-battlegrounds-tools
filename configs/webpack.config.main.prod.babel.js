@@ -17,6 +17,8 @@ DeleteSourceMaps();
 export default merge(baseConfig, {
   mode: 'production',
 
+  devtool: 'source-map',
+
   target: 'electron-main',
 
   entry: './app/main/index.ts',

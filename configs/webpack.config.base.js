@@ -4,7 +4,8 @@
 
 import path from 'path';
 import webpack from 'webpack';
-import { dependencies as externals } from '../app/package.json';
+import SentryWebpackPlugin from '@sentry/webpack-plugin';
+import { version, dependencies as externals } from '../app/package.json';
 
 export default {
   externals: [...Object.keys(externals || {})],
@@ -50,6 +51,17 @@ export default {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
+    }),
+    new SentryWebpackPlugin({
+      // sentry-cli configuration
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: 'hbt',
+      project: 'app',
+      release: version,
+      // webpack specific configuration
+      include: './app/dist',
+      urlPrefix: '~/dist/',
+      ignore: ['node_modules'],
     }),
   ],
 
