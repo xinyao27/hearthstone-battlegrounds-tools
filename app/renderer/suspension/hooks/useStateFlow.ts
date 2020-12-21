@@ -167,7 +167,7 @@ function useStateFlow(): [
             Array.isArray(value.result) &&
             value.result.length
           ) {
-            if (prevState) {
+            if (prevState && prevState.LINEUP) {
               prevState.LINEUP.result.own.minions = value.result;
             }
             return {

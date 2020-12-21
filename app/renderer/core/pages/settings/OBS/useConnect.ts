@@ -33,7 +33,6 @@ function useConnect() {
           await obs.connect({ address, password, secure });
         } catch (e) {
           setError(e?.description);
-          console.error(e);
         }
       }
     },
@@ -57,7 +56,7 @@ function useConnect() {
         (await run('GetVersion'))?.['obs-websocket-version'] || '';
       console.log('OBS-websocket version:', version);
     });
-    obs.on('AuthenticationFailure', async () => {
+    obs.on('AuthenticationFailure', () => {
       // eslint-disable-next-line no-alert
       alert('密码错误');
     });
