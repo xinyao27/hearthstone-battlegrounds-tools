@@ -66,6 +66,7 @@ function getList(): Item[] {
       icon: <FolderIcon />,
       label: '设置《炉石传说》安装路径',
       action: function Action() {
+        const { enqueueSnackbar } = useSnackbar();
         const [, { check }] = useInit();
         const handleClick = () => {
           remote.dialog
@@ -73,12 +74,25 @@ function getList(): Item[] {
             .then((result) => {
               if (!result.canceled && result.filePaths[0]) {
                 config.set('heartstoneRootPath', result.filePaths[0]);
-                check();
+                return check();
               }
-              return result;
+              throw result;
             })
-            // eslint-disable-next-line no-console
-            .catch(console.log);
+            .then((success) => {
+              if (success) {
+                enqueueSnackbar('设置《炉石传说》安装路径成功', {
+                  variant: 'success',
+                });
+              } else {
+                throw success;
+              }
+              return success;
+            })
+            .catch(() => {
+              enqueueSnackbar('设置《炉石传说》安装路径失败，请重试', {
+                variant: 'error',
+              });
+            });
         };
         return (
           <Tooltip title={config.get('heartstoneRootPath') as string} arrow>
@@ -130,17 +144,31 @@ function getList(): Item[] {
       icon: <BuildIcon />,
       label: '修改炉石帧数',
       action: function Action() {
+        const { enqueueSnackbar } = useSnackbar();
         const [framerate, { toggle }] = useFramerate();
+        const handleChange = (
+          e: React.ChangeEvent<{ name?: string; value: unknown }>
+        ) => {
+          const value = e?.target?.value as Framerate;
+          if (value) {
+            toggle(value);
+            enqueueSnackbar(`修改炉石帧数 ${value}Hz 成功，请重启炉石传说`, {
+              variant: 'success',
+            });
+          } else {
+            enqueueSnackbar(`修改炉石帧数失败，请重试`, {
+              variant: 'error',
+            });
+          }
+        };
 
         return (
           <Tooltip
             title="帧数设置过高可能导致画面闪烁，请依据电脑配置合理选择。重启炉石后生效！"
             arrow
+            placement="left-start"
           >
-            <Select
-              value={framerate}
-              onChange={(e) => toggle(e.target.value as Framerate)}
-            >
+            <Select value={framerate} onChange={handleChange}>
               <MenuItem value={60}>60Hz</MenuItem>
               <MenuItem value={144}>144Hz</MenuItem>
               <MenuItem value={240}>240Hz</MenuItem>
