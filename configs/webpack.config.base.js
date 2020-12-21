@@ -7,7 +7,7 @@ import webpack from 'webpack';
 import SentryWebpackPlugin from '@sentry/webpack-plugin';
 import { version, dependencies as externals } from '../app/package.json';
 
-export default {
+const result = {
   externals: [...Object.keys(externals || {})],
 
   module: {
@@ -52,6 +52,15 @@ export default {
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
     }),
+  ],
+
+  optimization: {
+    moduleIds: 'named',
+  },
+};
+
+if (process.env.NODE_ENV === 'production') {
+  result.plugins.push(
     new SentryWebpackPlugin({
       // sentry-cli configuration
       authToken: process.env.SENTRY_AUTH_TOKEN,
@@ -62,10 +71,8 @@ export default {
       include: './app/dist',
       urlPrefix: '~/dist/',
       ignore: ['node_modules'],
-    }),
-  ],
+    })
+  );
+}
 
-  optimization: {
-    moduleIds: 'named',
-  },
-};
+export default result;
