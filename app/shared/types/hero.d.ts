@@ -1,5 +1,5 @@
-export interface CacheHero {
-  official: boolean;
+export interface Hero {
+  official: boolean | null;
   cardClass: number;
   cardId: string;
   cardRace: number;

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { CircularProgress, Box, CssBaseline } from '@material-ui/core';
+import { Box, CssBaseline } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import { SnackbarProvider } from 'notistack';
@@ -12,7 +12,6 @@ import Navigation from '@core/components/Navigation';
 import useRecord from '@core/hooks/useRecord';
 import useInit from '@core/hooks/useInit';
 import routes from '@core/constants/routes.json';
-import useCache from '@core/hooks/useCache';
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
 
@@ -58,8 +57,6 @@ export default function App({ children }: Props) {
   const history = useHistory();
   const [, { addRecord }] = useRecord();
   const [correctDirectory] = useInit();
-  // 初始化 cache
-  const { loading, error } = useCache();
 
   useUpdateEffect(() => {
     // 不正确 进入设置页面开始引导
@@ -83,13 +80,7 @@ export default function App({ children }: Props) {
         <Box height="100%" display="flex" flexDirection="column">
           <Header />
           <Box flex={1} overflow="auto">
-            {loading ? (
-              <CircularProgress />
-            ) : error ? (
-              <div>加载数据出错 请重启插件</div>
-            ) : (
-              children
-            )}
+            {children}
           </Box>
           <Navigation />
         </Box>

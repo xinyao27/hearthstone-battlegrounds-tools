@@ -1,17 +1,8 @@
-import React from 'react';
-import { useMount } from 'ahooks';
 import { createModel } from 'hox';
 
-import { cache } from '@shared/store';
-import type { CacheHero } from '@shared/types';
+import heroes from '@shared/constants/heroes.json';
 
 function useHeroes() {
-  const [heroes, setHeroes] = React.useState<CacheHero[]>([]);
-  useMount(async () => {
-    const data = await cache.getHeroes();
-    setHeroes(data?.data ?? []);
-  });
-
   function getHeroId(name: string) {
     return heroes.find((hero) => hero.name === name)?.id ?? 0;
   }

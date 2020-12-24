@@ -2,7 +2,7 @@ import CoreManager from '@main/windows/CoreManager';
 import LogHandlerManager from '@main/windows/LogHandlerManager';
 import SuspensionManager from '@main/windows/SuspensionManager';
 import Store from '@shared/store/store';
-import type { CacheHero } from './hero';
+import type { Hero } from './hero';
 import type { MinionProps, Minion } from './minion';
 
 declare module '*.jpg' {
@@ -44,17 +44,7 @@ declare global {
   }
 }
 
-export interface CacheHeroData {
-  data: CacheHero[];
-  count: number;
-  version: number;
-}
-export interface CacheMinionData {
-  data: Minion[];
-  count: number;
-  version: number;
-}
-export { CacheHero, MinionProps, Minion };
+export { Hero, MinionProps, Minion };
 
 export interface LogData<S = string, R = any> {
   type: 'box' | 'state';

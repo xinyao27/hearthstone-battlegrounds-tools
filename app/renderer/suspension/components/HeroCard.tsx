@@ -13,14 +13,14 @@ import useListHeroes, {
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 import { getImageUrl } from '@suspension/utils';
-import type { CacheHero } from '@shared/types';
+import type { Hero } from '@shared/types';
 import useHeroes from '@shared/hooks/useHeroes';
 
-type Hero = CacheHero & {
+type HeroWithData = Hero & {
   heroData?: ListHeroesResult[0];
 };
 interface ChartProps {
-  hero: Hero;
+  hero: HeroWithData;
 }
 const Chart: React.FC<ChartProps> = ({ hero }) => {
   const option = React.useMemo<EChartOption>(
@@ -180,7 +180,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
   const classes = useStyles(props);
   const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
-  const hero = React.useMemo<Hero | null>(() => {
+  const hero = React.useMemo<HeroWithData | null>(() => {
     const resource = heroes.find((v) => v.id === heroId);
     const heroData = data?.find((v) => v.hero_dbf_id === heroId);
     if (resource) {
