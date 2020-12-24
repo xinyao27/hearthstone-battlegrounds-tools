@@ -6,7 +6,7 @@ import 'echarts/lib/component/tooltip';
 
 import { getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
-import type { Minion } from '@shared/types';
+import type { MinionProps } from '@shared/types';
 import useMinions from '@shared/hooks/useMinions';
 
 const ImgTooltip = withStyles(() => ({
@@ -17,7 +17,7 @@ const ImgTooltip = withStyles(() => ({
 
 interface MinionCardProps {
   minionName: string;
-  props?: Minion;
+  props?: MinionProps;
 }
 
 const useStyles = makeStyles(() => ({

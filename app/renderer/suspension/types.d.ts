@@ -1,4 +1,4 @@
-import { Minion } from '@shared/types';
+import type { MinionProps } from '@shared/types';
 
 export interface OpponentLineup {
   hero: string;
@@ -6,6 +6,6 @@ export interface OpponentLineup {
   minions: {
     name: string;
     id: string;
-    props: Minion;
+    props: MinionProps;
   }[];
 }

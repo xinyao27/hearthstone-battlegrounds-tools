@@ -3,13 +3,14 @@ import { useMount } from 'ahooks';
 import { createModel } from 'hox';
 
 import { cache } from '@shared/store';
-import type { CacheMinion } from '@shared/types';
+import minionsBackup from '@shared/constants/minions.json';
+import type { Minion } from '@shared/types';
 
 function useMinions() {
-  const [minions, setMinions] = React.useState<CacheMinion[]>([]);
+  const [minions, setMinions] = React.useState<Minion[]>(minionsBackup);
   useMount(async () => {
     const data = await cache.getMinions();
-    setMinions(data?.data ?? []);
+    setMinions(data?.data ?? minionsBackup);
   });
 
   function getMinionId(name: string) {

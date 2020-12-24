@@ -1,4 +1,4 @@
-import type { Minion } from '@shared/types';
+import type { MinionProps } from '@shared/types';
 import useHeroes from '@shared/hooks/useHeroes';
 import { getImageUrl } from '@suspension/utils';
 
@@ -13,7 +13,7 @@ export interface RecordItem {
   remark?: string;
   lineup?: {
     turn: number;
-    minions: Minion[];
+    minions: MinionProps[];
   };
 }
 export interface ResultItem {
