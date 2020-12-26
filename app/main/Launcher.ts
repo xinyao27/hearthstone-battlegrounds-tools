@@ -115,9 +115,8 @@ class Launcher extends EventEmitter {
         global.managers.suspensionManager === null
       ) {
         this.init();
-      } else {
-        this.coreManager?.show();
       }
+      this.coreManager?.show();
     });
 
     app.on('will-quit', () => {
