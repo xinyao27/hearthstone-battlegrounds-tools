@@ -67,6 +67,26 @@ function useStateFlow(): [
               return v;
             }
           );
+          if (prevState?.NEXT_OPPONENT?.result?.hero === newHero) {
+            const NEXT_OPPONENT = {
+              ...prevState?.NEXT_OPPONENT,
+              result: {
+                ...prevState?.NEXT_OPPONENT?.result,
+                id: newId,
+                hero: newHero,
+              },
+            };
+            return {
+              ...prevState,
+              OPPONENT_HEROES: {
+                ...prevState?.OPPONENT_HEROES,
+                result: NEW_OPPONENT_HEROES,
+              },
+              NEXT_OPPONENT,
+              [value.state]: value,
+              current: value.state,
+            };
+          }
           return {
             ...prevState,
             OPPONENT_HEROES: {
