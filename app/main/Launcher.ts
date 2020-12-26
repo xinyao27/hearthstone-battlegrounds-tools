@@ -42,6 +42,7 @@ class Launcher extends EventEmitter {
       onDestroy: () => {
         this.logHandlerManager?.destroy();
         this.suspensionManager?.destroy();
+        global.managers.coreManager = null;
       },
     });
     this.logHandlerManager = new LogHandlerManager({
@@ -53,6 +54,9 @@ class Launcher extends EventEmitter {
           window.webContents.openDevTools();
         }
       },
+      onDestroy: () => {
+        global.managers.logHandlerManager = null;
+      },
     });
     this.suspensionManager = new SuspensionManager({
       onInit: (window) => {
@@ -63,11 +67,15 @@ class Launcher extends EventEmitter {
           window.webContents.openDevTools();
         }
       },
+      onDestroy: () => {
+        global.managers.suspensionManager = null;
+      },
     });
-
     global.managers.coreManager = this.coreManager;
     global.managers.logHandlerManager = this.logHandlerManager;
     global.managers.suspensionManager = this.suspensionManager;
+
+    app.dock.show();
   }
 
   makeSingleInstance(callback: () => void) {
@@ -81,8 +89,11 @@ class Launcher extends EventEmitter {
       });
     }
 
-    app.on('window-all-closed', async () => {
-      app.quit();
+    app.on('window-all-closed', () => {
+      // macos 平台下关闭后程序仍然置于内存
+      if (!is.macos) {
+        app.quit();
+      }
     });
 
     if (process.env.E2E_BUILD === 'true') {
@@ -96,6 +107,19 @@ class Launcher extends EventEmitter {
     } else {
       app.on('ready', callback);
     }
+
+    app.on('activate', () => {
+      if (
+        global.managers.coreManager === null &&
+        global.managers.logHandlerManager === null &&
+        global.managers.suspensionManager === null
+      ) {
+        this.init();
+      } else {
+        this.coreManager?.show();
+      }
+    });
+
     app.on('will-quit', () => {
       // 注销所有快捷键
       globalShortcut.unregisterAll();
