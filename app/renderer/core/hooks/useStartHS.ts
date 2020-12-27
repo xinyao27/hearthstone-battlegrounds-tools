@@ -17,7 +17,7 @@ const heartstoneAppName = is.windows
   : '';
 const heartstoneAppPath = path.join(heartstoneRootPath, heartstoneAppName);
 const command = is.windows
-  ? `start "${heartstoneAppPath}"`
+  ? `start "" "${heartstoneAppPath}"`
   : is.macos
   ? `open "${heartstoneAppPath}"`
   : '';
