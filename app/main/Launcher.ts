@@ -75,7 +75,9 @@ class Launcher extends EventEmitter {
     global.managers.logHandlerManager = this.logHandlerManager;
     global.managers.suspensionManager = this.suspensionManager;
 
-    app.dock.show();
+    if (is.macos) {
+      app.dock?.show();
+    }
   }
 
   makeSingleInstance(callback: () => void) {
