@@ -2,6 +2,7 @@ import { app, globalShortcut } from 'electron';
 import { is } from 'electron-util';
 import { EventEmitter } from 'events';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 
 import CoreManager from './windows/CoreManager';
 import LogHandlerManager from './windows/LogHandlerManager';
@@ -23,10 +24,12 @@ class Launcher extends EventEmitter {
       suspensionManager: null,
     };
 
-    this.makeSingleInstance(this.init);
+    this.makeSingleInstance(this.init.bind(this));
   }
 
   init() {
+    this.appUpdater();
+
     this.coreManager = new CoreManager({
       onInit: (window) => {
         if (is.development) {
@@ -124,6 +127,15 @@ class Launcher extends EventEmitter {
     app.on('will-quit', () => {
       // 注销所有快捷键
       globalShortcut.unregisterAll();
+    });
+  }
+
+  appUpdater() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify({
+      title: 'HBT - 发现新版本',
+      body: `{appName} version {version} 已下载将在退出时自动安装`,
     });
   }
 }
