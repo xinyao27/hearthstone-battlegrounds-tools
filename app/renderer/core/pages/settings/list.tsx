@@ -132,7 +132,10 @@ function getList(): Item[] {
           enqueueSnackbar('修复成功，请重启炉石传说', { variant: 'success' });
         };
         return (
-          <Tooltip title="若插件不展示信息可尝试（请在炉石关闭状态下使用）">
+          <Tooltip
+            title="若插件不展示信息可尝试（请在炉石关闭状态下使用）"
+            arrow
+          >
             <IconButton onClick={handleClick}>
               <SettingsBackupRestoreIcon />
             </IconButton>

@@ -3,6 +3,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { CircularProgress, Box, CssBaseline } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
+import common from '@material-ui/core/colors/common';
 import { SnackbarProvider } from 'notistack';
 import { useMount, useUpdateEffect } from 'ahooks';
 import { useHistory } from 'react-router-dom';
@@ -39,6 +40,14 @@ const muiTheme = createMuiTheme({
           width: '100%',
           display: 'block',
         },
+      },
+    },
+    MuiTooltip: {
+      arrow: {
+        color: common.black,
+      },
+      tooltip: {
+        backgroundColor: common.black,
       },
     },
   },

@@ -3,9 +3,10 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Box, CssBaseline } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
+import common from '@material-ui/core/colors/common';
 import { useMount } from 'ahooks';
-import { useHistory } from 'react-router-dom';
 
+import { useHistory } from 'react-router-dom';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 import routes from '@suspension/constants/routes.json';
@@ -80,6 +81,14 @@ const theme = createMuiTheme({
         '*::-webkit-scrollbar': {
           display: 'none',
         },
+      },
+    },
+    MuiTooltip: {
+      arrow: {
+        color: common.black,
+      },
+      tooltip: {
+        backgroundColor: common.black,
       },
     },
   },

@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   List as BaseList,
-  TextField,
   Dialog,
   Slide,
   Zoom,
@@ -33,6 +32,7 @@ import { records } from '@shared/store';
 
 import NewItem from './NewItem';
 import Item from './Item';
+import DatePicker from './DatePicker';
 
 const Transition = React.forwardRef(function Transition(
   // eslint-disable-next-line react/require-default-props
@@ -143,12 +143,7 @@ export default function Record() {
     setSelectedItem(id);
   }, []);
 
-  const [currentDate, setCurrentDate] = React.useState(
-    dayjs().format('YYYY-MM-DD')
-  );
-  const handleDateChange = React.useCallback((e) => {
-    setCurrentDate(e.target.value);
-  }, []);
+  const [currentDate, setCurrentDate] = React.useState(dayjs());
   const listData = React.useMemo(() => {
     return recordList.filter((v) => dayjs(v.date).isSame(currentDate, 'day'));
   }, [recordList, currentDate]);
@@ -156,14 +151,10 @@ export default function Record() {
   return (
     <div className={classes.root} ref={rootRef}>
       <div className={classes.tools}>
-        <TextField
-          label="选择日期"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
+        <DatePicker
           value={currentDate}
-          onChange={handleDateChange}
+          onChange={setCurrentDate}
+          data={recordList}
         />
       </div>
       <BaseList dense>
