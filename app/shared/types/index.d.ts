@@ -27,7 +27,12 @@ declare module '*.ico' {
   const value: any;
   export = value;
 }
-
+declare module 'worker-loader!*' {
+  class WebpackWorker extends Worker {
+    constructor();
+  }
+  export default WebpackWorker;
+}
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {

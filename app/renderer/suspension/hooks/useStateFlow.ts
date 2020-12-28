@@ -181,23 +181,23 @@ function useStateFlow(): [
             };
           }
           return prevState;
-        case 'LINEUP2':
-          if (
-            value?.result &&
-            Array.isArray(value.result) &&
-            value.result.length
-          ) {
-            if (prevState && prevState.LINEUP) {
-              prevState.LINEUP.result.own.minions = value.result;
-            }
-            return {
-              ...prevState,
-              LINEUP: prevState?.LINEUP,
-              [value.state]: value,
-              current: value.state,
-            };
-          }
-          return prevState;
+        // case 'LINEUP2':
+        //   if (
+        //     value?.result &&
+        //     Array.isArray(value.result) &&
+        //     value.result.length
+        //   ) {
+        //     if (prevState && prevState.LINEUP) {
+        //       prevState.LINEUP.result.own.minions = value.result;
+        //     }
+        //     return {
+        //       ...prevState,
+        //       LINEUP: prevState?.LINEUP,
+        //       [value.state]: value,
+        //       current: value.state,
+        //     };
+        //   }
+        //   return prevState;
         default:
           return {
             ...prevState,

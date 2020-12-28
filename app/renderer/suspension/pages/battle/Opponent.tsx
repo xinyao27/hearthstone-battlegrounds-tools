@@ -1,12 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { CircularProgress, Grow } from '@material-ui/core';
+import { Grow } from '@material-ui/core';
 import { useBoolean } from 'ahooks';
 import clsx from 'clsx';
 
 import HeroCard from '@suspension/components/HeroCard';
 import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
+import Loading from '@suspension/components/Loading';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import type { OpponentLineup } from '@suspension/types';
 import useHeroes from '@shared/hooks/useHeroes';
@@ -62,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
   },
   label: {
     fontSize: 20,
+  },
+  minions: {
+    marginTop: theme.spacing(2),
   },
   value: {
     fontSize: 20,
@@ -123,43 +127,53 @@ const Opponent: React.FC<OpponentProps> = ({
             )}
             {opponentLineup?.minions?.length ? (
               <div>
-                {opponentLoading || ownLoading ? (
-                  <CircularProgress />
-                ) : (
-                  <div className={classes.combatPower}>
-                    <div className={classes.card}>
-                      <Text
-                        className={classes.label}
-                        stroke={false}
-                        color="black"
-                      >
-                        我的战力
-                      </Text>
-                      <Text className={classes.value} isNumber>
-                        {ownCombatPower}
-                      </Text>
-                    </div>
-                    <div className={classes.card}>
-                      <Text
-                        className={classes.label}
-                        stroke={false}
-                        color="black"
-                      >
-                        对手战力
-                      </Text>
-                      <Text className={classes.value} isNumber>
-                        {opponentCombatPower}
-                      </Text>
-                    </div>
+                <div className={classes.combatPower}>
+                  <div className={classes.card}>
+                    {ownLoading ? (
+                      <Loading size="small" />
+                    ) : (
+                      <>
+                        <Text
+                          className={classes.label}
+                          stroke={false}
+                          color="black"
+                        >
+                          我的战力
+                        </Text>
+                        <Text className={classes.value} isNumber>
+                          {ownCombatPower}
+                        </Text>
+                      </>
+                    )}
                   </div>
-                )}
-                {opponentLineup?.minions?.map((minion: any) => (
-                  <MinionCard
-                    minionName={minion.name}
-                    props={minion.props}
-                    key={minion.id}
-                  />
-                ))}
+                  <div className={classes.card}>
+                    {opponentLoading ? (
+                      <Loading size="small" />
+                    ) : (
+                      <>
+                        <Text
+                          className={classes.label}
+                          stroke={false}
+                          color="black"
+                        >
+                          对手战力
+                        </Text>
+                        <Text className={classes.value} isNumber>
+                          {opponentCombatPower}
+                        </Text>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className={classes.minions}>
+                  {opponentLineup?.minions?.map((minion: any) => (
+                    <MinionCard
+                      minionName={minion.name}
+                      props={minion.props}
+                      key={minion.id}
+                    />
+                  ))}
+                </div>
               </div>
             ) : (
               <Text className={classes.tip}>还没有对局数据哦</Text>

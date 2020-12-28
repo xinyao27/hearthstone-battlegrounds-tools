@@ -10,18 +10,15 @@ import {
   Typography,
   Grow,
   Tooltip,
-  CircularProgress,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import dayjs from 'dayjs';
 import { useUpdateEffect } from 'ahooks';
 
 import type { RecordItem } from '@core/hooks/useStatistics';
-import Text from '@suspension/components/Text';
 import MinionCard from '@suspension/components/MinionCard';
 import { getImageUrl } from '@suspension/utils';
 import useHeroes from '@shared/hooks/useHeroes';
-import useLineupModel from '@shared/hooks/useLineupModel';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
@@ -64,7 +61,6 @@ const Item: React.FC<ItemProps> = ({
   const classes = useStyles();
   const inputRef = React.useRef<HTMLInputElement>();
   const { heroes } = useHeroes();
-  const { combatPower, loading } = useLineupModel(value.lineup?.minions);
 
   const handleRemarkChange = React.useCallback(
     (e) => {
@@ -88,13 +84,6 @@ const Item: React.FC<ItemProps> = ({
       title={
         Array.isArray(value?.lineup?.minions) ? (
           <div>
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <Text
-                className={classes.combatPower}
-              >{`战力：${combatPower}`}</Text>
-            )}
             {value?.lineup?.minions?.map((minion: any) => (
               <MinionCard
                 minionName={minion.name}
