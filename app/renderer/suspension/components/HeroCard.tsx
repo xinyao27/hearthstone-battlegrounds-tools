@@ -6,6 +6,7 @@ import echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 import type { EChartOption } from 'echarts';
+import type { IHero } from '@hbt-org/core';
 
 import useListHeroes, {
   ListHeroesResult,
@@ -13,10 +14,9 @@ import useListHeroes, {
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 import { getImageUrl } from '@suspension/utils';
-import type { Hero } from '@shared/types';
 import useHeroes from '@shared/hooks/useHeroes';
 
-type HeroWithData = Hero & {
+type HeroWithData = IHero & {
   heroData?: ListHeroesResult[0];
 };
 interface ChartProps {

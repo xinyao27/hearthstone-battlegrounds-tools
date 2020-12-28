@@ -4,6 +4,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import { usePrevious } from 'ahooks';
 
 import type { OpponentLineup } from '@suspension/types';
+
 import useStateFlow from './useStateFlow';
 
 function useBattleState() {
@@ -16,15 +17,17 @@ function useBattleState() {
     playerId: string;
   }>();
   // 所有对手的阵容（不显示）
-  const [opponentLineup, setOpponentLineup] = React.useState<{
+  const [allLineup, setAllLineup] = React.useState<{
     opponent: OpponentLineup[];
     own: {
       turn: string;
       minions: OpponentLineup['minions'];
     };
   }>();
+  // 自己的阵容（显示）
+  const ownLineup = allLineup?.own?.minions ?? [];
   // 当前对手的阵容（显示）
-  const currentOpponentLineup = opponentLineup?.opponent?.find(
+  const currentOpponentLineup = allLineup?.opponent?.find(
     (v: { hero: string }) => v.hero === currentOpponent?.hero
   );
   // 上一个对手（显示）
@@ -33,7 +36,7 @@ function useBattleState() {
     return prev?.hero !== next?.hero && prev?.playerId !== next?.playerId;
   });
   // 上一个对手的阵容（显示）
-  const previousOpponentLineup = opponentLineup?.opponent?.find(
+  const previousOpponentLineup = allLineup?.opponent?.find(
     (v: { hero: string }) => v.hero === previousOpponent?.hero
   );
   // 所有对手的英雄（不显示）
@@ -41,7 +44,7 @@ function useBattleState() {
   // 所有对手的阵容（显示）
   const allOpponentLineup: OpponentLineup[] = opponentHeroes?.map(
     (v: { hero: string }) => {
-      const result = opponentLineup?.opponent?.find(
+      const result = allLineup?.opponent?.find(
         (l: { hero: string }) => l.hero === v.hero
       );
       return {
@@ -66,13 +69,14 @@ function useBattleState() {
     }
 
     if (stateFlow?.current === 'LINEUP') {
-      setOpponentLineup(stateFlow?.LINEUP?.result);
+      setAllLineup(stateFlow?.LINEUP?.result);
     }
   }, [stateFlow || {}]);
 
   return {
     currentTurn,
     currentOpponent,
+    ownLineup,
     currentOpponentLineup,
     previousOpponent,
     previousOpponentLineup,

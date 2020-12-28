@@ -1,6 +1,6 @@
 import { createModel } from 'hox';
 
-import heroes from '@shared/constants/heroes.json';
+import { heroes } from '@hbt-org/core';
 
 function useHeroes() {
   function getHeroId(name: string) {

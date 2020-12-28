@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grow } from '@material-ui/core';
+import { CircularProgress, Grow } from '@material-ui/core';
 import { useBoolean } from 'ahooks';
 import clsx from 'clsx';
 
@@ -10,6 +10,8 @@ import Text from '@suspension/components/Text';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import type { OpponentLineup } from '@suspension/types';
 import useHeroes from '@shared/hooks/useHeroes';
+import useLineupModel from '@shared/hooks/useLineupModel';
+import useBattleState from '@suspension/hooks/useBattleState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +44,28 @@ const useStyles = makeStyles((theme) => ({
   toggleActive: {
     filter: 'grayscale(0) drop-shadow(0px 0px 6px #f9cd0d)',
   },
+  combatPower: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing(2),
+  },
+  card: {
+    width: 90,
+    height: 70,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(219, 185, 145, 0.2)',
+    padding: `${theme.spacing(1)}px 0`,
+  },
+  label: {
+    fontSize: 20,
+  },
+  value: {
+    fontSize: 20,
+  },
 }));
 
 export interface OpponentProps {
@@ -58,10 +82,18 @@ const Opponent: React.FC<OpponentProps> = ({
   const classes = useStyles();
   const [stateFlow] = useStateFlow();
   const { getHeroId } = useHeroes();
+  const { ownLineup } = useBattleState();
   const [unfolded, { toggle: toggleUnfolded }] = useBoolean(!simplified);
   const currentTurn = stateFlow?.TURN?.result;
   const turn =
     parseInt(currentTurn, 10) - parseInt(opponentLineup?.turn as string, 10);
+  const {
+    combatPower: opponentCombatPower,
+    loading: opponentLoading,
+  } = useLineupModel(opponentLineup?.minions);
+  const { combatPower: ownCombatPower, loading: ownLoading } = useLineupModel(
+    ownLineup
+  );
 
   if (hero) {
     return (
@@ -80,18 +112,55 @@ const Opponent: React.FC<OpponentProps> = ({
           />
         )}
         <Grow in={unfolded} style={{ transformOrigin: '0 0 0' }}>
-          <div>
+          <div
+            style={{
+              marginTop: simplified ? -28 : 0,
+              height: unfolded ? 'auto' : 0,
+            }}
+          >
             {!!turn && !!opponentLineup?.minions?.length && (
               <Text className={classes.turn}>{`${turn}个回合前`}</Text>
             )}
             {opponentLineup?.minions?.length ? (
-              opponentLineup?.minions?.map((minion: any) => (
-                <MinionCard
-                  minionName={minion.name}
-                  props={minion.props}
-                  key={minion.id}
-                />
-              ))
+              <div>
+                {opponentLoading || ownLoading ? (
+                  <CircularProgress />
+                ) : (
+                  <div className={classes.combatPower}>
+                    <div className={classes.card}>
+                      <Text
+                        className={classes.label}
+                        stroke={false}
+                        color="black"
+                      >
+                        我的战力
+                      </Text>
+                      <Text className={classes.value} isNumber>
+                        {ownCombatPower}
+                      </Text>
+                    </div>
+                    <div className={classes.card}>
+                      <Text
+                        className={classes.label}
+                        stroke={false}
+                        color="black"
+                      >
+                        对手战力
+                      </Text>
+                      <Text className={classes.value} isNumber>
+                        {opponentCombatPower}
+                      </Text>
+                    </div>
+                  </div>
+                )}
+                {opponentLineup?.minions?.map((minion: any) => (
+                  <MinionCard
+                    minionName={minion.name}
+                    props={minion.props}
+                    key={minion.id}
+                  />
+                ))}
+              </div>
             ) : (
               <Text className={classes.tip}>还没有对局数据哦</Text>
             )}

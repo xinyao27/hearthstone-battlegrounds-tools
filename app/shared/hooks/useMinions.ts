@@ -1,6 +1,6 @@
 import { createModel } from 'hox';
 
-import minions from '@shared/constants/minions.json';
+import { minions } from '@hbt-org/core';
 
 function useMinions() {
   function getMinionId(name: string) {

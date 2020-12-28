@@ -1,6 +1,6 @@
-import type { MinionProps } from '@shared/types';
 import useHeroes from '@shared/hooks/useHeroes';
 import { getImageUrl } from '@suspension/utils';
+import type { IMinionPropsWithNameAndID } from '@hbt-org/core';
 
 export interface RecordItem {
   _id: string;
@@ -13,7 +13,7 @@ export interface RecordItem {
   remark?: string;
   lineup?: {
     turn: number;
-    minions: MinionProps[];
+    minions: IMinionPropsWithNameAndID[];
   };
 }
 export interface ResultItem {

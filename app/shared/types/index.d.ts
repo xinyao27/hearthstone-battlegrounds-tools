@@ -2,8 +2,6 @@ import CoreManager from '@main/windows/CoreManager';
 import LogHandlerManager from '@main/windows/LogHandlerManager';
 import SuspensionManager from '@main/windows/SuspensionManager';
 import Store from '@shared/store/store';
-import type { Hero } from './hero';
-import type { MinionProps, Minion } from './minion';
 
 declare module '*.jpg' {
   const value: any;
@@ -43,8 +41,6 @@ declare global {
     }
   }
 }
-
-export { Hero, MinionProps, Minion };
 
 export interface LogData<S = string, R = any> {
   type: 'box' | 'state';

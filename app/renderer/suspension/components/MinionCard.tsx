@@ -3,10 +3,10 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Box, Grow, Tooltip } from '@material-ui/core';
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
+import type { IMinionProps } from '@hbt-org/core';
 
 import { getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
-import type { MinionProps } from '@shared/types';
 import useMinions from '@shared/hooks/useMinions';
 
 const ImgTooltip = withStyles(() => ({
@@ -17,7 +17,7 @@ const ImgTooltip = withStyles(() => ({
 
 interface MinionCardProps {
   minionName: string;
-  props?: MinionProps;
+  props?: IMinionProps;
 }
 
 const useStyles = makeStyles(() => ({

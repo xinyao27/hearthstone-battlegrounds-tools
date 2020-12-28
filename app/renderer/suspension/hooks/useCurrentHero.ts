@@ -1,8 +1,8 @@
 import React from 'react';
 import { createModel } from 'hox';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import type { IHero } from '@hbt-org/core';
 
-import type { Hero } from '@shared/types';
 import useHeroes from '@shared/hooks/useHeroes';
 
 import useStateFlow from './useStateFlow';
@@ -10,7 +10,7 @@ import useStateFlow from './useStateFlow';
 function useCurrentHero() {
   const [stateFlow] = useStateFlow();
   const { getHeroId, getHero } = useHeroes();
-  const [hero, setHero] = React.useState<Hero | null>(null);
+  const [hero, setHero] = React.useState<IHero | null>(null);
   const [rank, setRank] = React.useState<string>('8');
 
   useDeepCompareEffect(() => {

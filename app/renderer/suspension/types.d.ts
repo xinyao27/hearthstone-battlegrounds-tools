@@ -1,11 +1,7 @@
-import type { MinionProps } from '@shared/types';
+import type { IMinionPropsWithNameAndID } from '@hbt-org/core';
 
 export interface OpponentLineup {
   hero: string;
   turn: string;
-  minions: {
-    name: string;
-    id: string;
-    props: MinionProps;
-  }[];
+  minions: IMinionPropsWithNameAndID[];
 }

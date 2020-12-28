@@ -1225,6 +1225,14 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@hbt-org/core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/@hbt-org/core/download/@hbt-org/core-1.0.0.tgz?cache=0&sync_timestamp=1609133694340&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40hbt-org%2Fcore%2Fdownload%2F%40hbt-org%2Fcore-1.0.0.tgz#a18880b29f8a4778a67584ccc667b5b60759f424"
+  integrity sha1-oYiAsp+KR3imdYTMxme1tgdZ9CQ=
+  dependencies:
+    lodash "^4.17.20"
+    mathjs "^8.1.0"
+
 "@hot-loader/react-dom@^17.0.0":
   version "17.0.0"
   resolved "https://registry.npm.taobao.org/@hot-loader/react-dom/download/@hot-loader/react-dom-17.0.0.tgz#1caa41d16006833717a8443d47e8677a9610dc7c"

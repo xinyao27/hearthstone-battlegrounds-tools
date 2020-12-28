@@ -22,6 +22,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'import/no-dynamic-require': 'off',
     'no-underscore-dangle': 'off',
+    'no-plusplus': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,

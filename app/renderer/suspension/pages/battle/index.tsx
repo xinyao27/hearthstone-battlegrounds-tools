@@ -139,6 +139,7 @@ const Battle: React.FC = () => {
             <Opponent
               hero={opponent?.hero}
               opponentLineup={opponent}
+              simplified
               key={opponent?.hero}
             />
           ))}

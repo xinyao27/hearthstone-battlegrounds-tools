@@ -1,18 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import type { IMinion } from '@hbt-org/core';
 
 import Layout from '@suspension/components/Layout';
 import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook';
 import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
-import type { Minion } from '@shared/types';
 import useMinions from '@shared/hooks/useMinions';
 
 interface TierList {
-  [tier: number]: Minion[];
+  [tier: number]: IMinion[];
 }
-function groupByTier(list: Minion[]) {
+function groupByTier(list: IMinion[]) {
   return list.reduce<TierList>((acc, cur) => {
     const { tier } = cur;
     if (tier) {
