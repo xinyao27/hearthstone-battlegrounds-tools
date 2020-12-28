@@ -1,16 +1,8 @@
 import { EventEmitter } from 'events';
 import { app, BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 import { is } from 'electron-util';
-import log from 'electron-log';
-import { autoUpdater } from 'electron-updater';
 
 import { getAppHTML, getAssetPath } from '../utils';
-
-function appUpdater() {
-  log.transports.file.level = 'info';
-  autoUpdater.logger = log;
-  autoUpdater.checkForUpdatesAndNotify();
-}
 
 interface Params {
   onInit: (window: BrowserWindow) => void;
@@ -72,8 +64,6 @@ class CoreManager extends EventEmitter {
       this.window = null;
       onDestroy?.();
     });
-
-    appUpdater();
   }
 
   destroy() {

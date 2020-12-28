@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import type { IMinion } from '@hbt-org/core';
+import _ from 'lodash';
 
 import Layout from '@suspension/components/Layout';
 import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook';
@@ -11,6 +12,9 @@ import useMinions from '@shared/hooks/useMinions';
 
 interface TierList {
   [tier: number]: IMinion[];
+}
+interface TierRaceList {
+  [tier: number]: Record<number, IMinion[]>;
 }
 function groupByTier(list: IMinion[]) {
   return list.reduce<TierList>((acc, cur) => {
@@ -22,6 +26,15 @@ function groupByTier(list: IMinion[]) {
       };
     }
     return acc;
+  }, {});
+}
+function groupByRace(list: TierList) {
+  return Object.keys(list).reduce<TierRaceList>((acc, cur) => {
+    const minions = list[parseInt(cur, 10)];
+    return {
+      ...acc,
+      [cur]: _.groupBy(minions, (value) => value.cardRace),
+    };
   }, {});
 }
 function getTierCN(tier: number) {
@@ -40,6 +53,28 @@ function getTierCN(tier: number) {
       return '六';
     default:
       return '一';
+  }
+}
+function getRaceCN(tier: number) {
+  switch (tier) {
+    case 0:
+      return '中立';
+    case 14:
+      return '鱼人';
+    case 15:
+      return '恶魔';
+    case 17:
+      return '机械';
+    case 18:
+      return '元素';
+    case 20:
+      return '野兽';
+    case 23:
+      return '海盗';
+    case 24:
+      return '龙';
+    default:
+      return '所有';
   }
 }
 
@@ -68,12 +103,18 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   minions: {},
+  race: {
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 const Handbook: React.FC = () => {
   const classes = useStyles();
   const { minions } = useMinions();
-  const data = groupByTier(minions.filter((v) => !!v.upgradeId && v.official));
+  const tierData = groupByTier(
+    minions.filter((v) => !!v.upgradeId && v.official)
+  );
+  const tierRaceData = groupByRace(tierData);
   const [currentTier, setCurrentTier] = React.useState<number>(1);
 
   return (
@@ -101,13 +142,25 @@ const Handbook: React.FC = () => {
         </div>
 
         <div className={classes.minions}>
-          {data?.[currentTier]?.map((minion) => (
-            <MinionCard
-              minionName={minion.name}
-              props={{ TECH_LEVEL: currentTier.toString() }}
-              key={minion.id}
-            />
-          ))}
+          {tierRaceData?.[currentTier] &&
+            Object.keys(tierRaceData?.[currentTier])?.map((race) => {
+              const raceNumber = parseInt(race, 10);
+              const raceMinions = tierRaceData?.[currentTier]?.[raceNumber];
+              return (
+                <div key={race}>
+                  <Text className={classes.race} color="#45331d" stroke={false}>
+                    {getRaceCN(raceNumber)}
+                  </Text>
+                  {raceMinions?.map((minion) => (
+                    <MinionCard
+                      minionName={minion.name}
+                      props={{ TECH_LEVEL: currentTier.toString() }}
+                      key={minion.id}
+                    />
+                  ))}
+                </div>
+              );
+            })}
         </div>
       </div>
     </Layout>

@@ -3,10 +3,10 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Box, CssBaseline } from '@material-ui/core';
 import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
-import { useMount, useUpdateEffect } from 'ahooks';
-import { useHistory } from 'react-router-dom';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import common from '@material-ui/core/colors/common';
+import { useMount } from 'ahooks';
 
+import { useHistory } from 'react-router-dom';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
 import routes from '@suspension/constants/routes.json';
@@ -83,6 +83,14 @@ const theme = createMuiTheme({
         },
       },
     },
+    MuiTooltip: {
+      arrow: {
+        color: common.black,
+      },
+      tooltip: {
+        backgroundColor: common.black,
+      },
+    },
   },
   palette: {
     primary: {
@@ -99,8 +107,8 @@ const store = getStore();
 export default function App(props: Props) {
   const { children } = props;
   const history = useHistory();
-  const [stateFlow, setStateFlow, resetStateFlow] = useStateFlow();
-  const [boxFlow, setBoxFlow] = useBoxFlow();
+  const [, setStateFlow, resetStateFlow] = useStateFlow();
+  const [, setBoxFlow] = useBoxFlow();
   const [isBacon, setIsBacon] = React.useState<boolean | null>(null);
 
   useMount(() => {
@@ -109,47 +117,43 @@ export default function App(props: Props) {
       if (type === Topic.FLOW) {
         if (payload.type === 'box') {
           setBoxFlow(payload);
+          if (payload.state === 'BOX_GAME_START') {
+            resetStateFlow();
+          }
+          if (payload.state === 'BOX_CHOOSE_BACON') {
+            setIsBacon(true);
+          }
         }
         if (payload.type === 'state') {
           setStateFlow(payload);
+          // 选择酒馆时才启动 判断 null 时是容错处理 这样可以一定程度上防止在其他模式下启动
+          if (isBacon === true || isBacon === null) {
+            // state 收到开始 跳转至英雄选择页
+            if (payload.state === 'GAME_START') {
+              showSuspension();
+              history.push(routes.HEROSELECTION);
+            }
+            // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
+            if (payload.state === 'HERO_TOBE_CHOSEN') {
+              // 仍然是容错处理，有时候 GAME_START 会检测不到
+              showSuspension();
+              if (history.location.pathname !== '/heroSelection') {
+                history.push(routes.HEROSELECTION);
+              }
+            }
+            // 切换对手信息
+            if (payload.state === 'NEXT_OPPONENT') {
+              history.push(routes.BATTLE);
+            }
+            // 对局结束 显示悬浮展示战绩
+            if (payload.state === 'GAME_OVER') {
+              history.push(routes.GAMEOVER);
+            }
+          }
         }
       }
     });
   });
-  useDeepCompareEffect(() => {
-    // 选择酒馆时才启动 判断 null 时是容错处理 这样可以一定程度上防止在其他模式下启动
-    if (isBacon === true || isBacon === null) {
-      // state 收到开始 跳转至英雄选择页
-      if (stateFlow?.current === 'GAME_START') {
-        showSuspension();
-        history.push(routes.HEROSELECTION);
-      }
-      // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
-      if (stateFlow?.current === 'HERO_TOBE_CHOSEN') {
-        // 仍然是容错处理，有时候 GAME_START 会检测不到
-        showSuspension();
-        if (history.location.pathname !== '/heroSelection') {
-          history.push(routes.HEROSELECTION);
-        }
-      }
-      // 切换对手信息
-      if (stateFlow?.current === 'NEXT_OPPONENT') {
-        history.push(routes.BATTLE);
-      }
-      // 对局结束 显示悬浮展示战绩
-      if (stateFlow?.current === 'GAME_OVER') {
-        history.push(routes.GAMEOVER);
-      }
-    }
-  }, [stateFlow || {}, isBacon]);
-  useUpdateEffect(() => {
-    if (boxFlow?.current === 'BOX_GAME_START') {
-      resetStateFlow();
-    }
-    if (boxFlow?.current === 'BOX_CHOOSE_BACON') {
-      setIsBacon(true);
-    }
-  }, [boxFlow?.current]);
 
   return (
     <ThemeProvider theme={theme}>

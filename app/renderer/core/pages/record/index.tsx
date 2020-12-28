@@ -2,7 +2,6 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   List as BaseList,
-  TextField,
   Dialog,
   Slide,
   Zoom,
@@ -14,6 +13,7 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import type { TransitionProps } from '@material-ui/core/transitions';
 import dayjs from 'dayjs';
@@ -27,10 +27,12 @@ import { remote } from 'electron';
 import fs from 'fs';
 
 import useRecord from '@core/hooks/useRecord';
+import useStartHS from '@core/hooks/useStartHS';
 import { records } from '@shared/store';
 
 import NewItem from './NewItem';
 import Item from './Item';
+import DatePicker from './DatePicker';
 
 const Transition = React.forwardRef(function Transition(
   // eslint-disable-next-line react/require-default-props
@@ -70,6 +72,7 @@ export default function Record() {
     recordList,
     { addRecord, deleteRecord, editRecord, refresh },
   ] = useRecord();
+  const { run } = useStartHS();
   const [selectedItem, setSelectedItem] = React.useState<string>();
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [newItemIn, { toggle: newItemToggle }] = useBoolean(false);
@@ -140,12 +143,7 @@ export default function Record() {
     setSelectedItem(id);
   }, []);
 
-  const [currentDate, setCurrentDate] = React.useState(
-    dayjs().format('YYYY-MM-DD')
-  );
-  const handleDateChange = React.useCallback((e) => {
-    setCurrentDate(e.target.value);
-  }, []);
+  const [currentDate, setCurrentDate] = React.useState(dayjs());
   const listData = React.useMemo(() => {
     return recordList.filter((v) => dayjs(v.date).isSame(currentDate, 'day'));
   }, [recordList, currentDate]);
@@ -153,14 +151,10 @@ export default function Record() {
   return (
     <div className={classes.root} ref={rootRef}>
       <div className={classes.tools}>
-        <TextField
-          label="选择日期"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
+        <DatePicker
           value={currentDate}
-          onChange={handleDateChange}
+          onChange={setCurrentDate}
+          data={recordList}
         />
       </div>
       <BaseList dense>
@@ -206,6 +200,12 @@ export default function Record() {
             title="导入战绩"
             tooltipTitle="导入战绩"
             onClick={handleImportRecords}
+          />
+          <SpeedDialAction
+            icon={<PlayArrowIcon />}
+            title="启动炉石传说"
+            tooltipTitle="启动炉石传说"
+            onClick={run}
           />
         </SpeedDial>
       </Zoom>

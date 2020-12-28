@@ -165,20 +165,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
 }));
-const useStylesTooltip = makeStyles((theme) => ({
-  arrow: {
-    color: theme.palette.common.black,
-  },
-  tooltip: {
-    backgroundColor: theme.palette.common.black,
-  },
-}));
 
 const HeroCard: React.FC<HeroCardProps> = (props) => {
   const { heroes } = useHeroes();
   const { heroId, displayData } = props;
   const classes = useStyles(props);
-  const tooltipClasses = useStylesTooltip();
   const { data, loading, error, refresh } = useListHeroes();
   const hero = React.useMemo<HeroWithData | null>(() => {
     const resource = heroes.find((v) => v.id === heroId);
@@ -215,12 +206,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
               <img src={getImageUrl(hero.image)} alt={hero.name} />
             </div>
             <div className={classes.nameBar} />
-            <Tooltip
-              classes={tooltipClasses}
-              title={hero.name}
-              arrow
-              placement="top"
-            >
+            <Tooltip title={hero.name} arrow placement="top">
               <div className={classes.name}>{hero.name}</div>
             </Tooltip>
           </div>
@@ -229,12 +215,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
             hero.heroData ? (
               <>
                 <div className={classes.data}>
-                  <Tooltip
-                    classes={tooltipClasses}
-                    title="英雄的平均最终排名"
-                    arrow
-                    placement="top"
-                  >
+                  <Tooltip title="英雄的平均最终排名" arrow placement="top">
                     <div className={classes.card}>
                       <Text
                         className={classes.label}
@@ -250,7 +231,6 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
                   </Tooltip>
 
                   <Tooltip
-                    classes={tooltipClasses}
                     title="对局开始出现该英雄时 该英雄被选取的百分率"
                     arrow
                     placement="top"
@@ -270,7 +250,6 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
                   </Tooltip>
                 </div>
                 <Tooltip
-                  classes={tooltipClasses}
                   title="每一条代表该英雄得到这个名次的频率"
                   arrow
                   placement="bottom"

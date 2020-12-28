@@ -2,6 +2,7 @@ import { app, globalShortcut } from 'electron';
 import { is } from 'electron-util';
 import { EventEmitter } from 'events';
 import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 
 import CoreManager from './windows/CoreManager';
 import LogHandlerManager from './windows/LogHandlerManager';
@@ -23,10 +24,12 @@ class Launcher extends EventEmitter {
       suspensionManager: null,
     };
 
-    this.makeSingleInstance(this.init);
+    this.makeSingleInstance(this.init.bind(this));
   }
 
   init() {
+    this.appUpdater();
+
     this.coreManager = new CoreManager({
       onInit: (window) => {
         if (is.development) {
@@ -42,6 +45,7 @@ class Launcher extends EventEmitter {
       onDestroy: () => {
         this.logHandlerManager?.destroy();
         this.suspensionManager?.destroy();
+        global.managers.coreManager = null;
       },
     });
     this.logHandlerManager = new LogHandlerManager({
@@ -53,6 +57,9 @@ class Launcher extends EventEmitter {
           window.webContents.openDevTools();
         }
       },
+      onDestroy: () => {
+        global.managers.logHandlerManager = null;
+      },
     });
     this.suspensionManager = new SuspensionManager({
       onInit: (window) => {
@@ -63,11 +70,17 @@ class Launcher extends EventEmitter {
           window.webContents.openDevTools();
         }
       },
+      onDestroy: () => {
+        global.managers.suspensionManager = null;
+      },
     });
-
     global.managers.coreManager = this.coreManager;
     global.managers.logHandlerManager = this.logHandlerManager;
     global.managers.suspensionManager = this.suspensionManager;
+
+    if (is.macos) {
+      app.dock?.show();
+    }
   }
 
   makeSingleInstance(callback: () => void) {
@@ -81,8 +94,11 @@ class Launcher extends EventEmitter {
       });
     }
 
-    app.on('window-all-closed', async () => {
-      app.quit();
+    app.on('window-all-closed', () => {
+      // macos 平台下关闭后程序仍然置于内存
+      if (!is.macos) {
+        app.quit();
+      }
     });
 
     if (process.env.E2E_BUILD === 'true') {
@@ -96,9 +112,30 @@ class Launcher extends EventEmitter {
     } else {
       app.on('ready', callback);
     }
+
+    app.on('activate', () => {
+      if (
+        global.managers.coreManager === null &&
+        global.managers.logHandlerManager === null &&
+        global.managers.suspensionManager === null
+      ) {
+        this.init();
+      }
+      this.coreManager?.show();
+    });
+
     app.on('will-quit', () => {
       // 注销所有快捷键
       globalShortcut.unregisterAll();
+    });
+  }
+
+  appUpdater() {
+    log.transports.file.level = 'info';
+    autoUpdater.logger = log;
+    autoUpdater.checkForUpdatesAndNotify({
+      title: 'HBT - 发现新版本',
+      body: `{appName} version {version} 已下载将在退出时自动安装`,
     });
   }
 }

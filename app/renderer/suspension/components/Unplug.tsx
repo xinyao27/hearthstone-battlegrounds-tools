@@ -171,14 +171,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundPosition: '-103px -40px',
   },
 }));
-const useStylesTooltip = makeStyles((theme) => ({
-  arrow: {
-    color: theme.palette.common.black,
-  },
-  tooltip: {
-    backgroundColor: theme.palette.common.black,
-  },
-}));
 
 const defaultText = '一键拔线 (快捷键 F1)';
 const appDirPath = config.get('heartstoneRootPath') as string;
@@ -194,7 +186,6 @@ const timeOut = 5;
 const ruleName = 'HBT炉石拔线';
 const Unplug: React.FC = () => {
   const classes = useStyles();
-  const tooltipClasses = useStylesTooltip();
   const [tooltip, setTooltip] = React.useState<string>(defaultText);
   const [loading, { toggle: toggleLoading }] = useBoolean(false);
 
@@ -234,7 +225,7 @@ const Unplug: React.FC = () => {
   }, [handleUnplug]);
 
   return (
-    <Tooltip title={tooltip} classes={tooltipClasses} placement="top" arrow>
+    <Tooltip title={tooltip} placement="top" arrow>
       <div
         className={clsx(classes.root, {
           [classes.active]: loading,
