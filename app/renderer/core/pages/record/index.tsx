@@ -13,7 +13,6 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import StorefrontIcon from '@material-ui/icons/Storefront';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
 import type { TransitionProps } from '@material-ui/core/transitions';
 import dayjs from 'dayjs';
@@ -27,7 +26,6 @@ import { remote } from 'electron';
 import fs from 'fs';
 
 import useRecord from '@core/hooks/useRecord';
-import useStartHS from '@core/hooks/useStartHS';
 import { records } from '@shared/store';
 
 import NewItem from './NewItem';
@@ -55,8 +53,8 @@ const useStyles = makeStyles((theme) => ({
   },
   fab: {
     position: 'absolute',
-    bottom: theme.spacing(9),
-    right: theme.spacing(2),
+    bottom: theme.spacing(4),
+    right: theme.spacing(3),
   },
   newItem: {
     position: 'absolute',
@@ -72,7 +70,6 @@ export default function Record() {
     recordList,
     { addRecord, deleteRecord, editRecord, refresh },
   ] = useRecord();
-  const { run } = useStartHS();
   const [selectedItem, setSelectedItem] = React.useState<string>();
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [newItemIn, { toggle: newItemToggle }] = useBoolean(false);
@@ -200,12 +197,6 @@ export default function Record() {
             title="导入战绩"
             tooltipTitle="导入战绩"
             onClick={handleImportRecords}
-          />
-          <SpeedDialAction
-            icon={<PlayArrowIcon />}
-            title="启动炉石传说"
-            tooltipTitle="启动炉石传说"
-            onClick={run}
           />
         </SpeedDial>
       </Zoom>

@@ -86,12 +86,14 @@ export default function App({ children }: Props) {
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <SnackbarProvider maxSnack={1}>
-        <Box height="100%" display="flex" flexDirection="column">
-          <Header />
-          <Box flex={1} overflow="auto">
-            {children}
-          </Box>
+        <Box height="100%" display="flex">
           <Navigation />
+          <Box flex={1} overflow="auto" paddingTop="30px">
+            <Header />
+            <Box padding={3} maxHeight="100%" overflow="auto">
+              {children}
+            </Box>
+          </Box>
         </Box>
       </SnackbarProvider>
     </ThemeProvider>

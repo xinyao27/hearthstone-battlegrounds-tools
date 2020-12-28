@@ -1,8 +1,8 @@
 {
   "name": "hearthstone-battlegrounds-tools",
   "productName": "HearthstoneBattlegroundsTools",
-  "version": "1.2.7",
-  "description": "HBT - 炉石传说酒馆战棋战绩统计工具",
+  "version": "1.3.0-beta.0",
+  "description": "HBT - 炉石传说酒馆战棋插件",
   "scripts": {
     "prebuild": "rimraf app/dist && rimraf release",
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
