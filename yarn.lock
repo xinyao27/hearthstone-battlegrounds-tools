@@ -6117,6 +6117,11 @@ emittery@^0.7.1:
   resolved "https://registry.npm.taobao.org/emittery/download/emittery-0.7.2.tgz#25595908e13af0f5674ab419396e2fb394cdfa82"
   integrity sha1-JVlZCOE68PVnSrQZOW4vs5TN+oI=
 
+emoji-233333@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.npmjs.org/emoji-233333/-/emoji-233333-0.3.2.tgz#82def00aeb3c79d605ec371285423792a242b769"
+  integrity sha512-td2B0tMO7SS9G3tVXZl3SvXRI1Larf2rbkALdNnhRGmvZPwcLVqdthIIx5neqnMZwdqOfMspZZnYyVV/sZ8rpA==
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.npm.taobao.org/emoji-regex/download/emoji-regex-7.0.3.tgz?cache=0&sync_timestamp=1603212395994&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Femoji-regex%2Fdownload%2Femoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"

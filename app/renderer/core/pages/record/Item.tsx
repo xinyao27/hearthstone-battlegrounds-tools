@@ -19,6 +19,7 @@ import type { RecordItem } from '@core/hooks/useStatistics';
 import MinionCard from '@suspension/components/MinionCard';
 import { getImageUrl } from '@suspension/utils';
 import useHeroes from '@shared/hooks/useHeroes';
+import useSurprise from '@core/hooks/useSurprise';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
@@ -61,6 +62,7 @@ const Item: React.FC<ItemProps> = ({
   const classes = useStyles();
   const inputRef = React.useRef<HTMLInputElement>();
   const { heroes } = useHeroes();
+  const { run: surprise } = useSurprise();
 
   const handleRemarkChange = React.useCallback(
     (e) => {
@@ -75,9 +77,10 @@ const Item: React.FC<ItemProps> = ({
 
   useUpdateEffect(() => {
     if (selected) {
+      surprise(value?.remark ?? '');
       inputRef.current?.focus();
     }
-  }, [selected]);
+  }, [selected, value]);
 
   return (
     <MinionTooltip
