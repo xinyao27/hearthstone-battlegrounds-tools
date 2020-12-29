@@ -55,7 +55,7 @@ function useStateFlow(): [
           // eslint-disable-next-line no-case-declarations
           const OLD_OPPONENT_HEROES = prevState?.OPPONENT_HEROES?.result;
           // eslint-disable-next-line no-case-declarations
-          const NEW_OPPONENT_HEROES = OLD_OPPONENT_HEROES.map(
+          const NEW_OPPONENT_HEROES = OLD_OPPONENT_HEROES?.map(
             (v: { id: any; hero: any }) => {
               if (v.hero === oldHero) {
                 return {
