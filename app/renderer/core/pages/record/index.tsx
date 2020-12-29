@@ -6,6 +6,8 @@ import {
   Slide,
   Zoom,
   Tooltip,
+  Chip,
+  Avatar,
 } from '@material-ui/core';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
@@ -26,7 +28,9 @@ import { remote } from 'electron';
 import fs from 'fs';
 
 import useRecord from '@core/hooks/useRecord';
+import useDayRecord from '@core/hooks/useDayRecord';
 import { records } from '@shared/store';
+import { getImageUrl } from '@suspension/utils';
 
 import NewItem from './NewItem';
 import Item from './Item';
@@ -141,9 +145,7 @@ export default function Record() {
   }, []);
 
   const [currentDate, setCurrentDate] = React.useState(dayjs());
-  const listData = React.useMemo(() => {
-    return recordList.filter((v) => dayjs(v.date).isSame(currentDate, 'day'));
-  }, [recordList, currentDate]);
+  const { data: listData, best } = useDayRecord(currentDate);
 
   return (
     <div className={classes.root} ref={rootRef}>
@@ -153,6 +155,24 @@ export default function Record() {
           onChange={setCurrentDate}
           data={recordList}
         />
+
+        {best && (
+          <Tooltip
+            title={
+              <div>
+                <div>平均排名：{best.averageRanking}</div>
+                <div>使用场次：{best.count}</div>
+              </div>
+            }
+            arrow
+          >
+            <Chip
+              avatar={<Avatar src={getImageUrl(best.avatar)} alt={best.name} />}
+              label="今日最佳"
+              clickable
+            />
+          </Tooltip>
+        )}
       </div>
       <BaseList dense>
         {listData
