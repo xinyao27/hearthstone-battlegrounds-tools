@@ -1,7 +1,7 @@
 {
   "name": "hearthstone-battlegrounds-tools",
   "productName": "HearthstoneBattlegroundsTools",
-  "version": "1.3.0-beta.1",
+  "version": "1.3.0-beta.2",
   "description": "HBT - 炉石传说酒馆战棋插件",
   "scripts": {
     "prebuild": "rimraf app/dist && rimraf release",
@@ -240,7 +240,7 @@
   },
   "dependencies": {
     "@date-io/dayjs": "1.x",
-    "@hbt-org/core": "^1.0.2",
+    "@hbt-org/core": "^1.0.3",
     "@hot-loader/react-dom": "^17.0.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
