@@ -5,7 +5,6 @@ import { Tooltip, Tabs, Tab, IconButton } from '@material-ui/core';
 import TodayIcon from '@material-ui/icons/Today';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import SettingsIcon from '@material-ui/icons/Settings';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useUpdateEffect } from 'ahooks';
 
@@ -45,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
   nav: {},
   item: {
     minWidth: 78,
+  },
+  startGame: {
+    width: 56,
   },
 }));
 
@@ -109,8 +111,17 @@ export default function Navigation() {
 
         <div>
           <Tooltip title="启动炉石传说" placement="right" arrow>
-            <IconButton onClick={run} color="primary">
-              <PlayArrowIcon />
+            <IconButton
+              className={classes.startGame}
+              onClick={run}
+              color="primary"
+            >
+              <img
+                src={
+                  require('@shared/assets/images/hearthstone_icon.png').default
+                }
+                alt="hearthstone_icon"
+              />
             </IconButton>
           </Tooltip>
         </div>
