@@ -11,6 +11,7 @@ import GlobalStore from './store';
 
 interface Config {
   heartstoneRootPath?: string;
+  enableGameResult: boolean;
   obs: {
     text: {
       enable?: boolean;
@@ -38,6 +39,7 @@ export const config = {
         : is.macos
         ? '/Applications/Hearthstone'
         : '',
+      enableGameResult: false,
       obs: {
         image: {
           max: 12,

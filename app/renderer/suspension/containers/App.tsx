@@ -9,9 +9,10 @@ import { useMount } from 'ahooks';
 import { useHistory } from 'react-router-dom';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
+import useCurrentHero from '@suspension/hooks/useCurrentHero';
 import routes from '@suspension/constants/routes.json';
 import { showSuspension } from '@suspension/utils';
-import { getStore } from '@shared/store';
+import { config, getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
 
 type Props = {
@@ -110,6 +111,7 @@ export default function App(props: Props) {
   const [, setStateFlow, resetStateFlow] = useStateFlow();
   const [, setBoxFlow] = useBoxFlow();
   const [isBacon, setIsBacon] = React.useState<boolean | null>(null);
+  useCurrentHero();
 
   useMount(() => {
     store.subscribe<Topic.FLOW>((action) => {
@@ -122,6 +124,9 @@ export default function App(props: Props) {
           }
           if (payload.state === 'BOX_CHOOSE_BACON') {
             setIsBacon(true);
+          }
+          if (payload.state === 'BOX_GAME_OVER') {
+            history.push(routes.WELCOME);
           }
         }
         if (payload.type === 'state') {
@@ -147,7 +152,12 @@ export default function App(props: Props) {
             }
             // 对局结束 显示悬浮展示战绩
             if (payload.state === 'GAME_OVER') {
-              history.push(routes.GAMEOVER);
+              const enableGameResult = config.get(
+                'enableGameResult'
+              ) as boolean;
+              if (enableGameResult) {
+                history.push(routes.GAMEOVER);
+              }
             }
           }
         }

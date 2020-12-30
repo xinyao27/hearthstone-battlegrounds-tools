@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createModel } from 'hox';
 import { useMount, useDebounceFn } from 'ahooks';
 import dayjs from 'dayjs';
 import html2canvas from 'html2canvas';
@@ -162,6 +163,7 @@ function useRecord(
       run,
       imageDir,
       imageMax,
+      createImage,
     ]
   );
   const { run: handleAddRecord } = useDebounceFn(
@@ -227,4 +229,4 @@ function useRecord(
   ];
 }
 
-export default useRecord;
+export default createModel(useRecord);

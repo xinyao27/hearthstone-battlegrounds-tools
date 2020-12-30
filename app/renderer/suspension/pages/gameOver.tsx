@@ -1,19 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDebounceFn } from 'ahooks';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-import _ from 'lodash';
-import { useHistory } from 'react-router-dom';
 
 import Layout from '@suspension/components/Layout';
 import Text from '@suspension/components/Text';
 import useCurrentHero from '@suspension/hooks/useCurrentHero';
-import useStateFlow from '@suspension/hooks/useStateFlow';
-import useBoxFlow from '@suspension/hooks/useBoxFlow';
-import routes from '@suspension/constants/routes.json';
 
-import { getStore } from '@shared/store';
-import { Topic } from '@shared/constants/topic';
 import { getImageUrl } from '@suspension/utils';
 
 const useStyles = makeStyles((theme) => ({
@@ -124,45 +115,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const store = getStore();
-
 const GameOver: React.FC = () => {
   const classes = useStyles();
-  const history = useHistory();
-  const currentHero = useCurrentHero();
-  const { hero, rank, reset } = currentHero;
-  const [stateFlow] = useStateFlow();
-  const [boxFlow] = useBoxFlow();
-
-  // 战绩发送至 core 添加战绩
-  const { run } = useDebounceFn(
-    (_hero, _rank) => {
-      if (_hero && _rank) {
-        const date = new Date();
-        const record = {
-          hero: {
-            id: _hero.id,
-            name: _hero.name,
-          },
-          rank: _rank,
-          date,
-          lineup: _.cloneDeep(stateFlow?.LINEUP?.result?.own),
-        };
-        store.dispatch<Topic.ADD_RECORD>({
-          type: Topic.ADD_RECORD,
-          payload: record,
-        });
-      }
-    },
-    { wait: 1000 }
-  );
-  useDeepCompareEffect(() => {
-    if (boxFlow?.current === 'BOX_GAME_OVER') {
-      run(currentHero.hero, currentHero.rank);
-      reset();
-      history.push(routes.WELCOME);
-    }
-  }, [currentHero, boxFlow, stateFlow]);
+  const { hero, rank } = useCurrentHero();
 
   if (hero && rank) {
     return (
