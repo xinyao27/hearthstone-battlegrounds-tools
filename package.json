@@ -3,6 +3,16 @@
   "productName": "HearthstoneBattlegroundsTools",
   "version": "1.3.0-beta.2",
   "description": "HBT - 炉石传说酒馆战棋插件",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbt-org/hearthstone-battlegrounds-tools.git"
+  },
+  "author": "chenyueban <jasonchan0527@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hbt-org/hearthstone-battlegrounds-tools/issues"
+  },
+  "homepage": "https://github.com/hbt-org/hearthstone-battlegrounds-tools#readme",
   "scripts": {
     "prebuild": "rimraf app/dist && rimraf release",
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -39,21 +49,6 @@
     "test-watch": "yarn test --watch",
     "update:deps": "yarn upgrade-interactive --latest"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=development eslint --cache"
-    ],
-    "{*.json,.{babelrc,eslintrc,prettierrc,stylelintrc}}": [
-      "prettier --ignore-path .eslintignore --parser json --write"
-    ],
-    "*.{css,scss}": [
-      "stylelint --ignore-path .eslintignore --syntax scss --fix",
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ],
-    "*.{html,md,yml}": [
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ]
-  },
   "build": {
     "productName": "HearthstoneBattlegroundsTools",
     "appId": "org.hbt.HearthstoneBattlegroundsTools",
@@ -79,6 +74,7 @@
       ]
     },
     "win": {
+      "requestedExecutionLevel": "highestAvailable",
       "target": [
         "nsis",
         "msi"
@@ -98,16 +94,6 @@
       "private": false
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hbt-org/hearthstone-battlegrounds-tools.git"
-  },
-  "author": "chenyueban <jasonchan0527@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/hbt-org/hearthstone-battlegrounds-tools/issues"
-  },
-  "homepage": "https://github.com/hbt-org/hearthstone-battlegrounds-tools#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
@@ -279,9 +265,9 @@
     "use-deep-compare-effect": "^1.4.0"
   },
   "devEngines": {
-    "node": ">=7.x",
-    "npm": ">=4.x",
-    "yarn": ">=0.21.3"
+    "node": ">=12.x",
+    "npm": ">=5.x",
+    "yarn": ">=1.22.0"
   },
   "browserslist": [],
   "prettier": {
@@ -299,6 +285,21 @@
       }
     ],
     "singleQuote": true
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=development eslint --cache"
+    ],
+    "{*.json,.{babelrc,eslintrc,prettierrc,stylelintrc}}": [
+      "prettier --ignore-path .eslintignore --parser json --write"
+    ],
+    "*.{css,scss}": [
+      "stylelint --ignore-path .eslintignore --syntax scss --fix",
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ],
+    "*.{html,md,yml}": [
+      "prettier --ignore-path .eslintignore --single-quote --write"
+    ]
   },
   "stylelint": {
     "extends": [
