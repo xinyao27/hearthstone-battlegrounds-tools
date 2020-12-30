@@ -23,6 +23,9 @@ interface Config {
       max: number;
     };
   };
+  shortcuts: {
+    unplug: string;
+  };
 }
 
 // 存储配置文件
@@ -42,6 +45,9 @@ export const config = {
         text: {
           max: 12,
         },
+      },
+      shortcuts: {
+        unplug: 'F1',
       },
     },
   }),

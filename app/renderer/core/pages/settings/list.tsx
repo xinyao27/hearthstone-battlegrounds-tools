@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import FolderIcon from '@material-ui/icons/Folder';
 import SettingsIcon from '@material-ui/icons/Settings';
+import KeyboardIcon from '@material-ui/icons/Keyboard';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
@@ -34,7 +35,7 @@ interface Item {
 }
 function getList(): Item[] {
   const { suspensionManager } = remote.getGlobal('managers');
-  const list: Item[] = [
+  return [
     {
       icon: <DeveloperModeIcon />,
       label: '悬浮框展示',
@@ -103,6 +104,55 @@ function getList(): Item[] {
               <SettingsIcon />
             </IconButton>
           </Tooltip>
+        );
+      },
+    },
+    {
+      icon: <KeyboardIcon />,
+      label: '修改拔线快捷键',
+      action: function Action() {
+        const shortcuts = [
+          'F1',
+          'F2',
+          'F3',
+          'F4',
+          'F5',
+          'F6',
+          'F7',
+          'F8',
+          'F9',
+          'F10',
+          'F11',
+          'F12',
+        ];
+        const [shortcut, setShortcut] = React.useState<typeof shortcuts[0]>(
+          // @ts-ignore
+          () => config.get('shortcuts.unplug')
+        );
+        const { enqueueSnackbar } = useSnackbar();
+        const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+          const value = e?.target?.value as string;
+          if (value) {
+            config.set('shortcuts.unplug', value);
+            setShortcut(value);
+            enqueueSnackbar(`修改拔线快捷键 ${value} 成功，重启插件后生效`, {
+              variant: 'success',
+            });
+          } else {
+            enqueueSnackbar(`修改拔线快捷键失败，请重试`, {
+              variant: 'error',
+            });
+          }
+        };
+
+        return (
+          <Select value={shortcut} onChange={handleChange}>
+            {shortcuts.map((item) => (
+              <MenuItem value={item} key={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </Select>
         );
       },
     },
@@ -188,8 +238,6 @@ function getList(): Item[] {
       },
     },
   ];
-
-  return list;
 }
 
 export default getList;

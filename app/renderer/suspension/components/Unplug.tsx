@@ -172,8 +172,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const defaultText = '一键拔线 (快捷键 F1)';
 const appDirPath = config.get('heartstoneRootPath') as string;
+const shortcut = (config.get('shortcuts.unplug') as string) ?? 'F1';
+const defaultText = `一键拔线 (快捷键 ${shortcut})`;
 const appName = is.windows
   ? 'Hearthstone.exe'
   : is.macos
@@ -218,7 +219,7 @@ const Unplug: React.FC = () => {
     }
   }, [loading, toggleLoading]);
   React.useEffect(() => {
-    remote.globalShortcut.register('F1', handleUnplug);
+    remote.globalShortcut.register(shortcut, handleUnplug);
     return () => {
       remote.globalShortcut.unregisterAll();
     };
