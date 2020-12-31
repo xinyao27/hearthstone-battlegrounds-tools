@@ -1937,6 +1937,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/lodash@^4.14.166":
+  version "4.14.166"
+  resolved "https://registry.npm.taobao.org/@types/lodash/download/@types/lodash-4.14.166.tgz?cache=0&sync_timestamp=1608758149995&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Flodash%2Fdownload%2F%40types%2Flodash-4.14.166.tgz#07e7f2699a149219dbc3c35574f126ec8737688f"
+  integrity sha1-B+fyaZoUkhnbw8NVdPEm7Ic3aI8=
+
 "@types/mathjs@^6.0.8":
   version "6.0.9"
   resolved "https://registry.npm.taobao.org/@types/mathjs/download/@types/mathjs-6.0.9.tgz#39d05a208565295427565f7b6f148d1e1a59fcd9"
