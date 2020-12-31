@@ -289,6 +289,18 @@
     ],
     "singleQuote": true
   },
+  "standard-version": {
+    "bumpFiles": [
+      {
+        "filename": "package.json",
+        "type": "json"
+      },
+      {
+        "filename": "src/package.json",
+        "type": "json"
+      }
+    ]
+  },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "cross-env NODE_ENV=development eslint --cache"
