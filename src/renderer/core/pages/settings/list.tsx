@@ -1,9 +1,10 @@
 import React from 'react';
 import { remote } from 'electron';
 import path from 'path';
-import { useMount, useBoolean } from 'ahooks';
+import { useBoolean } from 'ahooks';
 import {
   IconButton,
+  Button,
   Switch,
   Tooltip,
   Select,
@@ -39,28 +40,17 @@ function getList(): Item[] {
   return [
     {
       icon: <DeveloperModeIcon />,
-      label: '悬浮框展示',
+      label: '当前悬浮框展示状态',
       action: function Action() {
-        const [checked, { toggle }] = useBoolean(
-          suspensionManager?.window.isVisible()
-        );
-        useMount(() => {
-          toggle(suspensionManager?.window.isVisible());
-        });
-        return (
-          <Switch
-            edge="end"
-            checked={checked}
-            onChange={(_, value) => {
-              toggle(value);
-              if (value) {
-                suspensionManager?.show();
-              } else {
-                suspensionManager?.hide();
-              }
-            }}
-          />
-        );
+        const handleToggle = () => {
+          const visible = suspensionManager?.window.isVisible();
+          if (visible) {
+            suspensionManager?.hide();
+          } else {
+            suspensionManager?.show();
+          }
+        };
+        return <Button onClick={handleToggle}>切换</Button>;
       },
     },
     {
