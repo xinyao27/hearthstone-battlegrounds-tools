@@ -56,6 +56,10 @@
 
 [HBT 贡献指南](./CONTRIBUTING.md)
 
+## CHANGELOG
+
+[CHANGELOG](./CHANGELOG.md)
+
 ## 👍 交流
 
 如果你有什么问题，或者有什么好的想法，请加群
