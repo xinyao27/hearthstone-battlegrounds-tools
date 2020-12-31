@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://hs.chenyueban.com" target="_blank">HBT - 炉石传说酒馆战棋战绩统计工具</a>
+  <a href="https://hs.chenyueban.com" target="_blank">HBT - 炉石传说酒馆战棋插件</a>
 </h1>
 
 <p align="center">
@@ -55,6 +55,10 @@
 ## 贡献
 
 [HBT 贡献指南](./CONTRIBUTING.md)
+
+## CHANGELOG
+
+[CHANGELOG](./CHANGELOG.md)
 
 ## 👍 交流
 

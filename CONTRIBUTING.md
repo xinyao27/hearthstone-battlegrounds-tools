@@ -30,7 +30,7 @@ $ yarn build
 ## 调试
 
 ```bash
-$ yarn dev
+$ yarn start
 ```
 
 ## Git commit
@@ -54,7 +54,7 @@ $ yarn update:deps
 ## 目录结构说明
 
 ```
-app
+src
 ├─main
 │  └─windows
 ├─renderer

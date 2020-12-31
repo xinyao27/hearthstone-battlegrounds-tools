@@ -22,6 +22,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'import/no-dynamic-require': 'off',
     'no-underscore-dangle': 'off',
+    'no-plusplus': 'off',
   },
   parserOptions: {
     ecmaVersion: 2020,
@@ -35,7 +36,7 @@ module.exports = {
       // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
       node: {},
       webpack: {
-        config: require.resolve('./configs/webpack.config.eslint.js'),
+        config: require.resolve('./.erb/configs/webpack.config.eslint.js'),
       },
     },
     'import/parsers': {

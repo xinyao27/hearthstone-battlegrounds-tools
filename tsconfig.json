@@ -23,14 +23,14 @@
     "allowJs": true,
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["app/*"],
-      "@main/*": ["app/main/*"],
-      "@renderer/*": ["app/renderer/*"],
-      "@shared/*": ["app/shared/*"],
-      "@core/*": ["app/renderer/core/*"],
-      "@logHandler/*": ["app/renderer/logHandler/*"],
-      "@suspension/*": ["app/renderer/suspension/*"]
+      "@src/*": ["src/*"],
+      "@main/*": ["src/main/*"],
+      "@renderer/*": ["src/renderer/*"],
+      "@shared/*": ["src/shared/*"],
+      "@core/*": ["src/renderer/core/*"],
+      "@logHandler/*": ["src/renderer/logHandler/*"],
+      "@suspension/*": ["src/renderer/suspension/*"]
     }
   },
-  "exclude": ["test", "release", "app/dist", "dll"]
+  "exclude": ["test", "release", "src/dist", ".erb/dll"]
 }
