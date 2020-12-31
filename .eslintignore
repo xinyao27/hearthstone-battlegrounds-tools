@@ -32,9 +32,10 @@ node_modules
 
 # App packaged
 release
-app/main.prod.js.*
 dist
 dll
+main.js
+main.js.map
 
 .idea
 npm-debug.log.*
