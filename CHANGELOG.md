@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.0...v1.3.1) (2020-12-31)
+
+### Features
+
+- **suspension:** add @types/lodash ([e8e6a85](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/e8e6a8593bb07e70d46d7f5d783968a026013b9f))
+
+### Bug Fixes
+
+- **suspension:** 修复阿兰娜变身时的一个报错 ([1268add](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/1268add4565c18f42fc46d5275d334438d89b5d7))
+
 ## [1.3.0](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.2.7...v1.3.0) (2020-12-31)
 
 ### Features
