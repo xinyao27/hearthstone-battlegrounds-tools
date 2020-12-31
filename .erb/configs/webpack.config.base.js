@@ -66,7 +66,7 @@ const result = {
   },
 };
 
-if (process.env.NODE_ENV === 'production' && process.env.SENTRY_AUTH_TOKEN) {
+if (process.env.NODE_ENV === 'production') {
   result.plugins.push(
     new SentryWebpackPlugin({
       // sentry-cli configuration
