@@ -3,13 +3,14 @@ import { createModel } from 'hox';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import type { IHero } from '@hbt-org/core';
 import { cloneDeep } from 'lodash';
-import { useDebounceFn } from 'ahooks';
+import { useDebounceFn, useUpdateEffect } from 'ahooks';
 
 import { getStore } from '@shared/store';
 import useHeroes from '@shared/hooks/useHeroes';
 import { Topic } from '@shared/constants/topic';
 import useStateFlow from '@suspension/hooks/useStateFlow';
 import useBoxFlow from '@suspension/hooks/useBoxFlow';
+import useUnplug from '@suspension/hooks/useUnplug';
 
 const store = getStore();
 
@@ -17,6 +18,7 @@ function useCurrentHero() {
   const [stateFlow] = useStateFlow();
   const [boxFlow] = useBoxFlow();
   const { getHeroId, getHero } = useHeroes();
+  const { completed: unplugCompleted } = useUnplug();
   const [hero, setHero] = React.useState<IHero | null>(null);
   const [rank, setRank] = React.useState<string>('8');
 
@@ -59,14 +61,18 @@ function useCurrentHero() {
         handleReset();
       }
     },
-    { wait: 100 }
+    { wait: 200 }
   );
 
-  useDeepCompareEffect(() => {
-    if (boxFlow?.current === 'BOX_GAME_OVER') {
+  useUpdateEffect(() => {
+    if (
+      boxFlow?.current === 'BOX_GAME_OVER' &&
+      // 开启拔线后 3 秒内不记录
+      !unplugCompleted
+    ) {
       run(hero, rank, stateFlow);
     }
-  }, [boxFlow || {}, stateFlow || {}, hero, rank]);
+  }, [boxFlow?.current, unplugCompleted]);
 
   return {
     hero,

@@ -71,7 +71,7 @@ const Item: React.FC<ItemProps> = ({
     [onChange, value]
   );
   const currentHero = React.useMemo(
-    () => heroes.find((h) => h.id === value.hero.id),
+    () => heroes.find((h) => h.id === value?.hero?.id),
     [heroes, value]
   );
 
