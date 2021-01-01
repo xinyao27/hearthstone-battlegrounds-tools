@@ -68,11 +68,14 @@ class SuspensionManager extends EventEmitter {
     let boundWidth: number | null = null;
     this.window.on('will-resize', (e, newBounds) => {
       if (!is.development) {
-        // 禁止横向拖动改变大小
         if (!boundWidth) {
           boundWidth = newBounds.width;
           e.preventDefault();
-        } else if (boundWidth !== newBounds.width) {
+        } else if (
+          // 限制最大变化幅度
+          newBounds.width + 80 <= boundWidth ||
+          newBounds.width >= boundWidth
+        ) {
           e.preventDefault();
         }
       }
