@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.2](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.1...v1.3.2) (2021-01-03)
+
+### Features
+
+- **core:** 英雄数据支持根据分段设置 ([563ccb6](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/563ccb6dd8ba6a1050b12a89ca57b178f59ff956))
+- **core:** 设置页悬浮框显示状态切换组件更替为按钮 ([3289501](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/328950185df9cc979f6b214e2233f66f9de7be27))
+- **main:** suspension 支持拖动修改宽度 当然限制了最多可缩小的程度 ([b2ab07a](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/b2ab07af064dbed4dacde7c94c918eec306b8423))
+- **suspension:** 把 HeroCard 组件拆分，以防止英雄数据接口过多无用加载 ([0dedccf](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/0dedccf72e83ab19ec7da455a4d5138a9f2c8726))
+- **suspension:** 拔线后不记录的时间改为 10 秒 ([b98d369](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/b98d3691fb3a0e726cc70b6c7d477e7192ca654f))
+
+### Bug Fixes
+
+- **core:** 修复设置完炉石安装目录后启动炉石的目录不更新的问题 ([6c21fae](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/6c21fae54dcdef7ba40ca2188110d9d6490a2c18))
+- **suspension:** 拔线后 3s 内不记录战绩 ([0650858](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/06508588f17bc1e907b01ca761da51a3b7ed7d16))
+
 ### [1.3.1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.0...v1.3.1) (2020-12-31)
 
 ### Features
