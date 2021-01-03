@@ -67,12 +67,12 @@ function useCurrentHero() {
   useUpdateEffect(() => {
     if (
       boxFlow?.current === 'BOX_GAME_OVER' &&
-      // 开启拔线后 3 秒内不记录
-      !unplugCompleted
+      // 开启拔线后 10 秒内不记录
+      unplugCompleted
     ) {
       run(hero, rank, stateFlow);
     }
-  }, [boxFlow?.current, unplugCompleted]);
+  }, [boxFlow?.current]);
 
   return {
     hero,
