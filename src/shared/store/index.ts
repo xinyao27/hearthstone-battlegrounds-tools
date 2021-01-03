@@ -27,6 +27,7 @@ interface Config {
   shortcuts: {
     unplug: string;
   };
+  rank: string;
 }
 
 // 存储配置文件
@@ -51,6 +52,7 @@ export const config = {
       shortcuts: {
         unplug: 'F1',
       },
+      rank: 'all',
     },
   }),
   get(key: keyof Config | string) {

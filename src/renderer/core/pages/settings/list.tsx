@@ -16,6 +16,7 @@ import KeyboardIcon from '@material-ui/icons/Keyboard';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import AllInboxIcon from '@material-ui/icons/AllInbox';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import SportsMmaIcon from '@material-ui/icons/SportsMma';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 import BuildIcon from '@material-ui/icons/Build';
@@ -75,8 +76,6 @@ function getList(): Item[] {
                 enqueueSnackbar('设置《炉石传说》安装路径成功', {
                   variant: 'success',
                 });
-              } else {
-                throw success;
               }
               return success;
             })
@@ -94,6 +93,68 @@ function getList(): Item[] {
             >
               <SettingsIcon />
             </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      icon: <SportsMmaIcon />,
+      label: '玩家分段设置',
+      action: function Action() {
+        const ranks = [
+          {
+            label: '所有玩家',
+            key: 'all',
+          },
+          {
+            label: '前50% (4200+)',
+            key: '50',
+          },
+          {
+            label: '前20% (5900+)',
+            key: '20',
+          },
+          {
+            label: '前5% (8100+)',
+            key: '5',
+          },
+          {
+            label: '前1% (11000+)',
+            key: '1',
+          },
+        ];
+        const [rank, setRank] = React.useState<string>(
+          () => (config.get('rank') as string) ?? ranks[0].key
+        );
+        const { enqueueSnackbar } = useSnackbar();
+        const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
+          const value = e?.target?.value as string;
+          if (value) {
+            config.set('rank', value);
+            setRank(value);
+            const label = ranks.find((v) => v.key === value)?.label;
+            enqueueSnackbar(`修改玩家分段 ${label} 成功，重启插件后生效`, {
+              variant: 'success',
+            });
+          } else {
+            enqueueSnackbar(`修改玩家分段失败，请重试`, {
+              variant: 'error',
+            });
+          }
+        };
+        return (
+          <Tooltip
+            title="这个选项将影响选择英雄时的英雄数据"
+            arrow
+            placement="left"
+          >
+            <Select value={rank} onChange={handleChange}>
+              {ranks.map((item) => (
+                <MenuItem value={item.key} key={item.key}>
+                  {item.label}
+                </MenuItem>
+              ))}
+            </Select>
           </Tooltip>
         );
       },
@@ -156,7 +217,6 @@ function getList(): Item[] {
             });
           }
         };
-
         return (
           <Select value={shortcut} onChange={handleChange}>
             {shortcuts.map((item) => (
