@@ -9,6 +9,10 @@ import { config } from '@shared/store';
 
 const exec = promisify(execBase);
 
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
  * 判断是否存在指定防火墙规则
  * @param ruleName
@@ -142,12 +146,13 @@ const ruleName = 'HBT炉石拔线';
 
 function useUnplug() {
   const [loading, toggleLoading] = React.useState(false);
-  const [completed, toggleCompleted] = React.useState(false);
+  const [completed, toggleCompleted] = React.useState(true);
   const [tooltip, setTooltip] = React.useState<string>(defaultText);
 
   const handleUnplug = async () => {
     if (!loading) {
       toggleLoading(true);
+      toggleCompleted(false);
       setTooltip('正在检查是否存在防火墙规则');
       const has = await hasRule(ruleName, appPath);
       if (has) {
@@ -163,16 +168,16 @@ function useUnplug() {
       setTooltip('正在启用防火墙规则');
       await enableRule(ruleName, appPath, setTooltip);
 
-      // 等几秒后禁用防火墙规则
-      setTimeout(async () => {
-        await disableRule(ruleName, appPath, setTooltip);
-        toggleCompleted(true);
-        setTimeout(() => {
-          setTooltip(defaultText);
-          toggleCompleted(false);
-          toggleLoading(false);
-        }, 3000);
-      }, timeOut * 1000);
+      await sleep(timeOut * 1000);
+      await disableRule(ruleName, appPath, setTooltip);
+
+      await sleep(3000);
+      setTooltip(defaultText);
+      toggleLoading(false);
+
+      await sleep(10000);
+      // 拔线完成后 10s 内不记录战绩
+      toggleCompleted(true);
     }
   };
 

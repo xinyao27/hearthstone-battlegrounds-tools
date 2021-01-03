@@ -9,21 +9,20 @@ import { config } from '@shared/store';
 
 const exec = promisify(execBase);
 
-const heartstoneRootPath = config.get('heartstoneRootPath') as string;
-const heartstoneAppName = is.windows
-  ? 'Hearthstone Beta Launcher.exe'
-  : is.macos
-  ? 'Hearthstone Beta Launcher.app'
-  : '';
-const heartstoneAppPath = path.join(heartstoneRootPath, heartstoneAppName);
-const command = is.windows
-  ? `start "" "${heartstoneAppPath}"`
-  : is.macos
-  ? `open "${heartstoneAppPath}"`
-  : '';
-
 function useStartHS() {
   const handleStartHS = React.useCallback(async () => {
+    const heartstoneRootPath = config.get('heartstoneRootPath') as string;
+    const heartstoneAppName = is.windows
+      ? 'Hearthstone Beta Launcher.exe'
+      : is.macos
+      ? 'Hearthstone Beta Launcher.app'
+      : '';
+    const heartstoneAppPath = path.join(heartstoneRootPath, heartstoneAppName);
+    const command = is.windows
+      ? `start "" "${heartstoneAppPath}"`
+      : is.macos
+      ? `open "${heartstoneAppPath}"`
+      : '';
     await exec(command);
   }, []);
 
