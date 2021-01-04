@@ -33,7 +33,16 @@ function useLineupModel(list?: IMinionPropsWithNameAndID[]) {
           toggleLoading(false);
           worker.terminate();
         });
+
+        return () => {
+          toggleLoading(false);
+          worker.terminate();
+        };
       }
+
+      return () => {
+        toggleLoading(false);
+      };
     },
     [list],
     { wait: 100 }

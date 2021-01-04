@@ -2,18 +2,25 @@
 
 import { Lineup } from '@hbt-org/core';
 
-self.addEventListener('message', async (event) => {
+self.addEventListener('message', (event) => {
   const minions = JSON.parse(event.data.minions);
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const _minions = Lineup.create(minions).minions;
-  const finalLineup = await Lineup.getAllPossibleLineups(_minions);
-  const combatPower = finalLineup.reduce(
-    (acc, cur) => acc + cur.COMBAT_POWER,
-    0
-  );
-  self.postMessage({
-    minions: JSON.stringify(_minions),
-    finalLineup: JSON.stringify(finalLineup),
-    combatPower,
-  });
+  const lineup = Lineup.create(minions).minions;
+  Lineup.getAllPossibleLineups(lineup)
+    .then((finalLineup) => {
+      const combatPower = finalLineup.reduce(
+        (acc, cur) => acc + cur.COMBAT_POWER,
+        0
+      );
+      return self.postMessage({
+        minions: JSON.stringify(lineup),
+        finalLineup: JSON.stringify(finalLineup),
+        combatPower,
+      });
+    })
+    .catch((e) => {
+      throw e;
+    });
+  self.setTimeout(() => {
+    throw new Error('计算超时');
+  }, 10000);
 });

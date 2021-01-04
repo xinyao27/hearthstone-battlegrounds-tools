@@ -6,12 +6,9 @@ import { exec as execBase } from 'child_process';
 import { promisify } from 'util';
 
 import { config } from '@shared/store';
+import { sleep } from '@shared/utils';
 
 const exec = promisify(execBase);
-
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 /**
  * 判断是否存在指定防火墙规则

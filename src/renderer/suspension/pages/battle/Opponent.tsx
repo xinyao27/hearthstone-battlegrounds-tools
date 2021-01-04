@@ -9,10 +9,10 @@ import MinionCard from '@suspension/components/MinionCard';
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
 import useStateFlow from '@suspension/hooks/useStateFlow';
+import useBattleState from '@suspension/hooks/useBattleState';
 import type { OpponentLineup } from '@suspension/types';
 import useHeroes from '@shared/hooks/useHeroes';
 import useLineupModel from '@shared/hooks/useLineupModel';
-import useBattleState from '@suspension/hooks/useBattleState';
 
 const useStyles = makeStyles((theme) => ({
   root: {
