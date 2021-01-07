@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.3](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.2...v1.3.3) (2021-01-07)
+
+### Features
+
+- **core:** 完成阵容模拟功能 ([2192b12](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/2192b121af1051cc6873fa1de5af89e8f3d05d29))
+- **suspension:** 战力计算加入超时判定 以防止部分计算过度占用资源 ([81eb64b](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/81eb64b0f341cca087907f7e57cfb6d3dcdf2854))
+- **suspension:** 没有查询到可选英雄数据时给予提示 ([54b1b9d](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/54b1b9dac24e72a5903faed36a0142d0135734d9))
+
+### Bug Fixes
+
+- **suspension:** 修复英雄组件样式问题 ([86b844b](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/86b844b81a3a762e906bc7a8a80151f090b50c7c))
+
 ### [1.3.2](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.1...v1.3.2) (2021-01-03)
 
 ### Features
