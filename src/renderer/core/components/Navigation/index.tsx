@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Tooltip, Tabs, Tab, IconButton } from '@material-ui/core';
 import TodayIcon from '@material-ui/icons/Today';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import CasinoIcon from '@material-ui/icons/Casino';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useUpdateEffect } from 'ahooks';
@@ -100,6 +101,12 @@ export default function Navigation() {
             label="统计"
             value={routes.STATISTICS}
             icon={<EqualizerIcon />}
+          />
+          <Tab
+            className={classes.item}
+            label="阵容模拟"
+            value={routes.LINEUP_SIMULATION}
+            icon={<CasinoIcon />}
           />
           <Tab
             className={classes.item}

@@ -39,7 +39,7 @@ function useCreateImage() {
               >
                 <img
                   style={{ width: 40 }}
-                  src={getImageUrl(hero.image)}
+                  src={getImageUrl(hero.id, 'hero')}
                   alt={hero.name}
                 />
                 <Text

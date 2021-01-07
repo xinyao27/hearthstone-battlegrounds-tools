@@ -20,10 +20,41 @@ type Props = {
   children: ReactNode;
 };
 
+const JianLiBianFont = {
+  fontFamily: 'JianLiBian',
+  fontStyle: 'normal',
+  src: `
+    url(${
+      require('@shared/assets/fonts/JianLiBian.woff').default
+    }) format('woff'),
+    url(${
+      require('@shared/assets/fonts/JianLiBian.woff2').default
+    }) format('woff2'),
+    url(${
+      require('@shared/assets/fonts/JianLiBian.ttf').default
+    }) format('truetype')
+  `,
+};
+const BelweBoldFont = {
+  fontFamily: 'Belwe Bold',
+  fontStyle: 'normal',
+  src: `
+    url(${
+      require('@shared/assets/fonts/Belwe-Bold.woff').default
+    }) format('woff'),
+    url(${
+      require('@shared/assets/fonts/Belwe-Bold.woff2').default
+    }) format('woff2'),
+    url(${
+      require('@shared/assets/fonts/Belwe-Bold.ttf').default
+    }) format('woff2')
+  `,
+};
 const muiTheme = createMuiTheme({
   overrides: {
     MuiCssBaseline: {
       '@global': {
+        '@font-face': [JianLiBianFont, BelweBoldFont],
         html: {
           height: '100%',
         },

@@ -11,18 +11,20 @@ import Text from '@suspension/components/Text';
 import useMinions from '@shared/hooks/useMinions';
 
 interface TierList {
-  [tier: number]: IMinion[];
+  [techLevel: number]: IMinion[];
 }
 interface TierRaceList {
-  [tier: number]: Record<number, IMinion[]>;
+  [race: string]: Record<string, IMinion[]>;
 }
 function groupByTier(list: IMinion[]) {
   return list.reduce<TierList>((acc, cur) => {
-    const { tier } = cur;
-    if (tier) {
+    const { techLevel } = cur;
+    if (techLevel) {
       return {
         ...acc,
-        [tier]: Array.isArray(acc[tier]) ? [...acc[tier], cur] : [cur],
+        [techLevel]: Array.isArray(acc[techLevel])
+          ? [...acc[techLevel], cur]
+          : [cur],
       };
     }
     return acc;
@@ -33,12 +35,12 @@ function groupByRace(list: TierList) {
     const minions = list[parseInt(cur, 10)];
     return {
       ...acc,
-      [cur]: _.groupBy(minions, (value) => value.cardRace),
+      [cur]: _.groupBy(minions, (value) => value.race ?? 'INVALID'),
     };
   }, {});
 }
-function getTierCN(tier: number) {
-  switch (tier) {
+function getTierCN(techLevel: number) {
+  switch (techLevel) {
     case 1:
       return '一';
     case 2:
@@ -55,26 +57,28 @@ function getTierCN(tier: number) {
       return '一';
   }
 }
-function getRaceCN(tier: number) {
-  switch (tier) {
-    case 0:
+function getRaceCN(race: string) {
+  switch (race) {
+    case 'INVALID':
       return '中立';
-    case 14:
+    case 'MURLOC':
       return '鱼人';
-    case 15:
+    case 'DEMON':
       return '恶魔';
-    case 17:
+    case 'MECHANICAL':
       return '机械';
-    case 18:
+    case 'ELEMENTAL':
       return '元素';
-    case 20:
+    case 'BEAST':
       return '野兽';
-    case 23:
+    case 'PIRATE':
       return '海盗';
-    case 24:
+    case 'DRAGON':
       return '龙';
-    default:
+    case 'ALL':
       return '所有';
+    default:
+      return '中立';
   }
 }
 
@@ -111,10 +115,10 @@ const useStyles = makeStyles((theme) => ({
 const Handbook: React.FC = () => {
   const classes = useStyles();
   const { minions } = useMinions();
-  const tierData = groupByTier(
-    minions.filter((v) => !!v.upgradeId && v.official)
+  const techLevelData = groupByTier(
+    minions.filter((v) => !!v.battlegroundsPremiumDbfId && v.official)
   );
-  const tierRaceData = groupByRace(tierData);
+  const techLevelRaceData = groupByRace(techLevelData);
   const [currentTier, setCurrentTier] = React.useState<number>(1);
 
   return (
@@ -122,16 +126,19 @@ const Handbook: React.FC = () => {
       <SwitchBattleAndHandbook current="handbook" />
 
       <div className={classes.switch}>
-        {[1, 2, 3, 4, 5, 6].map((tier) => (
+        {[1, 2, 3, 4, 5, 6].map((techLevel) => (
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
           <img
             className={clsx(classes.switchItem, {
-              [classes.switchItemActive]: tier === currentTier,
+              [classes.switchItemActive]: techLevel === currentTier,
             })}
-            src={require(`@shared/assets/images/tier-${tier}.png`).default}
-            alt="tier"
-            onClick={() => setCurrentTier(tier)}
-            key={tier}
+            src={
+              require(`@shared/assets/images/techLevel-${techLevel}.png`)
+                .default
+            }
+            alt="techLevel"
+            onClick={() => setCurrentTier(techLevel)}
+            key={techLevel}
           />
         ))}
       </div>
@@ -142,14 +149,13 @@ const Handbook: React.FC = () => {
         </div>
 
         <div className={classes.minions}>
-          {tierRaceData?.[currentTier] &&
-            Object.keys(tierRaceData?.[currentTier])?.map((race) => {
-              const raceNumber = parseInt(race, 10);
-              const raceMinions = tierRaceData?.[currentTier]?.[raceNumber];
+          {techLevelRaceData?.[currentTier] &&
+            Object.keys(techLevelRaceData?.[currentTier])?.map((race) => {
+              const raceMinions = techLevelRaceData?.[currentTier]?.[race];
               return (
                 <div key={race}>
                   <Text className={classes.race} color="#45331d" stroke={false}>
-                    {getRaceCN(raceNumber)}
+                    {getRaceCN(race)}
                   </Text>
                   {raceMinions?.map((minion) => (
                     <MinionCard

@@ -1,5 +1,6 @@
 {
   "RECORD": "/record",
   "STATISTICS": "/statistics",
+  "LINEUP_SIMULATION": "/lineupSimulation",
   "SETTINGS": "/settings"
 }

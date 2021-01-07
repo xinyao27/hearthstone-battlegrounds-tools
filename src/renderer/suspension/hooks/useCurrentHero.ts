@@ -46,10 +46,13 @@ function useCurrentHero() {
   // 战绩发送至 core 添加战绩
   const { run } = useDebounceFn(
     (_hero, _rank, _stateFlow) => {
-      if (hero && rank) {
+      if (_hero && _rank) {
         const date = new Date();
         const record = {
-          hero: _hero,
+          hero: {
+            id: _hero.dbfId,
+            name: _hero.name,
+          },
           rank: _rank,
           date,
           lineup: cloneDeep(_stateFlow?.LINEUP?.result?.own),

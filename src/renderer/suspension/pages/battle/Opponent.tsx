@@ -94,9 +94,13 @@ const Opponent: React.FC<OpponentProps> = ({
   const {
     combatPower: opponentCombatPower,
     loading: opponentLoading,
-  } = useLineupModel(opponentLineup?.minions);
+  } = useLineupModel(
+    opponentLineup?.minions?.length ? opponentLineup.minions : [],
+    true
+  );
   const { combatPower: ownCombatPower, loading: ownLoading } = useLineupModel(
-    ownLineup
+    ownLineup?.length ? ownLineup : [],
+    true
   );
 
   if (hero) {

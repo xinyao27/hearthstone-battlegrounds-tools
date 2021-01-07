@@ -71,7 +71,7 @@ const Item: React.FC<ItemProps> = ({
     [onChange, value]
   );
   const currentHero = React.useMemo(
-    () => heroes.find((h) => h.id === value?.hero?.id),
+    () => heroes.find((h) => h.dbfId === value?.hero?.id),
     [heroes, value]
   );
 
@@ -108,7 +108,7 @@ const Item: React.FC<ItemProps> = ({
       >
         <ListItemAvatar>
           <Avatar
-            src={getImageUrl(currentHero?.image ?? '')}
+            src={getImageUrl(currentHero?.id ?? '', 'hero')}
             alt={currentHero?.name}
           />
         </ListItemAvatar>

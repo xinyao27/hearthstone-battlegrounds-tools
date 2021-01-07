@@ -73,7 +73,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
   const classes = useStyles(props);
 
   const hero = React.useMemo<IHero | undefined>(
-    () => heroes.find((v) => v.id === heroId),
+    () => heroes.find((v) => v.dbfId === heroId),
     [heroId, heroes]
   );
 
@@ -86,7 +86,7 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
         >
           <div className={classes.title}>
             <div className={classes.avatar}>
-              <img src={getImageUrl(hero.image)} alt={hero.name} />
+              <img src={getImageUrl(hero.id, 'hero')} alt={hero.name} />
             </div>
             <div className={classes.nameBar} />
             <Tooltip title={hero.name} arrow placement="top">

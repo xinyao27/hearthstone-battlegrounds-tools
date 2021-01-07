@@ -147,10 +147,7 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
     // 金色随从
     BACON_MINION_IS_LEVEL_TWO,
   } = props;
-  const baseImgSrc = BACON_MINION_IS_LEVEL_TWO
-    ? minion?.imageGold
-    : minion?.image;
-  const imgSrc = getImageUrl(baseImgSrc ?? '');
+  const imgSrc = getImageUrl(minion?.id ?? '', 'minion');
   if (minionName) {
     return (
       <Grow

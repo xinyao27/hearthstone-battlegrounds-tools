@@ -57,11 +57,11 @@ function useDayRecord(currentDate?: Dayjs) {
     )!;
     if (value) {
       const currentHero = heroes.find(
-        (v) => v.id === value.data?.[0]?.hero?.id
+        (v) => v.dbfId === value.data?.[0]?.hero?.id
       );
       return Object.assign(value, {
         name: currentHero?.name ?? '',
-        avatar: currentHero?.image ?? '',
+        avatar: currentHero?.id ?? '',
       });
     }
     return null;

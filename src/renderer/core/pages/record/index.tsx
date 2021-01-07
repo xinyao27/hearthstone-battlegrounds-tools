@@ -167,7 +167,12 @@ export default function Record() {
             arrow
           >
             <Chip
-              avatar={<Avatar src={getImageUrl(best.avatar)} alt={best.name} />}
+              avatar={
+                <Avatar
+                  src={getImageUrl(best.avatar, 'hero')}
+                  alt={best.name}
+                />
+              }
               label="今日最佳"
               clickable
             />

@@ -65,7 +65,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
         // @ts-ignore
         onSubmit({
           hero: {
-            id: hero.id,
+            id: hero.dbfId,
             name: hero.name,
           },
           rank,
@@ -87,7 +87,7 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
             <MenuItem className={classes.item} key={hero.id} value={hero.id}>
               <img
                 className={classes.img}
-                src={getImageUrl(hero.image)}
+                src={getImageUrl(hero.id, 'hero')}
                 alt={hero.name}
               />
               <span>{hero.name}</span>

@@ -131,7 +131,7 @@ const GameOver: React.FC = () => {
                 </Text>
               </div>
               <div className={classes.avatar}>
-                <img src={getImageUrl(hero.image)} alt={hero.name} />
+                <img src={getImageUrl(hero.id, 'hero')} alt={hero.name} />
               </div>
               <Text className={classes.name}>{hero.name}</Text>
             </div>
