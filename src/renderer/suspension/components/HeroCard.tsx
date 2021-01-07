@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     position: 'absolute',
     left: 0,
-    top: (props: HeroCardProps) => (props.mini ? theme.spacing(2) : 0),
+    top: (props: HeroCardProps) => (props.mini ? 28 : 12),
     width: (props: HeroCardProps) => (props.mini ? 60 : 80),
     zIndex: 2,
   },

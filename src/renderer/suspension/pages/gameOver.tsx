@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     width: '80%',
-    margin: '12px auto 0',
+    margin: '12px auto 12px',
   },
   name: {
     height: 40,
