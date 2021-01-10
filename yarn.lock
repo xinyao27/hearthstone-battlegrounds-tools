@@ -1205,10 +1205,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@hbt-org/core@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.npmjs.org/@hbt-org/core/-/core-1.1.2.tgz#8f1d85dc188696860eaddd6c6275018aa0679241"
-  integrity sha512-33JG4FchQTm7NCAVffRi+dE/3eae2CaYPaYftILZq8CdR0vHQsmDeW0Nn4+UIMiq1N91kv306sl9sjrL9CKJEw==
+"@hbt-org/core@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.npmjs.org/@hbt-org/core/-/core-1.1.3.tgz#c7e78bce0cb9df6deeb4f76e3dabe8b80e9db9e9"
+  integrity sha512-TZgNexP3yMOranryhP3AScYzRSH5sz4jBZl+144RXU/o1QrJgfCyZnIcqlb1ed+7HvkiVT8lHiJASK5d/x56oA==
   dependencies:
     lodash "^4.17.20"
     mathjs "^8.1.0"
