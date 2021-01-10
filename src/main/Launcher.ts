@@ -130,6 +130,10 @@ class Launcher extends EventEmitter {
   appUpdater() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
+    const url = is.development
+      ? 'http://localhost:23333/app'
+      : 'https://hs.chenyueban.com/app';
+    autoUpdater.setFeedURL(url);
     autoUpdater.checkForUpdatesAndNotify({
       title: 'HBT - 发现新版本',
       body: `{appName} version {version} 已下载将在退出时自动安装`,

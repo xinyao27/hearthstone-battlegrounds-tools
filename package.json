@@ -235,7 +235,10 @@
       ]
     },
     "nsis": {
-      "artifactName": "${productName}-Setup-${version}.${ext}"
+      "oneClick": false,
+      "perMachine": true,
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "allowToChangeInstallationDirectory": true
     },
     "directories": {
       "app": "src",
@@ -245,11 +248,9 @@
     "extraResources": [
       "./assets/**"
     ],
-    "publish": {
-      "provider": "github",
-      "owner": "hbt-org",
-      "repo": "hearthstone-battlegrounds-tools",
-      "private": false
+    "publish":  {
+      "provider": "generic",
+      "url": "https://hs.chenyueban.com/app"
     }
   },
   "jest": {

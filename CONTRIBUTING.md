@@ -43,8 +43,6 @@ $ yarn start
 $ yarn package
 ```
 
-也可调用 `yarn package-mac` 或 `yarn package-win` 为特定平台打包。
-
 ## 升级依赖
 
 ```bash
