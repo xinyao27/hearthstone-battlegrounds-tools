@@ -249,8 +249,10 @@
       "./assets/**"
     ],
     "publish": {
-      "provider": "generic",
-      "url": "https://hs.chenyueban.com/app"
+      "provider": "github",
+      "owner": "hbt-org",
+      "repo": "hearthstone-battlegrounds-tools",
+      "private": false
     }
   },
   "jest": {
