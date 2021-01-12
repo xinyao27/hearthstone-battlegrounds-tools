@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.4](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.3...v1.3.4) (2021-01-12)
+
+### Features
+
+- **main:** suspension 窗口移动或改变大小后进行缓存 下次从缓存读取相应数据 ([0376dd5](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/0376dd5ce8a6f29fb916adffaa4cc764e2268186))
+- **main:** 更换自动更新服务 ([e7f71d1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/e7f71d1dc78573e52fbb02cefea9be9ccbaa1bed))
+
+### Bug Fixes
+
+- 修复灵魂杂耍者计算战力时的死循环问题，偏折机器人的战力计算，补充随从库缺少的随从 ([b9eba70](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/b9eba70bf63412f4a97e0c38fa711e3a790a8f6c))
+
 ### [1.3.3](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.2...v1.3.3) (2021-01-07)
 
 ### Features
