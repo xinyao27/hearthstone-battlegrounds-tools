@@ -29,7 +29,7 @@ import fs from 'fs';
 
 import useRecord from '@core/hooks/useRecord';
 import useDayRecord from '@core/hooks/useDayRecord';
-import { records } from '@shared/store';
+import { records } from '@shared/db';
 import { getImageUrl } from '@suspension/utils';
 
 import NewItem from './NewItem';

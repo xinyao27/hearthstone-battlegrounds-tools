@@ -2,11 +2,13 @@ import { EventEmitter } from 'events';
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  Rectangle,
   screen,
 } from 'electron';
 import { is } from 'electron-util';
 
 import { getAppHTML } from '../utils';
+import { config } from '../../shared/store';
 
 interface Params {
   onInit: (window: BrowserWindow) => void;
@@ -50,12 +52,16 @@ class SuspensionManager extends EventEmitter {
   ) {
     this.window = new BrowserWindow(options);
 
-    // 获取显示器的宽高
-    const winSize = this.window.getSize(); // 获取窗口宽高
-
-    const x = this.screenSize.width - winSize[0];
-    const y = 100;
-    this.window.setPosition(x, y);
+    const cacheBounds = config.get('suspensionBounds') as Rectangle;
+    if (cacheBounds) {
+      this.window.setBounds(cacheBounds);
+    } else {
+      // 获取显示器的宽高
+      const winSize = this.window.getSize(); // 获取窗口宽高
+      const x = this.screenSize.width - winSize[0];
+      const y = 100;
+      this.window.setPosition(x, y);
+    }
     this.window.setAlwaysOnTop(true, 'screen-saver', 1000);
     if (is.macos) {
       this.window.setVisibleOnAllWorkspaces(true, {
@@ -79,6 +85,12 @@ class SuspensionManager extends EventEmitter {
           e.preventDefault();
         }
       }
+    });
+    this.window.on('moved', () => {
+      config.set('suspensionBounds', this.window?.getContentBounds() ?? {});
+    });
+    this.window.on('resized', () => {
+      config.set('suspensionBounds', this.window?.getContentBounds() ?? {});
     });
     this.window.on('closed', () => {
       this.window = null;

@@ -7,7 +7,7 @@ import html2canvas from 'html2canvas';
 import fs from 'fs';
 import path from 'path';
 
-import { records } from '@shared/store';
+import { records } from '@shared/db';
 import useConnect from '@core/pages/settings/OBS/useConnect';
 import useCommand from '@core/pages/settings/OBS/useCommand';
 import useObsText from '@core/pages/settings/OBS/useObsText';
