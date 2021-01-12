@@ -4,9 +4,11 @@ import { EventEmitter } from 'events';
 import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
+import { getStore } from '../shared/store';
 import CoreManager from './windows/CoreManager';
 import LogHandlerManager from './windows/LogHandlerManager';
 import SuspensionManager from './windows/SuspensionManager';
+import LoginManager from './windows/LoginManager';
 
 class Launcher extends EventEmitter {
   coreManager?: CoreManager;
@@ -15,6 +17,8 @@ class Launcher extends EventEmitter {
 
   suspensionManager?: SuspensionManager;
 
+  loginManager?: LoginManager;
+
   constructor() {
     super();
 
@@ -22,9 +26,11 @@ class Launcher extends EventEmitter {
       coreManager: null,
       logHandlerManager: null,
       suspensionManager: null,
+      loginManager: null,
     };
 
     this.makeSingleInstance(this.init.bind(this));
+    this.handleLoginWindow.call(this);
   }
 
   init() {
@@ -137,6 +143,21 @@ class Launcher extends EventEmitter {
     autoUpdater.checkForUpdatesAndNotify({
       title: 'HBT - 发现新版本',
       body: `{appName} version {version} 已下载将在退出时自动安装`,
+    });
+  }
+
+  handleLoginWindow() {
+    const store = getStore();
+    store.subscribe<'login'>((action) => {
+      if (action.type === 'login' && action.payload.url) {
+        this.loginManager = new LoginManager({
+          url: action.payload.url,
+          onInit: () => {},
+          onDestroy: () => {
+            global.managers.loginManager = null;
+          },
+        });
+      }
     });
   }
 }

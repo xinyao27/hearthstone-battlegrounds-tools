@@ -1,6 +1,7 @@
 import CoreManager from '@main/windows/CoreManager';
 import LogHandlerManager from '@main/windows/LogHandlerManager';
 import SuspensionManager from '@main/windows/SuspensionManager';
+import LoginManager from '@main/windows/LoginManager';
 import Store from '@shared/store/store';
 
 declare module '*.jpg' {
@@ -41,6 +42,7 @@ declare global {
         coreManager: CoreManager | null;
         logHandlerManager: LogHandlerManager | null;
         suspensionManager: SuspensionManager | null;
+        loginManager: LoginManager | null;
       };
       store: Store<any>;
     }

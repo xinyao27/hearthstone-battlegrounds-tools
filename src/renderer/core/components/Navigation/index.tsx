@@ -13,6 +13,8 @@ import routes from '@core/constants/routes.json';
 import Logo from '@core/components/Icons/Logo';
 import useStartHS from '@core/hooks/useStartHS';
 
+import User from './User';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 78,
@@ -46,6 +48,17 @@ const useStyles = makeStyles((theme) => ({
   item: {
     minWidth: 78,
   },
+  utils: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: theme.spacing(1),
+    '& > *': {
+      marginTop: theme.spacing(2),
+    },
+  },
   startGame: {
     width: 56,
   },
@@ -70,6 +83,7 @@ export default function Navigation() {
   const handleToWebSite = React.useCallback(() => {
     shell.openExternal('https://hs.chenyueban.com');
   }, []);
+
   const { run } = useStartHS();
 
   useUpdateEffect(() => {
@@ -116,7 +130,9 @@ export default function Navigation() {
           />
         </Tabs>
 
-        <div>
+        <div className={classes.utils}>
+          <User />
+
           <Tooltip title="启动炉石传说" placement="right" arrow>
             <IconButton
               className={classes.startGame}

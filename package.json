@@ -159,6 +159,7 @@
     "@material-ui/pickers": "^3.2.10",
     "@sentry/electron": "^2.0.4",
     "ahooks": "^2.9.1",
+    "axios": "^0.21.1",
     "clsx": "^1.1.1",
     "dayjs": "^1.9.6",
     "echarts": "^5.0.0",

@@ -12,6 +12,7 @@ import Header from '@core/components/Header';
 import Navigation from '@core/components/Navigation';
 import useRecord from '@core/hooks/useRecord';
 import useInit from '@core/hooks/useInit';
+import useAuth from '@shared/hooks/useAuth';
 import routes from '@core/constants/routes.json';
 import { getStore } from '@shared/store';
 import { Topic } from '@shared/constants/topic';
@@ -97,6 +98,7 @@ export default function App({ children }: Props) {
   const history = useHistory();
   const [, { addRecord }] = useRecord();
   const [correctDirectory] = useInit();
+  const { resetAuth } = useAuth();
 
   useUpdateEffect(() => {
     // 不正确 进入设置页面开始引导
@@ -109,6 +111,12 @@ export default function App({ children }: Props) {
     store.subscribe<Topic.ADD_RECORD>((action) => {
       if (action.type === Topic.ADD_RECORD) {
         addRecord(action.payload);
+      }
+    });
+    store.subscribe<'token'>((action) => {
+      if (action.type === 'token' && action.payload) {
+        localStorage.setItem('hbt_token', action.payload);
+        resetAuth();
       }
     });
   });
