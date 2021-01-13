@@ -14,6 +14,7 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import dayjs from 'dayjs';
 import { useUpdateEffect } from 'ahooks';
+import { is } from 'electron-util';
 
 import type { RecordItem } from '@core/hooks/useStatistics';
 import MinionCard from '@suspension/components/MinionCard';
@@ -142,17 +143,19 @@ const Item: React.FC<ItemProps> = ({
             </Typography>
           ) : null}
         </div>
-        <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            onClick={() => {
-              onDelete(value);
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
+        {is.development && (
+          <ListItemSecondaryAction>
+            <IconButton
+              edge="end"
+              aria-label="delete"
+              onClick={() => {
+                onDelete(value);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        )}
       </ListItem>
     </MinionTooltip>
   );

@@ -26,6 +26,7 @@ import {
 } from 'ahooks';
 import { remote } from 'electron';
 import fs from 'fs';
+import { is } from 'electron-util';
 
 import useRecord from '@core/hooks/useRecord';
 import useDayRecord from '@core/hooks/useDayRecord';
@@ -211,12 +212,14 @@ export default function Record() {
           }
           ariaLabel="工具集"
         >
-          <SpeedDialAction
-            icon={<AddIcon />}
-            title="手动添加战绩"
-            tooltipTitle="手动添加战绩"
-            onClick={() => newItemToggle(true)}
-          />
+          {is.development && (
+            <SpeedDialAction
+              icon={<AddIcon />}
+              title="手动添加战绩"
+              tooltipTitle="手动添加战绩"
+              onClick={() => newItemToggle(true)}
+            />
+          )}
           <SpeedDialAction
             icon={<SystemUpdateAltIcon />}
             title="导入战绩"

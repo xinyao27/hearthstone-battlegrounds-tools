@@ -1,15 +1,49 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles';
 import {
   Tooltip,
   Typography,
   MenuItem,
   Divider,
   Avatar,
+  Badge,
 } from '@material-ui/core';
 
 import useAuth from '@shared/hooks/useAuth';
+import useUploadRecords from '@shared/hooks/useUploadRecords';
+
 import Login from './Login';
+
+const StyledBadge = withStyles((theme) =>
+  createStyles({
+    badge: {
+      backgroundColor: '#44b700',
+      color: '#44b700',
+      boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+      '&::after': {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        animation: '$ripple 1.2s infinite ease-in-out',
+        border: '1px solid currentColor',
+        content: '""',
+      },
+    },
+    '@keyframes ripple': {
+      '0%': {
+        transform: 'scale(.8)',
+        opacity: 1,
+      },
+      '100%': {
+        transform: 'scale(2.4)',
+        opacity: 0,
+      },
+    },
+  })
+)(Badge);
 
 const useStyles = makeStyles((theme) => ({
   small: {
@@ -37,11 +71,14 @@ const useStyles = makeStyles((theme) => ({
 const User: React.FC = () => {
   const classes = useStyles();
   const { hasAuth, user, resetAuth } = useAuth();
+  const { loading: uploadRecordsLoading } = useUploadRecords();
 
   const handleLogout = React.useCallback(() => {
     localStorage.removeItem('hbt_token');
     resetAuth();
   }, [resetAuth]);
+
+  const AvatarBadge = uploadRecordsLoading ? StyledBadge : Badge;
 
   if (hasAuth) {
     return (
@@ -66,7 +103,16 @@ const User: React.FC = () => {
         arrow
         interactive
       >
-        <Avatar className={classes.small}>{user?.bnetTag?.[0]}</Avatar>
+        <AvatarBadge
+          overlap="circle"
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          variant="dot"
+        >
+          <Avatar className={classes.small}>{user?.bnetTag?.[0]}</Avatar>
+        </AvatarBadge>
       </Tooltip>
     );
   }

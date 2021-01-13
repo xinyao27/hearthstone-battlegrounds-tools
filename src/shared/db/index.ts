@@ -27,4 +27,7 @@ export const records = {
   update(payload: RecordItem) {
     return this.store.update({ _id: payload._id }, payload);
   },
+  setUploaded(payload: RecordItem, uploaded: boolean) {
+    return this.store.update({ _id: payload._id }, { $set: { uploaded } });
+  },
 };
