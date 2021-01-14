@@ -9,7 +9,7 @@ import orange from '@material-ui/core/colors/orange';
 import dayjs, { Dayjs } from 'dayjs';
 import cnLocale from 'dayjs/locale/zh-cn';
 
-import type { RecordItem } from '@core/hooks/useStatistics';
+import type { RecordItem } from '@shared/hooks/useStatistics';
 import { makeStyles } from '@material-ui/core/styles';
 
 interface DatePickerProps {

@@ -10,7 +10,7 @@ import { useHistory } from 'react-router-dom';
 
 import Header from '@core/components/Header';
 import Navigation from '@core/components/Navigation';
-import useRecord from '@core/hooks/useRecord';
+import useRecord from '@shared/hooks/useRecord';
 import useInit from '@core/hooks/useInit';
 import useAuth from '@shared/hooks/useAuth';
 import routes from '@core/constants/routes.json';

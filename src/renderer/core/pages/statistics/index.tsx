@@ -18,8 +18,8 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import dayjs from 'dayjs';
 import { useInViewport, useUpdateEffect } from 'ahooks';
 
-import useStatistics, { ResultItem } from '@core/hooks/useStatistics';
-import useRecord from '@core/hooks/useRecord';
+import useStatistics, { ResultItem } from '@shared/hooks/useStatistics';
+import useRecord from '@shared/hooks/useRecord';
 
 const useRowStyles = makeStyles({
   root: {

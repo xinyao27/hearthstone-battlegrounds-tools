@@ -1,7 +1,7 @@
 import path from 'path';
 import { remote } from 'electron';
 import NEDBStore from 'nedb-promises';
-import { RecordItem } from '@core/hooks/useStatistics';
+import { RecordItem } from '@shared/hooks/useStatistics';
 
 const recordsDBPath = path.join(
   remote.app.getPath('userData'),
@@ -27,7 +27,7 @@ export const records = {
   update(payload: RecordItem) {
     return this.store.update({ _id: payload._id }, payload);
   },
-  setUploaded(payload: RecordItem, uploaded: boolean) {
-    return this.store.update({ _id: payload._id }, { $set: { uploaded } });
+  setUploaded(payload: RecordItem, synced: boolean) {
+    return this.store.update({ _id: payload._id }, { $set: { synced } });
   },
 };

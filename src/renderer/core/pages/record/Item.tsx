@@ -16,7 +16,7 @@ import dayjs from 'dayjs';
 import { useUpdateEffect } from 'ahooks';
 import { is } from 'electron-util';
 
-import type { RecordItem } from '@core/hooks/useStatistics';
+import type { RecordItem } from '@shared/hooks/useStatistics';
 import MinionCard from '@suspension/components/MinionCard';
 import { getImageUrl } from '@suspension/utils';
 import useHeroes from '@shared/hooks/useHeroes';

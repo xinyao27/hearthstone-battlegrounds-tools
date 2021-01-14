@@ -2,8 +2,8 @@ import React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { minBy } from 'lodash';
 
-import useRecord from '@core/hooks/useRecord';
-import type { RecordItem } from '@core/hooks/useStatistics';
+import useRecord from '@shared/hooks/useRecord';
+import type { RecordItem } from '@shared/hooks/useStatistics';
 import useHeroes from '@shared/hooks/useHeroes';
 
 interface Data {

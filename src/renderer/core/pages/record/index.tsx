@@ -28,7 +28,7 @@ import { remote } from 'electron';
 import fs from 'fs';
 import { is } from 'electron-util';
 
-import useRecord from '@core/hooks/useRecord';
+import useRecord from '@shared/hooks/useRecord';
 import useDayRecord from '@core/hooks/useDayRecord';
 import { records } from '@shared/db';
 import { getImageUrl } from '@suspension/utils';

@@ -11,7 +11,7 @@ import SendIcon from '@material-ui/icons/Send';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 
-import type { RecordItem } from '@core/hooks/useStatistics';
+import type { RecordItem } from '@shared/hooks/useStatistics';
 import { getImageUrl } from '@suspension/utils';
 import useHeroes from '@shared/hooks/useHeroes';
 

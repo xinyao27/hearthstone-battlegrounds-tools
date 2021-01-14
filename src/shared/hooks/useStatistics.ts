@@ -16,7 +16,7 @@ export interface RecordItem {
     turn: number;
     minions: IMinionPropsWithNameAndID[];
   };
-  uploaded?: boolean;
+  synced?: boolean;
 }
 export interface ResultItem {
   heroId: number;

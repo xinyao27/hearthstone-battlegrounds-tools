@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 
 import useAuth from '@shared/hooks/useAuth';
-import useUploadRecords from '@shared/hooks/useUploadRecords';
+import useSynchronousRecords from '@shared/hooks/useSynchronousRecords';
 
 import Login from './Login';
 
@@ -71,14 +71,14 @@ const useStyles = makeStyles((theme) => ({
 const User: React.FC = () => {
   const classes = useStyles();
   const { hasAuth, user, resetAuth } = useAuth();
-  const { loading: uploadRecordsLoading } = useUploadRecords();
+  const { loading } = useSynchronousRecords();
 
   const handleLogout = React.useCallback(() => {
     localStorage.removeItem('hbt_token');
     resetAuth();
   }, [resetAuth]);
 
-  const AvatarBadge = uploadRecordsLoading ? StyledBadge : Badge;
+  const AvatarBadge = loading ? StyledBadge : Badge;
 
   if (hasAuth) {
     return (
