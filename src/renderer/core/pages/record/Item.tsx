@@ -70,7 +70,9 @@ const Item: React.FC<ItemProps> = ({
 
   const handleRemarkChange = React.useCallback(
     (e) => {
-      onChange({ ...value, remark: e.target.value });
+      if (e.target.value !== undefined && e.target.value.length <= 20) {
+        onChange({ ...value, remark: e.target.value });
+      }
     },
     [onChange, value]
   );

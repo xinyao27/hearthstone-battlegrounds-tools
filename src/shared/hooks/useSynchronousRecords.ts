@@ -16,6 +16,21 @@ dayjs.extend(isBetween);
 
 const TIME = 30 * 60 * 1000;
 const MAX = 100;
+// 格式化上传的数据
+function formatUploadData(data: RecordItem[]) {
+  return data.map((v) => ({
+    _id: v._id,
+    hero: {
+      id: v.hero.id,
+      name: v.hero.name,
+    },
+    rank: v.rank,
+    date: v.date,
+    remark: v.remark,
+    lineup: v.lineup,
+    synced: v.synced,
+  }));
+}
 
 function useSynchronousRecords() {
   const { hasAuth } = useAuth();
@@ -81,7 +96,7 @@ function useSynchronousRecords() {
         });
         if (uploadData.length > 0) {
           if (uploadData.length > MAX) {
-            const chunkData = chunk(uploadData, MAX);
+            const chunkData = chunk(formatUploadData(uploadData), MAX);
             // eslint-disable-next-line no-restricted-syntax
             for (const c of chunkData) {
               // eslint-disable-next-line no-await-in-loop

@@ -200,6 +200,8 @@ function useRecord(
   );
   const handleEditRecord = React.useCallback(
     (item: RecordItem) => {
+      // 修改前把要修改的数据改为未同步状态
+      item.synced = false;
       records
         .update(item)
         .then(() => records.find({}))
