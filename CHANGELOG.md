@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.4...v1.4.0) (2021-01-15)
+
+### Features
+
+- **core:** 实现将近 3 个月内的数据上传功能 ([abaf63f](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/abaf63f3bf2a061944c18d3bf8b5eb200a99ee63))
+- **core:** 战绩列表中显示每条战绩的同步状态 ([57a61ee](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/57a61ee562a8562728fa2110111ce92b262e8d3b))
+- **core:** 更新战绩备注时将战绩更新为未同步状态，并且限制战绩备注的最大长度 ([609e882](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/609e882f52170c6629b5bb8020cffd3d42cd74fb))
+- **core:** 登录失败后给予提示 ([77172ed](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/77172ede625088a97a8dfb6caaf96737f3104ef6))
+- **main:** 开始创建托盘 ([abd6743](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/abd674329b5a7d34c2eeccb85090e576bd0a57ab))
+- **main:** 托盘支持双击以及通过菜单呼出主界面 ([e37913c](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/e37913c9779a7cc711c100ec560b3c2822118bb7))
+- **suspension:** 支持战绩的上传与拉取 ([00f24d9](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/00f24d9dead8b1264978c10c001bddbd9204abbe))
+- 完成登录系统 ([6f92589](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/6f92589f793f66a2fce91e375265a6e61d059f5d))
+
+### Bug Fixes
+
+- **suspension:** 修复待选英雄加载错误的问题 ([819c34f](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/819c34f3699c23307f67e2914772497e7575609f))
+
 ### [1.3.4](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.3...v1.3.4) (2021-01-12)
 
 ### Features
