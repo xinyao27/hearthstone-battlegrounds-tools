@@ -7,10 +7,10 @@ import echarts from 'echarts/lib/echarts';
 import { Tooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import type { ListHeroesResult } from '@suspension/hooks/useListHeroes';
-import useListHeroes from '@suspension/hooks/useListHeroes';
+import { getHeroAnalysis, ListHeroesResult } from '@shared/api';
 import Text from '@suspension/components/Text';
 import Loading from '@suspension/components/Loading';
+import { useRequest } from 'ahooks';
 
 interface ChartProps {
   hero?: ListHeroesResult[0];
@@ -110,7 +110,10 @@ interface HeroDataProps {
 
 const HeroData: React.FC<HeroDataProps> = ({ id }) => {
   const classes = useStyles();
-  const { data, loading, error, refresh } = useListHeroes();
+  const { data, loading, error, refresh } = useRequest(getHeroAnalysis, {
+    cacheKey: 'heroes',
+    cacheTime: 30 * 60 * 1000,
+  });
   const heroData = data?.find((v) => v.hero_dbf_id === id);
 
   if (loading) return <Loading />;
