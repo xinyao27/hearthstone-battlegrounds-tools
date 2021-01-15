@@ -233,9 +233,7 @@ export default function Record() {
         open={newItemIn}
         onClose={() => newItemToggle(false)}
       >
-        <Tooltip title="可以点击">
-          <NewItem onSubmit={handleNewItem} />
-        </Tooltip>
+        <NewItem onSubmit={handleNewItem} />
       </Dialog>
     </div>
   );

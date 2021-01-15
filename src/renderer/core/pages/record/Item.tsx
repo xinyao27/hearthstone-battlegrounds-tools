@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CloudDoneIcon from '@material-ui/icons/CloudDone';
 import dayjs from 'dayjs';
 import { useUpdateEffect } from 'ahooks';
 import { is } from 'electron-util';
@@ -21,6 +22,7 @@ import MinionCard from '@suspension/components/MinionCard';
 import { getImageUrl } from '@suspension/utils';
 import useHeroes from '@shared/hooks/useHeroes';
 import useSurprise from '@core/hooks/useSurprise';
+import useAuth from '@shared/hooks/useAuth';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
@@ -64,6 +66,7 @@ const Item: React.FC<ItemProps> = ({
   const inputRef = React.useRef<HTMLInputElement>();
   const { heroes } = useHeroes();
   const { run: surprise } = useSurprise();
+  const { hasAuth } = useAuth();
 
   const handleRemarkChange = React.useCallback(
     (e) => {
@@ -143,8 +146,8 @@ const Item: React.FC<ItemProps> = ({
             </Typography>
           ) : null}
         </div>
-        {is.development && (
-          <ListItemSecondaryAction>
+        <ListItemSecondaryAction>
+          {is.development && (
             <IconButton
               edge="end"
               aria-label="delete"
@@ -154,8 +157,13 @@ const Item: React.FC<ItemProps> = ({
             >
               <DeleteIcon />
             </IconButton>
-          </ListItemSecondaryAction>
-        )}
+          )}
+          {hasAuth && value.synced ? (
+            <IconButton disabled>
+              <CloudDoneIcon />
+            </IconButton>
+          ) : null}
+        </ListItemSecondaryAction>
       </ListItem>
     </MinionTooltip>
   );

@@ -40,8 +40,7 @@ function useAuth() {
               payload: data,
             });
           } else {
-            localStorage.removeItem('hbt_token');
-            resetAuth();
+            throw new Error('获取用户信息失败');
           }
         }
       } catch (e) {

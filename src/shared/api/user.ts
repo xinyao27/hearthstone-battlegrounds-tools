@@ -1,4 +1,4 @@
-import request from './request';
+import request, { getAuthConfig } from './request';
 
 export interface User {
   _id: string;
@@ -9,7 +9,7 @@ export interface User {
 
 export async function getUser(): Promise<User | undefined> {
   const url = `/auth/profile`;
-  const { data } = await request.get(url);
+  const { data } = await request.get(url, getAuthConfig());
   if (data && data.code === 0) {
     return data.data;
   }
