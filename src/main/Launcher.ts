@@ -104,14 +104,6 @@ class Launcher extends EventEmitter {
       });
     }
 
-    app.on('window-all-closed', () => {
-      // Respect the OSX convention of having the application in memory even
-      // after all windows have been closed
-      if (!is.macos) {
-        app.quit();
-      }
-    });
-
     app
       .whenReady()
       // eslint-disable-next-line promise/no-callback-in-promise
@@ -129,6 +121,10 @@ class Launcher extends EventEmitter {
         this.init();
       }
       this.coreManager?.show();
+    });
+
+    app.on('window-all-closed', () => {
+      app.quit();
     });
 
     app.on('will-quit', () => {

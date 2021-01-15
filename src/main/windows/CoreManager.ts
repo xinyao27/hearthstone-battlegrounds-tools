@@ -71,6 +71,13 @@ class CoreManager extends EventEmitter {
       shell.openExternal(url);
     });
 
+    this.window.on('close', (e) => {
+      if (is.macos) {
+        e.preventDefault();
+        this.hide();
+      }
+    });
+
     this.window.on('closed', () => {
       this.window = null;
       onDestroy?.();

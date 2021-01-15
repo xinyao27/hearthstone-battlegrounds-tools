@@ -22,7 +22,7 @@ class Tray {
   public user: User | null = null;
 
   constructor() {
-    const iconPath = getAssetPath(is.windows ? 'icon.ico' : 'icon.png');
+    const iconPath = getAssetPath(is.windows ? 'icon.ico' : 'icons/16x16.png');
     tray = new ClassTray(iconPath);
     this.tray = tray;
 
@@ -73,6 +73,7 @@ class Tray {
         type: 'normal',
         click: () => {
           app.quit();
+          app.exit();
         },
       },
     ];
