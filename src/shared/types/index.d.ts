@@ -4,30 +4,12 @@ import SuspensionManager from '@main/windows/SuspensionManager';
 import LoginManager from '@main/windows/LoginManager';
 import Store from '@shared/store/store';
 
-declare module '*.jpg' {
-  const value: any;
-  export = value;
-}
-declare module '*.jpeg' {
-  const value: any;
-  export = value;
-}
-declare module '*.png' {
-  const value: any;
-  export = value;
-}
-declare module '*.gif' {
-  const value: any;
-  export = value;
-}
-declare module '*.webp' {
-  const value: any;
-  export = value;
-}
-declare module '*.ico' {
-  const value: any;
-  export = value;
-}
+declare module '*.jpg';
+declare module '*.jpeg';
+declare module '*.png';
+declare module '*.gif';
+declare module '*.webp';
+declare module '*.ico';
 declare module 'worker-loader!*' {
   class WebpackWorker extends Worker {
     constructor();

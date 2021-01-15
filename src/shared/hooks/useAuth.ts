@@ -9,37 +9,57 @@ import { Topic } from '@shared/constants/topic';
 const store = getStore();
 function useAuth() {
   const [hasAuth, { toggle: setHasAuth }] = useBoolean(false);
+  const [hasToken, { toggle: setHasToken }] = useBoolean(false);
+  const [error, setError] = React.useState<Error>();
   const [user, setUser] = React.useState<User>();
 
   const resetAuth = React.useCallback(() => {
     const token = localStorage.getItem('hbt_token');
-    setHasAuth(!!token);
-  }, [setHasAuth]);
+    if (!token) {
+      setUser(undefined);
+      setHasAuth(false);
+    }
+    setHasToken(!!token);
+  }, [setHasAuth, setHasToken]);
 
   useMount(() => {
     const token = localStorage.getItem('hbt_token');
-    setHasAuth(!!token);
+    setHasToken(!!token);
   });
 
   useUpdateEffect(() => {
     (async () => {
-      if (hasAuth) {
-        const data = await getUser();
-        if (data) {
-          setUser(data);
-          store.dispatch<Topic.SET_USER>({
-            type: Topic.SET_USER,
-            payload: data,
-          });
+      try {
+        if (hasToken) {
+          const data = await getUser();
+          if (data) {
+            setUser(data);
+            setHasAuth(!!data);
+            store.dispatch<Topic.SET_USER>({
+              type: Topic.SET_USER,
+              payload: data,
+            });
+          } else {
+            localStorage.removeItem('hbt_token');
+            resetAuth();
+          }
         }
+      } catch (e) {
+        setError(e);
+        setTimeout(() => {
+          localStorage.removeItem('hbt_token');
+          resetAuth();
+          setError(undefined);
+        }, 3000);
       }
     })();
-  }, [hasAuth]);
+  }, [hasToken]);
 
   return {
     hasAuth,
     resetAuth,
     user,
+    error,
   };
 }
 

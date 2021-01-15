@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip, IconButton } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
+import ErrorIcon from '@material-ui/icons/Error';
 
 import useAuth from '@shared/hooks/useAuth';
 import { getStore } from '@shared/store';
@@ -28,7 +29,7 @@ const useStyles = makeStyles(() => ({
 
 const Login: React.FC = () => {
   const classes = useStyles();
-  const { resetAuth } = useAuth();
+  const { resetAuth, error } = useAuth();
 
   const handleLogin = React.useCallback(() => {
     store.dispatch<Topic.LOGIN>({
@@ -44,21 +45,31 @@ const Login: React.FC = () => {
     <div>
       <Tooltip
         title={
-          <div>
-            <div>战网登录</div>
-            <div>登录后自动同步战绩</div>
-          </div>
+          error ? (
+            <div>{error.message}</div>
+          ) : (
+            <div>
+              <div>战网登录</div>
+              <div>登录后自动同步战绩</div>
+            </div>
+          )
         }
         placement="right"
         arrow
       >
-        <IconButton
-          className={classes.button}
-          onClick={handleLogin}
-          color="inherit"
-        >
-          <PersonIcon fontSize="inherit" />
-        </IconButton>
+        {error ? (
+          <IconButton className={classes.button} color="inherit">
+            <ErrorIcon fontSize="inherit" color="error" />
+          </IconButton>
+        ) : (
+          <IconButton
+            className={classes.button}
+            onClick={handleLogin}
+            color="inherit"
+          >
+            <PersonIcon fontSize="inherit" />
+          </IconButton>
+        )}
       </Tooltip>
     </div>
   );
