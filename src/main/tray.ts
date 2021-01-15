@@ -26,13 +26,17 @@ class Tray {
     tray = new ClassTray(iconPath);
     this.tray = tray;
 
+    this.bindEvent();
+
     this.tray.setToolTip('HBT: 炉石传说酒馆战棋插件');
+
     this.getUser((user) => {
       if (user) {
         this.tray.setToolTip(`HBT: ${user.bnetTag}`);
         this.buildMenu(this.getMenuTemplate());
       }
     });
+
     this.buildMenu(this.getMenuTemplate());
   }
 
@@ -48,9 +52,13 @@ class Tray {
 
   private getMenuTemplate() {
     const window: Array<MenuItemConstructorOptions | MenuItem> = [
-      { label: '主界面', type: 'normal' },
-      { label: '设置', type: 'normal' },
-      { label: '切换悬浮框', type: 'normal' },
+      {
+        label: '主界面',
+        type: 'normal',
+        click: () => {
+          global.managers.coreManager?.show();
+        },
+      },
       { type: 'separator' },
     ];
     const user: Array<MenuItemConstructorOptions | MenuItem> = this.user
@@ -80,6 +88,12 @@ class Tray {
   private buildMenu(template: Array<MenuItemConstructorOptions | MenuItem>) {
     const contextMenu = Menu.buildFromTemplate(template);
     this.tray.setContextMenu(contextMenu);
+  }
+
+  private bindEvent() {
+    this.tray.on('double-click', () => {
+      global.managers.coreManager?.show();
+    });
   }
 
   public static init() {

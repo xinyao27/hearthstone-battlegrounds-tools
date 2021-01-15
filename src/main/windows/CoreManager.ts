@@ -93,6 +93,12 @@ class CoreManager extends EventEmitter {
       this.window.hide();
     }
   }
+
+  minimize() {
+    if (this.window) {
+      this.window.minimize();
+    }
+  }
 }
 
 export default CoreManager;

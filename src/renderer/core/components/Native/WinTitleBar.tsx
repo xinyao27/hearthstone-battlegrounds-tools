@@ -43,12 +43,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function WinTitleBar() {
   const classes = useStyles();
-  const win = React.useMemo(() => remote.getCurrentWindow(), []);
+  const win = React.useMemo(() => remote.getGlobal('managers').coreManager, []);
   const handleMinimize = React.useCallback(() => {
     win?.minimize();
   }, [win]);
   const handleClose = React.useCallback(() => {
-    win?.close();
+    win?.hide();
   }, [win]);
 
   return (
