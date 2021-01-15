@@ -66,7 +66,10 @@ const result = {
   },
 };
 
-if (process.env.NODE_ENV === 'production') {
+if (
+  process.env.NODE_ENV === 'production' &&
+  process.env.BUILD_ENV === 'release'
+) {
   result.plugins.push(
     new SentryWebpackPlugin({
       // sentry-cli configuration
