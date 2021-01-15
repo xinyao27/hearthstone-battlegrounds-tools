@@ -5,10 +5,12 @@ import log from 'electron-log';
 import { autoUpdater } from 'electron-updater';
 
 import { getStore } from '../shared/store';
+import { Topic } from '../shared/constants/topic';
 import CoreManager from './windows/CoreManager';
 import LogHandlerManager from './windows/LogHandlerManager';
 import SuspensionManager from './windows/SuspensionManager';
 import LoginManager from './windows/LoginManager';
+import Tray from './tray';
 
 class Launcher extends EventEmitter {
   coreManager?: CoreManager;
@@ -87,6 +89,8 @@ class Launcher extends EventEmitter {
     if (is.macos) {
       app.dock?.show();
     }
+
+    Tray.init();
   }
 
   makeSingleInstance(callback: () => void) {
@@ -148,8 +152,8 @@ class Launcher extends EventEmitter {
 
   handleLoginWindow() {
     const store = getStore();
-    store.subscribe<'login'>((action) => {
-      if (action.type === 'login' && action.payload.url) {
+    store.subscribe<Topic.LOGIN>((action) => {
+      if (action.type === Topic.LOGIN && action.payload.url) {
         this.loginManager = new LoginManager({
           url: action.payload.url,
           onInit: () => {},

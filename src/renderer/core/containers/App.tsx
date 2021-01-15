@@ -113,8 +113,8 @@ export default function App({ children }: Props) {
         addRecord(action.payload);
       }
     });
-    store.subscribe<'token'>((action) => {
-      if (action.type === 'token' && action.payload) {
+    store.subscribe<Topic.SET_TOKEN>((action) => {
+      if (action.type === Topic.SET_TOKEN && action.payload) {
         localStorage.setItem('hbt_token', action.payload);
         resetAuth();
       }

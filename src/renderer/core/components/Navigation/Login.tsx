@@ -5,6 +5,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import useAuth from '@shared/hooks/useAuth';
 import { getStore } from '@shared/store';
 import { makeStyles } from '@material-ui/core/styles';
+import { Topic } from '@shared/constants/topic';
 
 const state = 'hbt';
 const scope = 'openid';
@@ -30,8 +31,8 @@ const Login: React.FC = () => {
   const { resetAuth } = useAuth();
 
   const handleLogin = React.useCallback(() => {
-    store.dispatch<'login'>({
-      type: 'login',
+    store.dispatch<Topic.LOGIN>({
+      type: Topic.LOGIN,
       payload: {
         url,
       },

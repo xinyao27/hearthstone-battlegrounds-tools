@@ -2,4 +2,8 @@ export enum Topic {
   START_WATCH = 'START_WATCH',
   FLOW = 'FLOW',
   ADD_RECORD = 'ADD_RECORD',
+
+  LOGIN = 'LOGIN',
+  SET_TOKEN = 'SET_TOKEN',
+  SET_USER = 'SET_USER',
 }

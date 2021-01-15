@@ -2,8 +2,11 @@ import React from 'react';
 import { useBoolean, useMount, useUpdateEffect } from 'ahooks';
 import { createModel } from 'hox';
 
-import { getUser, User } from '../api';
+import { getUser, User } from '@shared/api';
+import { getStore } from '@shared/store';
+import { Topic } from '@shared/constants/topic';
 
+const store = getStore();
 function useAuth() {
   const [hasAuth, { toggle: setHasAuth }] = useBoolean(false);
   const [user, setUser] = React.useState<User>();
@@ -24,6 +27,10 @@ function useAuth() {
         const data = await getUser();
         if (data) {
           setUser(data);
+          store.dispatch<Topic.SET_USER>({
+            type: Topic.SET_USER,
+            payload: data,
+          });
         }
       }
     })();

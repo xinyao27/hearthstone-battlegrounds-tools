@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
 
 import { getStore } from '../../shared/store';
+import { Topic } from '../../shared/constants/topic';
 
 interface Params {
   url: string;
@@ -51,8 +52,8 @@ class LoginManager extends EventEmitter {
         // 成功拿到 token
         if (key === 'token' && token) {
           const store = getStore();
-          store.dispatch<'token'>({
-            type: 'token',
+          store.dispatch<Topic.SET_TOKEN>({
+            type: Topic.SET_TOKEN,
             payload: token,
           });
           this.destroy();
