@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.4.0...v1.4.1) (2021-01-16)
+
+### Features
+
+- **core:** 调整一次性同步的最大战绩数量 ([aa358db](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/aa358db8be20cfb3a7224448d68d86e08a808fb3))
+
+### Bug Fixes
+
+- **main:** 修复 mac 下托盘图标错误以及托盘中无法退出的问题 ([0b6ca26](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/0b6ca26287ff8ff4140e7bbda546138b14de4e3a))
+
 ## [1.4.0](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.3.4...v1.4.0) (2021-01-15)
 
 ### Features
