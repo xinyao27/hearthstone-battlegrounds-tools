@@ -2,6 +2,7 @@ import {
   app,
   Menu,
   Tray as ClassTray,
+  nativeTheme,
   MenuItem,
   MenuItemConstructorOptions,
 } from 'electron';
@@ -21,23 +22,51 @@ class Tray {
 
   public user: User | null = null;
 
+  public tooltip = 'HBT: 炉石传说酒馆战棋插件';
+
+  public tooltipBackup = 'HBT: 炉石传说酒馆战棋插件';
+
   constructor() {
-    const iconPath = getAssetPath(is.windows ? 'icon.ico' : 'icons/16x16.png');
-    tray = new ClassTray(iconPath);
+    if (is.windows) {
+      const iconPath = getAssetPath('icon.ico');
+      tray = new ClassTray(iconPath);
+    }
+    if (is.macos) {
+      const iconPath = getAssetPath(
+        nativeTheme.shouldUseDarkColors ? 'mac_dark_tray.png' : 'mac_tray.png'
+      );
+      tray = new ClassTray(iconPath);
+    }
     this.tray = tray;
 
     this.bindEvent();
 
-    this.tray.setToolTip('HBT: 炉石传说酒馆战棋插件');
+    this.tray.setToolTip(this.tooltip);
 
     this.getUser((user) => {
       if (user) {
-        this.tray.setToolTip(`HBT: ${user.bnetTag}`);
+        this.tooltip = `HBT: ${user.bnetTag}`;
+        this.tooltipBackup = `HBT: ${user.bnetTag}`;
+        this.tray.setToolTip(this.tooltip);
         this.buildMenu(this.getMenuTemplate());
       }
     });
 
     this.buildMenu(this.getMenuTemplate());
+
+    if (is.macos) {
+      this.subscribeMacThemeChange();
+    }
+  }
+
+  private subscribeMacThemeChange() {
+    nativeTheme.on('updated', () => {
+      this.tray.setImage(
+        getAssetPath(
+          nativeTheme.shouldUseDarkColors ? 'mac_dark_tray.png' : 'mac_tray.png'
+        )
+      );
+    });
   }
 
   private getUser(cb: (user: User) => void) {
@@ -95,6 +124,14 @@ class Tray {
     this.tray.on('double-click', () => {
       global.managers.coreManager?.show();
     });
+  }
+
+  public showUpdateDownloadProgress(percent: number) {
+    this.tooltip = `${this.tooltipBackup}\n正在更新: ${percent}%`;
+    this.tray.setToolTip(this.tooltip);
+    if (percent === 100) {
+      this.tray.setToolTip(this.tooltipBackup);
+    }
   }
 
   public static init() {

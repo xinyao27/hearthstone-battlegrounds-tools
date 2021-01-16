@@ -21,6 +21,8 @@ class Launcher extends EventEmitter {
 
   loginManager?: LoginManager;
 
+  tray?: Tray;
+
   constructor() {
     super();
 
@@ -90,7 +92,7 @@ class Launcher extends EventEmitter {
       app.dock?.show();
     }
 
-    Tray.init();
+    this.tray = Tray.init();
   }
 
   makeSingleInstance(callback: () => void) {
@@ -140,6 +142,24 @@ class Launcher extends EventEmitter {
       ? 'http://localhost:23333/app'
       : 'https://hs.chenyueban.com/app';
     autoUpdater.setFeedURL(url);
+    autoUpdater.on(
+      'download-progress',
+      ({
+        percent,
+      }: {
+        total: number;
+        delta: number;
+        transferred: number;
+        percent: number;
+        bytesPerSecond: number;
+      }) => {
+        this.tray?.showUpdateDownloadProgress(percent);
+        this.coreManager?.window?.setProgressBar(percent / 100);
+        if (percent === 100) {
+          this.coreManager?.window?.setProgressBar(-1);
+        }
+      }
+    );
     autoUpdater.checkForUpdatesAndNotify({
       title: 'HBT - 发现新版本',
       body: `{appName} version {version} 已下载将在退出时自动安装`,
