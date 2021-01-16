@@ -2,6 +2,7 @@ import {
   app,
   Menu,
   Tray as ClassTray,
+  nativeImage,
   nativeTheme,
   MenuItem,
   MenuItemConstructorOptions,
@@ -28,14 +29,22 @@ class Tray {
 
   constructor() {
     if (is.windows) {
-      const iconPath = getAssetPath('icon.ico');
-      tray = new ClassTray(iconPath);
+      const iconPath = getAssetPath('icon.png');
+      const icon = nativeImage.createFromPath(iconPath).resize({
+        width: 20,
+        height: 20,
+      });
+      tray = new ClassTray(icon);
     }
     if (is.macos) {
       const iconPath = getAssetPath(
-        nativeTheme.shouldUseDarkColors ? 'mac_dark_tray.png' : 'mac_tray.png'
+        nativeTheme.shouldUseDarkColors ? 'mac_dark.png' : 'mac.png'
       );
-      tray = new ClassTray(iconPath);
+      const icon = nativeImage.createFromPath(iconPath).resize({
+        width: 18,
+        height: 18,
+      });
+      tray = new ClassTray(icon);
     }
     this.tray = tray;
 
@@ -61,11 +70,14 @@ class Tray {
 
   private subscribeMacThemeChange() {
     nativeTheme.on('updated', () => {
-      this.tray.setImage(
-        getAssetPath(
-          nativeTheme.shouldUseDarkColors ? 'mac_dark_tray.png' : 'mac_tray.png'
-        )
+      const iconPath = getAssetPath(
+        nativeTheme.shouldUseDarkColors ? 'mac_dark.png' : 'mac.png'
       );
+      const icon = nativeImage.createFromPath(iconPath).resize({
+        width: 18,
+        height: 18,
+      });
+      this.tray.setImage(icon);
     });
   }
 
