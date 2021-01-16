@@ -71,21 +71,6 @@ class SuspensionManager extends EventEmitter {
     this.window.loadURL(getAppHTML('suspension'));
     onInit(this.window);
 
-    let boundWidth: number | null = null;
-    this.window.on('will-resize', (e, newBounds) => {
-      if (!is.development) {
-        if (!boundWidth) {
-          boundWidth = newBounds.width;
-          e.preventDefault();
-        } else if (
-          // 限制最大变化幅度
-          newBounds.width + 80 <= boundWidth ||
-          newBounds.width >= boundWidth
-        ) {
-          e.preventDefault();
-        }
-      }
-    });
     this.window.on('moved', () => {
       config.set('suspensionBounds', this.window?.getContentBounds() ?? {});
     });
