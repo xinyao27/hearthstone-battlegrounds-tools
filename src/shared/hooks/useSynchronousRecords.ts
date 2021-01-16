@@ -15,7 +15,9 @@ import { synchronousRecords, uploadRecords } from '../api';
 dayjs.extend(isBetween);
 
 const TIME = 30 * 60 * 1000;
-const MAX = 100;
+const MAX = 30;
+const SYNC_MAX = 1000;
+const RANGE = 2;
 // 格式化上传的数据
 function formatUploadData(data: RecordItem[]) {
   return data.map((v) => ({
@@ -83,11 +85,11 @@ function useSynchronousRecords() {
     (async () => {
       if (hasAuth) {
         const now = dayjs();
-        const previous = now.subtract(3, 'month');
+        const previous = now.subtract(RANGE, 'month');
 
         const uploadData = await records.find({
           $where() {
-            // 筛选出近三个月内且没有上传过的数据
+            // 筛选出近2个月内且没有上传过的数据
             return (
               dayjs(this.date).isBetween(now, previous, null, '[]') &&
               !this.synced
@@ -109,14 +111,14 @@ function useSynchronousRecords() {
 
         const synchronousData = await records.find({
           $where() {
-            // 筛选出近三个月内的数据
+            // 筛选出近2个月内的数据
             return dayjs(this.date).isBetween(now, previous, null, '[]');
           },
         });
-        if (synchronousData.length > MAX) {
+        if (synchronousData.length > SYNC_MAX) {
           const chunkData = chunk(
             synchronousData.map((v) => v._id),
-            MAX
+            SYNC_MAX
           );
           // eslint-disable-next-line no-restricted-syntax
           for (const c of chunkData) {
