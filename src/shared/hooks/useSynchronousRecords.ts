@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRequest } from 'ahooks';
+import { useRequest, useDebounceFn } from 'ahooks';
 import { createModel } from 'hox';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
@@ -80,9 +80,8 @@ function useSynchronousRecords() {
     // eslint-disable-next-line
     [synchronousRun]
   );
-
-  React.useEffect(() => {
-    (async () => {
+  const { run: handleSync } = useDebounceFn(
+    async () => {
       if (hasAuth) {
         const now = dayjs();
         const previous = now.subtract(RANGE, 'month');
@@ -128,16 +127,23 @@ function useSynchronousRecords() {
         } else {
           await handleSynchronous(synchronousData.map((v) => v._id));
         }
-      } else {
-        uploadCancel();
-        synchronousCancel();
+        return true;
       }
-    })();
+      uploadCancel();
+      synchronousCancel();
+      return false;
+    },
+    { wait: 300 }
+  );
+
+  React.useEffect(() => {
+    handleSync();
     // eslint-disable-next-line
   }, [hasAuth]);
 
   return {
     loading: uploadLoading || synchronousLoading,
+    sync: handleSync,
   };
 }
 

@@ -16,10 +16,12 @@ import StorefrontIcon from '@material-ui/icons/Storefront';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import SystemUpdateAltIcon from '@material-ui/icons/SystemUpdateAlt';
+import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import type { TransitionProps } from '@material-ui/core/transitions';
 import dayjs from 'dayjs';
 import {
   useBoolean,
+  useDebounceFn,
   useDocumentVisibility,
   useInViewport,
   useUpdateEffect,
@@ -27,9 +29,11 @@ import {
 import { remote } from 'electron';
 import fs from 'fs';
 import { is } from 'electron-util';
+import { useSnackbar } from 'notistack';
 
 import useRecord from '@shared/hooks/useRecord';
 import useDayRecord from '@core/hooks/useDayRecord';
+import useSynchronousRecords from '@shared/hooks/useSynchronousRecords';
 import { records } from '@shared/db';
 import { getImageUrl } from '@suspension/utils';
 
@@ -71,6 +75,8 @@ const useStyles = makeStyles((theme) => ({
 export default function Record() {
   const classes = useStyles();
 
+  const { sync } = useSynchronousRecords();
+  const { enqueueSnackbar } = useSnackbar();
   const [
     recordList,
     { addRecord, deleteRecord, editRecord, refresh },
@@ -121,6 +127,25 @@ export default function Record() {
       // eslint-disable-next-line no-console
       .catch(console.log);
   }, []);
+  const { run: handleSync } = useDebounceFn(
+    () => {
+      sync()
+        .then((res) => {
+          if (res) {
+            return enqueueSnackbar('战绩同步成功', {
+              variant: 'success',
+            });
+          }
+          return true;
+        })
+        .catch(() => {
+          enqueueSnackbar('战绩同步失败，请稍后重试', {
+            variant: 'error',
+          });
+        });
+    },
+    { wait: 300 }
+  );
 
   const handleNewItem = React.useCallback(
     (item) => {
@@ -220,11 +245,19 @@ export default function Record() {
               onClick={() => newItemToggle(true)}
             />
           )}
+          {is.development && (
+            <SpeedDialAction
+              icon={<SystemUpdateAltIcon />}
+              title="导入战绩"
+              tooltipTitle="导入战绩"
+              onClick={handleImportRecords}
+            />
+          )}
           <SpeedDialAction
-            icon={<SystemUpdateAltIcon />}
-            title="导入战绩"
-            tooltipTitle="导入战绩"
-            onClick={handleImportRecords}
+            icon={<CloudQueueIcon />}
+            title="手动同步战绩"
+            tooltipTitle="手动同步战绩"
+            onClick={handleSync}
           />
         </SpeedDial>
       </Zoom>
