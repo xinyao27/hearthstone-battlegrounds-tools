@@ -289,7 +289,7 @@ function getList(): Item[] {
 
         return (
           <Tooltip
-            title="帧数设置过高可能导致画面闪烁，请依据电脑配置合理选择。重启炉石后生效！"
+            title="帧数设置过高可能导致画面闪烁或游戏卡顿，请依据电脑配置慎重选择！重启炉石后生效！"
             arrow
             placement="left-start"
           >
