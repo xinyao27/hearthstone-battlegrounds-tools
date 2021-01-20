@@ -114,50 +114,47 @@ export default function App(props: Props) {
   useCurrentHero();
 
   useMount(() => {
-    store.subscribe<Topic.FLOW>((action) => {
-      const { type, payload } = action;
-      if (type === Topic.FLOW) {
-        if (payload.type === 'box') {
-          setBoxFlow(payload);
-          if (payload.state === 'BOX_GAME_START') {
-            resetStateFlow();
-          }
-          if (payload.state === 'BOX_CHOOSE_BACON') {
-            setIsBacon(true);
-          }
-          if (payload.state === 'BOX_GAME_OVER') {
-            history.push(routes.WELCOME);
-          }
+    store.subscribe(Topic.FLOW, (action) => {
+      const { payload } = action;
+      if (payload.type === 'box') {
+        setBoxFlow(payload);
+        if (payload.state === 'BOX_GAME_START') {
+          console.log(payload);
+          resetStateFlow();
         }
-        if (payload.type === 'state') {
-          setStateFlow(payload);
-          // 选择酒馆时才启动 判断 null 时是容错处理 这样可以一定程度上防止在其他模式下启动
-          if (isBacon === true || isBacon === null) {
-            // state 收到开始 跳转至英雄选择页
-            if (payload.state === 'GAME_START') {
-              showSuspension();
+        if (payload.state === 'BOX_CHOOSE_BACON') {
+          setIsBacon(true);
+        }
+        if (payload.state === 'BOX_GAME_OVER') {
+          history.push(routes.WELCOME);
+        }
+      }
+      if (payload.type === 'state') {
+        setStateFlow(payload);
+        // 选择酒馆时才启动 判断 null 时是容错处理 这样可以一定程度上防止在其他模式下启动
+        if (isBacon === true || isBacon === null) {
+          // state 收到开始 跳转至英雄选择页
+          if (payload.state === 'GAME_START') {
+            showSuspension();
+            history.push(routes.HEROSELECTION);
+          }
+          // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
+          if (payload.state === 'HERO_TOBE_CHOSEN') {
+            // 仍然是容错处理，有时候 GAME_START 会检测不到
+            showSuspension();
+            if (history.location.pathname !== '/heroSelection') {
               history.push(routes.HEROSELECTION);
             }
-            // 容错处理，当前页面不再英雄选择页时跳转至英雄选择页
-            if (payload.state === 'HERO_TOBE_CHOSEN') {
-              // 仍然是容错处理，有时候 GAME_START 会检测不到
-              showSuspension();
-              if (history.location.pathname !== '/heroSelection') {
-                history.push(routes.HEROSELECTION);
-              }
-            }
-            // 切换对手信息
-            if (payload.state === 'NEXT_OPPONENT') {
-              history.push(routes.BATTLE);
-            }
-            // 对局结束 显示悬浮展示战绩
-            if (payload.state === 'GAME_OVER') {
-              const enableGameResult = config.get(
-                'enableGameResult'
-              ) as boolean;
-              if (enableGameResult) {
-                history.push(routes.GAMEOVER);
-              }
+          }
+          // 切换对手信息
+          if (payload.state === 'NEXT_OPPONENT') {
+            history.push(routes.BATTLE);
+          }
+          // 对局结束 显示悬浮展示战绩
+          if (payload.state === 'GAME_OVER') {
+            const enableGameResult = config.get('enableGameResult') as boolean;
+            if (enableGameResult) {
+              history.push(routes.GAMEOVER);
             }
           }
         }

@@ -35,19 +35,17 @@ function run() {
     box: null,
     state: null,
   };
-  store.subscribe<Topic.START_WATCH>((action) => {
-    if (action.type === Topic.START_WATCH) {
-      if (subscription.box) {
-        subscription.box.unsubscribe();
-        subscription.box = null;
-      }
-      if (subscription.state) {
-        subscription.state.unsubscribe();
-        subscription.state = null;
-      }
-      subscription = startWatch();
-      log.info(`${Topic.START_WATCH} - started`);
+  store.subscribe(Topic.START_WATCH, () => {
+    if (subscription.box) {
+      subscription.box.unsubscribe();
+      subscription.box = null;
     }
+    if (subscription.state) {
+      subscription.state.unsubscribe();
+      subscription.state = null;
+    }
+    subscription = startWatch();
+    log.info(`${Topic.START_WATCH} - started`);
   });
 }
 

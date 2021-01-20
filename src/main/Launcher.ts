@@ -166,8 +166,8 @@ class Launcher extends EventEmitter {
 
   handleLoginWindow() {
     const store = getStore();
-    store.subscribe<Topic.LOGIN>((action) => {
-      if (action.type === Topic.LOGIN && action.payload.url) {
+    store.subscribe(Topic.LOGIN, (action) => {
+      if (action.payload.url) {
         this.loginManager = new LoginManager({
           url: action.payload.url,
           onInit: () => {},

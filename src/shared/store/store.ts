@@ -35,17 +35,17 @@ export default class Store<S extends State> extends EventEmitter {
   }
 
   dispatch<T extends string>(action: Action<T>): boolean {
-    return this.emit('action', action);
+    return this.emit(action.type, action);
   }
 
-  subscribe<T extends string>(onChange?: (action: Action<T>) => void) {
-    this.on('action', (action: Action<T>) => {
+  subscribe<T extends string>(type: T, onChange?: (action: Action<T>) => void) {
+    this.on(type, (action: Action<T>) => {
       onChange?.(action);
       this.setState(action);
     });
 
     return () =>
       // eslint-disable-next-line no-console
-      this.off('change', () => console.log(`Unsubscribe successfully`));
+      this.off(type, () => console.log(`Store unsubscribe successfully`));
   }
 }

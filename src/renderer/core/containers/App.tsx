@@ -97,7 +97,7 @@ const store = getStore();
 export default function App({ children }: Props) {
   const history = useHistory();
   const [, { addRecord }] = useRecord();
-  const [correctDirectory] = useInit();
+  const [correctDirectory, { check }] = useInit();
   const { resetAuth } = useAuth();
 
   useUpdateEffect(() => {
@@ -108,13 +108,12 @@ export default function App({ children }: Props) {
   }, [correctDirectory, history]);
 
   useMount(() => {
-    store.subscribe<Topic.ADD_RECORD>((action) => {
-      if (action.type === Topic.ADD_RECORD) {
-        addRecord(action.payload);
-      }
+    check();
+    store.subscribe(Topic.ADD_RECORD, (action) => {
+      addRecord(action.payload);
     });
-    store.subscribe<Topic.SET_TOKEN>((action) => {
-      if (action.type === Topic.SET_TOKEN && action.payload) {
+    store.subscribe(Topic.SET_TOKEN, (action) => {
+      if (action.payload) {
         localStorage.setItem('hbt_token', action.payload);
         resetAuth();
       }

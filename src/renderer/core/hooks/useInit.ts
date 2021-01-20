@@ -1,6 +1,6 @@
 import React from 'react';
 import { createModel } from 'hox';
-import { useBoolean, useMount } from 'ahooks';
+import { useBoolean } from 'ahooks';
 import { is } from 'electron-util';
 import { promises as fsPromises } from 'fs';
 
@@ -45,11 +45,7 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
       setCorrectDirectory(false);
       return false;
     }
-  }, [setCorrectDirectory]);
-
-  useMount(() => {
-    check();
-  });
+  }, [setCorrectDirectory, store]);
 
   return [correctDirectory, { check }];
 }

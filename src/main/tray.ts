@@ -83,8 +83,8 @@ class Tray {
 
   private getUser(cb: (user: User) => void) {
     const store = getStore();
-    store.subscribe<Topic.SET_USER>((action) => {
-      if (action.type === Topic.SET_USER && action.payload) {
+    store.subscribe(Topic.SET_USER, (action) => {
+      if (action.payload) {
         this.user = action.payload;
         cb(action.payload);
       }
