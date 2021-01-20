@@ -1205,13 +1205,13 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@hbt-org/core@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.npmjs.org/@hbt-org/core/-/core-1.1.5.tgz#f22d6e8b9ace9277d7733f3b4f705e441088e135"
-  integrity sha512-zu88uefqEx8HhvXOTlbux2oRGj8Ya2KV8Hbc91n1ffkbrT4IrnQql6Qnf7P5xmDA9sakCRmmnEoYwufW9bk2Bw==
+"@hbt-org/core@^1.1.10":
+  version "1.1.10"
+  resolved "https://registry.npmjs.org/@hbt-org/core/-/core-1.1.10.tgz#58d7009a7d6013716bf48b558d6bda71ac7c7285"
+  integrity sha512-bQbFeGClA5iRIsdf35JbFvl2QupPvkXujc+Y+q06+DuxRIKgYhQmOJmxBcf8gB0qCeRUo8ar7czRhTOODiMdDQ==
   dependencies:
     lodash "^4.17.20"
-    mathjs "^8.1.0"
+    mathjs "^9.0.0"
 
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
@@ -9008,10 +9008,10 @@ matcher@^3.0.0:
   dependencies:
     escape-string-regexp "^4.0.0"
 
-mathjs@^8.1.0:
-  version "8.1.1"
-  resolved "https://registry.npm.taobao.org/mathjs/download/mathjs-8.1.1.tgz#89d6f2fc4a90e9038db3690678a9e1ce563e15ea"
-  integrity sha1-idby/EqQ6QONs2kGeKnhzlY+Feo=
+mathjs@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.npmjs.org/mathjs/-/mathjs-9.0.0.tgz#2edd3dfdca805d7e0e5454a46b2798d95a837887"
+  integrity sha512-ZfNz90wyed1MJUQOfL+Jr9IWG6vevVPM+cFf93sV568lbY8w2obEv5Ba7e7+Ylg5Zv0PTPtEY5CbqivHw/AxGQ==
   dependencies:
     complex.js "^2.0.11"
     decimal.js "^10.2.1"
