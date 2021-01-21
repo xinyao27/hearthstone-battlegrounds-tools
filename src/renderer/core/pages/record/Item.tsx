@@ -16,21 +16,30 @@ import CloudDoneIcon from '@material-ui/icons/CloudDone';
 import dayjs from 'dayjs';
 import { useUpdateEffect } from 'ahooks';
 import { is } from 'electron-util';
+import { Minion } from '@hbt-org/core';
 
-import type { RecordItem } from '@shared/hooks/useStatistics';
-import MinionCard from '@suspension/components/MinionCard';
 import { getImageUrl } from '@suspension/utils';
+import type { RecordItem } from '@shared/hooks/useStatistics';
 import useHeroes from '@shared/hooks/useHeroes';
-import useSurprise from '@core/hooks/useSurprise';
 import useAuth from '@shared/hooks/useAuth';
+import useSurprise from '@core/hooks/useSurprise';
+import MinionComponent from '@core/components/Minion';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
     background: 'none',
+    maxWidth: 800,
   },
 }))(Tooltip);
 
 const useStyles = makeStyles((theme) => ({
+  lineup: {
+    '& > div': {
+      display: 'inline-block',
+      transform: 'scale(.8)',
+      marginRight: -45,
+    },
+  },
   combatPower: {
     marginBottom: theme.spacing(1),
   },
@@ -92,11 +101,11 @@ const Item: React.FC<ItemProps> = ({
     <MinionTooltip
       title={
         Array.isArray(value?.lineup?.minions) ? (
-          <div>
-            {value?.lineup?.minions?.map((minion: any) => (
-              <MinionCard
-                minionName={minion.name}
-                props={minion.props}
+          <div className={classes.lineup}>
+            {value?.lineup?.minions?.map((minion) => (
+              <MinionComponent
+                minion={Minion.create(minion.id, minion.name, minion.props)}
+                type="store"
                 key={minion.id}
               />
             ))}

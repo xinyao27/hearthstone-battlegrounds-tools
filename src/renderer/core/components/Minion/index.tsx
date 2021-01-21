@@ -43,14 +43,14 @@ interface MinionProps {
 const useStyles = makeStyles(() => ({
   root: {
     width: 128,
-    height: 128,
+    height: 140,
     position: 'relative',
   },
   portrait: {
     width: '85%',
     position: 'absolute',
-    left: '9%',
-    top: '13%',
+    left: '7%',
+    top: '11%',
     clipPath: 'ellipse(35% 46% at 51% 50%)',
     '-webkit-clip-path': 'ellipse(35% 46% at 51% 50%)',
   },
@@ -72,7 +72,7 @@ const useStyles = makeStyles(() => ({
   poisonous: {
     width: '16%',
     position: 'absolute',
-    bottom: '-4%',
+    bottom: '5%',
     left: '42.5%',
   },
   divineShield: {
@@ -87,9 +87,10 @@ const useStyles = makeStyles(() => ({
   },
   atk: {
     width: 30,
+    height: 34,
     position: 'absolute',
     left: '18%',
-    top: '68%',
+    top: '60%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -97,9 +98,10 @@ const useStyles = makeStyles(() => ({
   },
   health: {
     width: 30,
+    height: 34,
     position: 'absolute',
     left: '59%',
-    top: '68%',
+    top: '60%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
