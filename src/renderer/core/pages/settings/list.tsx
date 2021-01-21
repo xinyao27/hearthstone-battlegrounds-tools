@@ -22,6 +22,7 @@ import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
 import BuildIcon from '@material-ui/icons/Build';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import { useSnackbar } from 'notistack';
+import { is } from 'electron-util';
 
 import { config } from '@shared/store';
 import useInit from '@core/hooks/useInit';
@@ -196,7 +197,6 @@ function getList(): Item[] {
           'F9',
           'F10',
           'F11',
-          'F12',
         ];
         const [shortcut, setShortcut] = React.useState<typeof shortcuts[0]>(
           // @ts-ignore
@@ -233,9 +233,10 @@ function getList(): Item[] {
       label: '打开缓存目录',
       action: function Action() {
         const handleClick = () => {
-          remote.shell.showItemInFolder(
-            path.join(remote.app.getPath('userData'), remote.app.getName())
-          );
+          const targetPath = is.windows
+            ? path.join(remote.app.getPath('userData'), remote.app.getName())
+            : remote.app.getPath('userData');
+          remote.shell.showItemInFolder(targetPath);
         };
         return (
           <IconButton onClick={handleClick}>

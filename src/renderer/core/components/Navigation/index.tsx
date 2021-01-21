@@ -118,7 +118,7 @@ export default function Navigation() {
           />
           <Tab
             className={classes.item}
-            label="阵容模拟"
+            label="模拟"
             value={routes.LINEUP_SIMULATION}
             icon={<CasinoIcon />}
           />
