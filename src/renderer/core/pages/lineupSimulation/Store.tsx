@@ -4,7 +4,7 @@ import { Droppable, Draggable, DraggableProvided } from 'react-beautiful-dnd';
 import { FixedSizeList as List, areEqual } from 'react-window';
 import { Minion } from '@hbt-org/core';
 
-import MinionComponent from './Minion';
+import MinionComponent from '@core/components/Minion';
 
 function getStyle(provided: DraggableProvided, style?: React.CSSProperties) {
   if (!style) {

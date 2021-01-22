@@ -5,7 +5,7 @@ import { Minion } from '@hbt-org/core';
 
 import Text from '@suspension/components/Text';
 
-import MinionComponent, { EditProps } from './Minion';
+import MinionComponent, { EditProps } from '@core/components/Minion';
 
 interface MinionsProps {
   data: Minion[];

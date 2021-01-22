@@ -4,6 +4,7 @@ import {
   BrowserWindow,
   shell,
   BrowserWindowConstructorOptions,
+  globalShortcut,
 } from 'electron';
 import { is } from 'electron-util';
 
@@ -82,6 +83,13 @@ class CoreManager extends EventEmitter {
       this.window = null;
       onDestroy?.();
     });
+
+    if (is.macos) {
+      globalShortcut.register('Command+Q', () => {
+        app.quit();
+        app.exit();
+      });
+    }
   }
 
   destroy() {
