@@ -241,7 +241,7 @@ const MinionComponent: React.FC<MinionProps> = ({ minion, type, onChange }) => {
           }
         }}
       >
-        {minion.ATK}
+        {minion.ATK?.toString()}
       </Text>
       <Text
         className={classes.health}

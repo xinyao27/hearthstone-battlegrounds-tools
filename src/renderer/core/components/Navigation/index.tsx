@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     height: 60,
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     cursor: 'pointer',
@@ -43,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     '& > svg': {
       fontSize: '2.5em',
     },
+  },
+  title: {
+    marginTop: 4,
   },
   nav: {},
   item: {
@@ -95,6 +99,7 @@ export default function Navigation() {
       <Tooltip title="HBT - 炉石传说酒馆战棋插件" placement="right" arrow>
         <div className={classes.logo} onClick={handleToWebSite}>
           <Logo />
+          <span className={classes.title}>HBT</span>
         </div>
       </Tooltip>
       <div className={classes.container}>
