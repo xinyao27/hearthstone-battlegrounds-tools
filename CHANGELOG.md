@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.4.1...v1.4.2) (2021-01-22)
+
+### Features
+
+- 适配 19.4 版本新英雄、新随从 ([fe26a3f](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/fe26a3fa57fe7e5afe192b4a8eba8987d518baf8))
+- **core:** macos 端支持快捷键退出,修复 macos 端可能打不开换成目录的问题,去除拔线快捷键 F12 ([ddc7e02](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/ddc7e02f0df8e2cd1b2f152f490c582644a56b11))
+- **core:** 修改炉石帧数的提示语改动 ([571fbe6](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/571fbe6bec4e648f5be3742e7a65661f5f180825))
+- **core:** 导航栏加入插件名称 ([bbbfb43](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/bbbfb43e213940aac2024839f945d58cd28f1da1))
+- **core:** 战绩列表 项目预览的战绩切换为战绩模拟的形式 ([5abb30a](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/5abb30a143b5a667e89903009fdb73ed6df5d02b))
+- 更新自动更新服务的链接 ([99c116e](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/99c116e0914275736a6898b70586f118e05cdcbb))
+- **core:** 移除导入战绩功能，加入手动更新战绩功能 ([2adbb96](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/2adbb965db7050bd9851e09262d7d32a8b498d1e))
+- **main:** 加入更新进度以及 macos 下托盘图标调整 ([3b68f00](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/3b68f0019e85a59ec1d8b3e9f290edf27681ba0d))
+- **main:** 去除 suspension 的宽度拖动的限制 ([dd74697](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/dd74697cd829b8f5c906e3222eb1ed1467f42b78))
+- **main:** 调整托盘图标，使用更清晰的呈现方式 ([598d5d9](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/598d5d9395701d5654ae5f92745a0154b052e9f5))
+
+### Bug Fixes
+
+- 修复随从数据库新随从没有 official 字段的问题 ([fdc8fee](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/fdc8fee7a484359a37997ef19930306715a58e98))
+- 回退 echarts 版本修复新版本导致的报错 ([74bcf47](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/74bcf47d805e7df57cef18e52965355daa93ba25))
+- **core:** 修复以及补充随从库缺少的随从,并解决某些随从战力计算失败的问题 ([b56b598](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/b56b598593f1c1aed5af01301f28fecb13f8554c))
+- 修复日志监控执行多次的问题 ([663bc1d](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/663bc1dfd05ae263e6f866d05c421369007c280e))
+
 ### [1.4.1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.4.0...v1.4.1) (2021-01-16)
 
 ### Features
