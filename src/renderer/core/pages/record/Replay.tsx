@@ -18,6 +18,7 @@ import { getImageUrl } from '@suspension/utils';
 import Text from '@suspension/components/Text';
 import useHeroes from '@shared/hooks/useHeroes';
 import { RecordItem } from '@shared/hooks/useStatistics';
+import useLineupModel from '@shared/hooks/useLineupModel';
 
 interface ReplayProps {
   open: boolean;
@@ -34,6 +35,9 @@ const useStyles = makeStyles((theme) =>
       overflowX: 'hidden',
       overflowY: 'auto',
     },
+    label: {
+      cursor: 'pointer',
+    },
     lineup: {
       display: 'flex',
       justifyContent: 'center',
@@ -49,6 +53,8 @@ const useStyles = makeStyles((theme) =>
     tag: {
       position: 'absolute',
       left: 0,
+      textAlign: 'center',
+      fontSize: 20,
     },
     result: {
       display: 'flex',
@@ -93,7 +99,7 @@ const useStyles = makeStyles((theme) =>
 const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
   const classes = useStyles();
   const { getHeroId, getHero } = useHeroes();
-  const [current, { inc, dec }] = useCounter(0, {
+  const [current, { inc, dec, set }] = useCounter(0, {
     max: data.length - 1,
     min: 0,
   });
@@ -115,70 +121,106 @@ const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
         orientation="vertical"
         activeStep={current}
       >
-        {data.map((item, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <Step key={index}>
-            <StepLabel StepIconProps={{ completed: false, icon: item.turn }}>
-              回合
-            </StepLabel>
-            <StepContent id={`content-${index}`}>
-              <div className={classes.result}>
-                <Avatar
-                  src={getImageUrl(
-                    getHero(getHeroId(item.attacker))?.id ?? '',
-                    'hero'
-                  )}
-                />
-                <div className={classes.sword}>
-                  <img
-                    src={require('@shared/assets/images/sword.png').default}
-                    alt="sword"
-                  />
-                </div>
-                <div className={classes.blood}>
-                  <img
-                    src={
-                      require('@shared/assets/images/blood_splat.png').default
-                    }
-                    alt="sword"
-                  />
-                  <div className={classes.attackNum}>
-                    <Text isNumber>-</Text>
-                    <Text>{item.attack}</Text>
-                  </div>
-                </div>
+        {data.map((item, index) => {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const { combatPower: ownCombatPower } = useLineupModel(
+            item?.lineup.own ?? [],
+            true
+          );
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const { combatPower: opponentCombatPower } = useLineupModel(
+            item?.lineup.opponent ?? [],
+            true
+          );
+          if (item.turn) {
+            return (
+              // eslint-disable-next-line react/no-array-index-key
+              <Step key={index}>
+                <StepLabel
+                  className={classes.label}
+                  StepIconProps={{ completed: false, icon: item.turn }}
+                  onClick={() => set(index)}
+                >
+                  回合
+                </StepLabel>
+                <StepContent id={`content-${index}`}>
+                  <div className={classes.result}>
+                    <Avatar
+                      src={getImageUrl(
+                        getHero(getHeroId(item.attacker))?.id ?? '',
+                        'hero'
+                      )}
+                    />
+                    <div className={classes.sword}>
+                      <img
+                        src={require('@shared/assets/images/sword.png').default}
+                        alt="sword"
+                      />
+                    </div>
+                    <div className={classes.blood}>
+                      <img
+                        src={
+                          require('@shared/assets/images/blood_splat.png')
+                            .default
+                        }
+                        alt="sword"
+                      />
+                      <div className={classes.attackNum}>
+                        <Text isNumber>-</Text>
+                        <Text>{item.attack}</Text>
+                      </div>
+                    </div>
 
-                <Avatar
-                  src={getImageUrl(
-                    getHero(getHeroId(item.defender))?.id ?? '',
-                    'hero'
-                  )}
-                />
-              </div>
-              <div className={classes.lineup}>
-                <Text className={classes.tag}>对方阵容</Text>
-                {item?.lineup?.opponent?.map((minion) => (
-                  <MinionComponent
-                    minion={Minion.create(minion.id, minion.name, minion.props)}
-                    type="store"
-                    key={minion.id}
-                  />
-                ))}
-              </div>
-              <Divider />
-              <div className={classes.lineup}>
-                <Text className={classes.tag}>我方阵容</Text>
-                {item?.lineup?.own?.map((minion) => (
-                  <MinionComponent
-                    minion={Minion.create(minion.id, minion.name, minion.props)}
-                    type="store"
-                    key={minion.id}
-                  />
-                ))}
-              </div>
-            </StepContent>
-          </Step>
-        ))}
+                    <Avatar
+                      src={getImageUrl(
+                        getHero(getHeroId(item.defender))?.id ?? '',
+                        'hero'
+                      )}
+                    />
+                  </div>
+                  <div className={classes.lineup}>
+                    <div className={classes.tag}>
+                      <Text>对手战力</Text>
+                      <Text>{opponentCombatPower}</Text>
+                    </div>
+
+                    {item?.lineup?.opponent?.map((minion) => (
+                      <MinionComponent
+                        minion={Minion.create(
+                          minion.id,
+                          minion.name,
+                          minion.props
+                        )}
+                        type="store"
+                        key={minion.id}
+                      />
+                    ))}
+                  </div>
+                  <Divider />
+                  <div className={classes.lineup}>
+                    <div className={classes.tag}>
+                      <Text>我的战力</Text>
+                      <Text>{ownCombatPower}</Text>
+                    </div>
+
+                    {item?.lineup?.own?.map((minion) => (
+                      <MinionComponent
+                        minion={Minion.create(
+                          minion.id,
+                          minion.name,
+                          minion.props
+                        )}
+                        type="store"
+                        key={minion.id}
+                      />
+                    ))}
+                  </div>
+                </StepContent>
+              </Step>
+            );
+          }
+          return null;
+        })}
       </Stepper>
 
       <div className={classes.actions}>

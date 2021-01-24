@@ -80,11 +80,13 @@ function useBattleState() {
         own: ownLineup,
         opponent: currentOpponentLineup?.minions,
       };
-      addHistory({
-        ...item,
-        // @ts-ignore
-        lineup,
-      });
+      if (item && item.turn) {
+        addHistory({
+          ...item,
+          // @ts-ignore
+          lineup,
+        });
+      }
     }
   }, [stateFlow || {}]);
 

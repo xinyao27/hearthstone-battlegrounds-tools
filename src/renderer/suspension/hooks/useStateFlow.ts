@@ -1,5 +1,6 @@
 import React from 'react';
 import { createModel } from 'hox';
+import { is } from 'electron-util';
 import _ from 'lodash';
 
 import type { LogData } from '@shared/types';
