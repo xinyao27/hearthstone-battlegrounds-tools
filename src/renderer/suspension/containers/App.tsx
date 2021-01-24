@@ -119,7 +119,6 @@ export default function App(props: Props) {
       if (payload.type === 'box') {
         setBoxFlow(payload);
         if (payload.state === 'BOX_GAME_START') {
-          console.log(payload);
           resetStateFlow();
         }
         if (payload.state === 'BOX_CHOOSE_BACON') {

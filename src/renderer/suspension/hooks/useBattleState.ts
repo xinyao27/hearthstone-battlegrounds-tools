@@ -1,7 +1,7 @@
 import React from 'react';
 import { createModel } from 'hox';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { usePrevious } from 'ahooks';
+import { usePrevious, useSet } from 'ahooks';
 
 import type { OpponentLineup } from '@suspension/types';
 
@@ -24,6 +24,7 @@ function useBattleState() {
       minions: OpponentLineup['minions'];
     };
   }>();
+  const [history, { add: addHistory, reset: resetHistory }] = useSet([]);
   // 自己的阵容（显示）
   const ownLineup = allLineup?.own?.minions ?? [];
   // 当前对手的阵容（显示）
@@ -71,6 +72,20 @@ function useBattleState() {
     if (stateFlow?.current === 'LINEUP') {
       setAllLineup(stateFlow?.LINEUP?.result);
     }
+    if (stateFlow?.current === 'DAMAGE') {
+      const item = stateFlow?.DAMAGE?.result?.find(
+        (v: { turn: number | undefined }) => v.turn === currentTurn
+      );
+      const lineup = {
+        own: ownLineup,
+        opponent: currentOpponentLineup?.minions,
+      };
+      addHistory({
+        ...item,
+        // @ts-ignore
+        lineup,
+      });
+    }
   }, [stateFlow || {}]);
 
   return {
@@ -81,6 +96,8 @@ function useBattleState() {
     previousOpponent,
     previousOpponentLineup,
     allOpponentLineup,
+    history,
+    resetHistory,
   };
 }
 
