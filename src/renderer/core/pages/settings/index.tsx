@@ -43,18 +43,20 @@ export default function Settings() {
     <div className={classes.root}>
       <Intro />
       <List subheader={<ListSubheader>Settings</ListSubheader>}>
-        {list.map((item) => (
-          <ListItem id={item.id} key={item.label}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.label} />
-            <ListItemSecondaryAction>
-              {typeof item.action === 'function'
-                ? // @ts-ignore
-                  React.createElement(item.action)
-                : item.action}
-            </ListItemSecondaryAction>
-          </ListItem>
-        ))}
+        {list
+          .sort((a, b) => a.order - b.order)
+          .map((item) => (
+            <ListItem id={item.id} key={item.label}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+              <ListItemSecondaryAction>
+                {typeof item.action === 'function'
+                  ? // @ts-ignore
+                    React.createElement(item.action)
+                  : item.action}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
       </List>
 
       <About open={aboutOpen} onClose={() => toggleAboutOpen(false)} />
