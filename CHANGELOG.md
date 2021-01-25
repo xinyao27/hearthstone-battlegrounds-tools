@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.4.2...v1.5.0) (2021-01-25)
+
+### Features
+
+- **core:** 复盘内容加入双方战力，以及可通过点击 label 快速跳转至相应回合 ([6613110](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/661311044a282eb4da17a734a89685e5a9500044))
+- 完成赛后复盘功能 ([62ca8e8](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/62ca8e8fb6bfa72e4f235ff08610ed3f9ab7d59f))
+- **loghandler:** 支持查询升本数据 ([bbb0ce1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/bbb0ce159f09b399e418ae5896827c6b9f46385a))
+
+### Bug Fixes
+
+- **core:** 设置页 macos 端不显示拔线相关的设置 ([d6d2981](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/d6d2981ca44af597effbf08fdf44c504e7814914))
+- **main:** 修复 mac 系统下 command+Q 组合键在窗口未激活状态下也失效的问题 ([c00cec1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/c00cec151022e597425d088abd49093d88c6d017))
+
 ### [1.4.2](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.4.1...v1.4.2) (2021-01-22)
 
 ### Features
