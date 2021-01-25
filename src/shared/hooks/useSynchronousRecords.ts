@@ -104,7 +104,7 @@ function useSynchronousRecords() {
               await handleUpload(c);
             }
           } else {
-            await handleUpload(uploadData);
+            await handleUpload(formatUploadData(uploadData));
           }
         }
 
