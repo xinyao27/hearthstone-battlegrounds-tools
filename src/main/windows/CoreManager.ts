@@ -85,9 +85,12 @@ class CoreManager extends EventEmitter {
     });
 
     if (is.macos) {
-      globalShortcut.register('Command+Q', () => {
-        app.quit();
-        app.exit();
+      this.window?.webContents.on('before-input-event', (event, input) => {
+        if (input.meta && input.key.toLowerCase() === 'q') {
+          event.preventDefault();
+          app.quit();
+          app.exit();
+        }
       });
     }
   }

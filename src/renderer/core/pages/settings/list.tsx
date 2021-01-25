@@ -33,14 +33,16 @@ import resetGame from './resetGame';
 
 interface Item {
   id?: string;
+  order: number;
   icon: React.ReactElement;
   label: string;
   action: React.ReactNode | React.Component;
 }
 function getList(): Item[] {
   const { suspensionManager } = remote.getGlobal('managers');
-  return [
+  const list = [
     {
+      order: 1,
       icon: <DeveloperModeIcon />,
       label: '当前悬浮框展示状态',
       action: function Action() {
@@ -57,6 +59,7 @@ function getList(): Item[] {
     },
     {
       id: 'heartstoneRootPathSetting',
+      order: 2,
       icon: <FolderIcon />,
       label: '设置《炉石传说》安装路径',
       action: function Action() {
@@ -99,6 +102,7 @@ function getList(): Item[] {
       },
     },
     {
+      order: 3,
       icon: <SportsMmaIcon />,
       label: '玩家分段设置',
       action: function Action() {
@@ -161,6 +165,7 @@ function getList(): Item[] {
       },
     },
     {
+      order: 4,
       icon: <VideogameAssetIcon />,
       label: '提前展示游戏排名结果',
       action: function Action() {
@@ -182,6 +187,95 @@ function getList(): Item[] {
       },
     },
     {
+      order: 6,
+      icon: <AllInboxIcon />,
+      label: '打开缓存目录',
+      action: function Action() {
+        const handleClick = () => {
+          const targetPath = is.windows
+            ? path.join(remote.app.getPath('userData'), remote.app.getName())
+            : remote.app.getPath('userData');
+          remote.shell.showItemInFolder(targetPath);
+        };
+        return (
+          <IconButton onClick={handleClick}>
+            <OpenInNewIcon />
+          </IconButton>
+        );
+      },
+    },
+    {
+      order: 7,
+      icon: <SettingsBackupRestoreIcon />,
+      label: '修复炉石',
+      action: function Action() {
+        const { enqueueSnackbar } = useSnackbar();
+        const handleClick = async () => {
+          await resetGame();
+          enqueueSnackbar('修复成功，请重启炉石传说', { variant: 'success' });
+        };
+        return (
+          <Tooltip
+            title="若插件不展示信息可尝试（请在炉石关闭状态下使用）"
+            arrow
+          >
+            <IconButton onClick={handleClick}>
+              <SettingsBackupRestoreIcon />
+            </IconButton>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      order: 8,
+      icon: <BuildIcon />,
+      label: '修改炉石帧数',
+      action: function Action() {
+        const { enqueueSnackbar } = useSnackbar();
+        const [framerate, { toggle }] = useFramerate();
+        const handleChange = (
+          e: React.ChangeEvent<{ name?: string; value: unknown }>
+        ) => {
+          const value = e?.target?.value as Framerate;
+          if (value) {
+            toggle(value);
+            enqueueSnackbar(`修改炉石帧数 ${value}Hz 成功，请重启炉石传说`, {
+              variant: 'success',
+            });
+          } else {
+            enqueueSnackbar(`修改炉石帧数失败，请重试`, {
+              variant: 'error',
+            });
+          }
+        };
+
+        return (
+          <Tooltip
+            title="帧数设置过高可能导致画面闪烁或游戏卡顿，请依据电脑配置慎重选择！重启炉石后生效！"
+            arrow
+            placement="left-start"
+          >
+            <Select value={framerate} onChange={handleChange}>
+              <MenuItem value={60}>60Hz</MenuItem>
+              <MenuItem value={144}>144Hz</MenuItem>
+              <MenuItem value={240}>240Hz</MenuItem>
+            </Select>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      order: 9,
+      icon: <RadioButtonCheckedIcon />,
+      label: 'OBS设置',
+      action: function Action() {
+        return <OBS />;
+      },
+    },
+  ];
+  if (is.windows) {
+    list.push({
+      order: 5,
       icon: <KeyboardIcon />,
       label: '修改拔线快捷键',
       action: function Action() {
@@ -227,90 +321,9 @@ function getList(): Item[] {
           </Select>
         );
       },
-    },
-    {
-      icon: <AllInboxIcon />,
-      label: '打开缓存目录',
-      action: function Action() {
-        const handleClick = () => {
-          const targetPath = is.windows
-            ? path.join(remote.app.getPath('userData'), remote.app.getName())
-            : remote.app.getPath('userData');
-          remote.shell.showItemInFolder(targetPath);
-        };
-        return (
-          <IconButton onClick={handleClick}>
-            <OpenInNewIcon />
-          </IconButton>
-        );
-      },
-    },
-    {
-      icon: <SettingsBackupRestoreIcon />,
-      label: '修复炉石',
-      action: function Action() {
-        const { enqueueSnackbar } = useSnackbar();
-        const handleClick = async () => {
-          await resetGame();
-          enqueueSnackbar('修复成功，请重启炉石传说', { variant: 'success' });
-        };
-        return (
-          <Tooltip
-            title="若插件不展示信息可尝试（请在炉石关闭状态下使用）"
-            arrow
-          >
-            <IconButton onClick={handleClick}>
-              <SettingsBackupRestoreIcon />
-            </IconButton>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      icon: <BuildIcon />,
-      label: '修改炉石帧数',
-      action: function Action() {
-        const { enqueueSnackbar } = useSnackbar();
-        const [framerate, { toggle }] = useFramerate();
-        const handleChange = (
-          e: React.ChangeEvent<{ name?: string; value: unknown }>
-        ) => {
-          const value = e?.target?.value as Framerate;
-          if (value) {
-            toggle(value);
-            enqueueSnackbar(`修改炉石帧数 ${value}Hz 成功，请重启炉石传说`, {
-              variant: 'success',
-            });
-          } else {
-            enqueueSnackbar(`修改炉石帧数失败，请重试`, {
-              variant: 'error',
-            });
-          }
-        };
-
-        return (
-          <Tooltip
-            title="帧数设置过高可能导致画面闪烁或游戏卡顿，请依据电脑配置慎重选择！重启炉石后生效！"
-            arrow
-            placement="left-start"
-          >
-            <Select value={framerate} onChange={handleChange}>
-              <MenuItem value={60}>60Hz</MenuItem>
-              <MenuItem value={144}>144Hz</MenuItem>
-              <MenuItem value={240}>240Hz</MenuItem>
-            </Select>
-          </Tooltip>
-        );
-      },
-    },
-    {
-      icon: <RadioButtonCheckedIcon />,
-      label: 'OBS设置',
-      action: function Action() {
-        return <OBS />;
-      },
-    },
-  ];
+    });
+  }
+  return list;
 }
 
 export default getList;

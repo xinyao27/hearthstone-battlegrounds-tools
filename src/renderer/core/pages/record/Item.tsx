@@ -10,11 +10,13 @@ import {
   Typography,
   Grow,
   Tooltip,
+  Badge,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudDoneIcon from '@material-ui/icons/CloudDone';
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
 import dayjs from 'dayjs';
-import { useUpdateEffect } from 'ahooks';
+import { useUpdateEffect, useBoolean } from 'ahooks';
 import { is } from 'electron-util';
 import { Minion } from '@hbt-org/core';
 
@@ -24,6 +26,8 @@ import useHeroes from '@shared/hooks/useHeroes';
 import useAuth from '@shared/hooks/useAuth';
 import useSurprise from '@core/hooks/useSurprise';
 import MinionComponent from '@core/components/Minion';
+
+import Replay from './Replay';
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
@@ -76,6 +80,7 @@ const Item: React.FC<ItemProps> = ({
   const { heroes } = useHeroes();
   const { run: surprise } = useSurprise();
   const { hasAuth } = useAuth();
+  const [replayOpen, { toggle: toggleReplay }] = useBoolean(false);
 
   const handleRemarkChange = React.useCallback(
     (e) => {
@@ -160,7 +165,6 @@ const Item: React.FC<ItemProps> = ({
         <ListItemSecondaryAction>
           {is.development && (
             <IconButton
-              edge="end"
               aria-label="delete"
               onClick={() => {
                 onDelete(value);
@@ -174,6 +178,22 @@ const Item: React.FC<ItemProps> = ({
               <CloudDoneIcon />
             </IconButton>
           ) : null}
+          {value.history && (
+            <>
+              <Tooltip title="赛后复盘">
+                <Badge badgeContent="beta" color="primary" overlap="circle">
+                  <IconButton edge="end" onClick={() => toggleReplay()}>
+                    <AllInclusiveIcon />
+                  </IconButton>
+                </Badge>
+              </Tooltip>
+              <Replay
+                open={replayOpen}
+                onClose={() => toggleReplay(false)}
+                data={value.history}
+              />
+            </>
+          )}
         </ListItemSecondaryAction>
       </ListItem>
     </MinionTooltip>

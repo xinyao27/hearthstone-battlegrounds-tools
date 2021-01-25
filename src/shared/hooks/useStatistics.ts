@@ -16,6 +16,16 @@ export interface RecordItem {
     turn: number;
     minions: IMinionPropsWithNameAndID[];
   };
+  history?: {
+    attack: number;
+    attacker: string;
+    defender: string;
+    lineup: {
+      opponent: IMinionPropsWithNameAndID[];
+      own: IMinionPropsWithNameAndID[];
+    };
+    turn: number;
+  }[];
   synced?: boolean;
 }
 export interface ResultItem {

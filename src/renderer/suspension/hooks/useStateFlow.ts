@@ -17,6 +17,7 @@ function useStateFlow(): [
   () => void
 ] {
   const [state, setState] = React.useState<StateFlow | null>(null);
+
   const handleState = React.useCallback((baseValue: LogData<State>) => {
     const value = _.cloneDeep(baseValue);
     // @ts-ignore
@@ -174,6 +175,24 @@ function useStateFlow(): [
                 minions: ownMinions,
               },
             };
+            return {
+              ...prevState,
+              [value.state]: value,
+              current: value.state,
+            };
+          }
+          return prevState;
+        case 'DAMAGE':
+          if (value?.result) {
+            const target = value?.result;
+            const turn = prevState?.TURN?.result - 1;
+            value.result = [
+              ...(prevState?.DAMAGE?.result || []),
+              {
+                ...target,
+                turn,
+              },
+            ];
             return {
               ...prevState,
               [value.state]: value,

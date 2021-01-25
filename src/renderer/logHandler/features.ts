@@ -20,6 +20,8 @@ export type State =
   | 'ALANNA_TRANSFORMATION'
   | 'OWN_LINEUP'
   | 'OWN_LINEUP2'
+  | 'TECH_UP'
+  | 'DAMAGE'
   | 'GAME_OVER';
 export interface Feature<T = string> {
   state: T;
@@ -1525,6 +1527,163 @@ export const stateFeatures: Feature<State>[] = [
         ],
       },
     ],
+  },
+  // 酒馆升级
+  {
+    state: 'TECH_UP',
+    sequenceType: 'GameState.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      // BlockType=PLAY Entity=[entityName=等级2 id=369 zone=PLAY zonePos=0 cardId=TB_BaconShopTechUp02_Button player=4] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1
+      {
+        key: 'BlockType',
+        value: 'PLAY',
+      },
+      {
+        key: 'Entity',
+        value: /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShopTechUp(\d+)_Button player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
+      },
+      {
+        key: 'EffectIndex',
+        value: '0',
+      },
+      {
+        key: 'Target',
+        value: '0',
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+    ],
+    getResult: (line) => {
+      const name = line.children
+        ?.find((v) =>
+          v.body?.parameter?.find(
+            (i) => i.key === 'tag' && i.value === 'RESOURCES_USED'
+          )
+        )
+        ?.body?.parameter?.find((v) => v.key === 'Entity')?.value;
+      const reg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShopTechUp(\d+)_Button player=\d+\]/;
+      const targetTech = line.body?.parameter?.find((v) => v.key === 'Entity')
+        ?.value;
+      return {
+        name,
+        techLevel: parseInt(targetTech?.match(reg)?.[2] as string, 10),
+      };
+    },
+  },
+  // 打架完后对英雄造成的伤害
+  {
+    state: 'DAMAGE',
+    sequenceType: 'PowerTaskList.DebugPrintPower',
+    level: 0,
+    bodyType: 'commandWithParameter',
+    command: 'BLOCK_START',
+    parameter: [
+      // BlockType=ATTACK Entity=[entityName=疯狂金字塔 id=91 zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_39 player=7] EffectCardId=System.Collections.Generic.List`1[System.String] EffectIndex=0 Target=0 SubOption=-1
+      {
+        key: 'BlockType',
+        value: 'ATTACK',
+      },
+      {
+        key: 'Entity',
+        value: /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/,
+      },
+      {
+        key: 'EffectCardId',
+        value: 'System.Collections.Generic.List`1[System.String]',
+      },
+      {
+        key: 'EffectIndex',
+        value: '0',
+      },
+      {
+        key: 'Target',
+        value: '0',
+      },
+      {
+        key: 'SubOption',
+        value: '-1',
+      },
+    ],
+    children: [
+      {
+        state: 'DAMAGE',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: 'GameEntity',
+          },
+          {
+            key: 'tag',
+            value: 'PROPOSED_ATTACKER',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+      {
+        state: 'DAMAGE',
+        sequenceType: 'PowerTaskList.DebugPrintPower',
+        level: 1,
+        bodyType: 'commandWithParameter',
+        command: 'TAG_CHANGE',
+        parameter: [
+          {
+            key: 'Entity',
+            value: 'GameEntity',
+          },
+          {
+            key: 'tag',
+            value: 'PROPOSED_DEFENDER',
+          },
+          {
+            key: 'value',
+            value: /\d+/,
+          },
+        ],
+      },
+    ],
+    getResult: (line) => {
+      const attackerReg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/;
+      const defenderReg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/;
+      const attackerMatched = line.body?.parameter
+        ?.find((v) => v.key === 'Entity')
+        ?.value.match(attackerReg);
+      const defenderMatched = line.children
+        ?.find((v) =>
+          v.body?.parameter?.find(
+            (i) => i.key === 'tag' && i.value === 'DEFENDING'
+          )
+        )
+        ?.body?.parameter?.find((v) => v.key === 'Entity')
+        ?.value.match(defenderReg);
+      const attacker = attackerMatched?.[1];
+      const defender = defenderMatched?.[1];
+      const attack = line.children
+        ?.find((v) =>
+          v.body?.parameter?.find((i) => i.key === 'tag' && i.value === '479')
+        )
+        ?.body?.parameter?.find((v) => v.key === 'value')?.value;
+      return {
+        attacker,
+        defender,
+        attack: parseInt(attack as string, 10),
+      };
+    },
   },
   // 对局结束
   // D 21:21:43.7370339 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=STEP value=FINAL_GAMEOVER
