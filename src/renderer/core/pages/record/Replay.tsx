@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import {
@@ -122,16 +123,21 @@ const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
         activeStep={current}
       >
         {data.map((item, index) => {
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          const { combatPower: ownCombatPower } = useLineupModel(
+          const { run: ownRun, combatPower: ownCombatPower } = useLineupModel(
             item?.lineup.own ?? [],
+            true,
             true
           );
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          const { combatPower: opponentCombatPower } = useLineupModel(
-            item?.lineup.opponent ?? [],
-            true
-          );
+          const {
+            run: opponentRun,
+            combatPower: opponentCombatPower,
+          } = useLineupModel(item?.lineup.opponent ?? [], true, true);
+          React.useEffect(() => {
+            if (current === index) {
+              ownRun();
+              opponentRun();
+            }
+          }, [current]);
           if (item.turn) {
             return (
               // eslint-disable-next-line react/no-array-index-key
