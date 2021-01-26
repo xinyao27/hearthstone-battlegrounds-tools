@@ -11,20 +11,10 @@ function getMinion(dbfId: number) {
 }
 // 判断是否为传说随从
 function checkLegend(minion: Minion) {
-  // 老瞎眼 卡德加 浴火者伯瓦尔 瑞文戴尔男爵 布莱恩·铜须 玛尔加尼斯 拜戈尔格国王 死神4000型 迈克斯纳 巨狼戈德林
-  const minionsThatMayFall = [
-    736,
-    52502,
-    45392,
-    1915,
-    2949,
-    1986,
-    60247,
-    2081,
-    1791,
-    59955,
-  ]
-  return minionsThatMayFall.includes(minion.dbfId)
+  const targets = allMinions.filter(
+    (v) => v.rarity === 'LEGENDARY' && v.official
+  )
+  return !!targets.find((v) => v.dbfId === minion.dbfId)
 }
 
 export interface EditProps {
