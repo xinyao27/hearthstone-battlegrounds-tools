@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme) =>
       cursor: 'pointer',
     },
     lineup: {
+      minHeight: 120,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
