@@ -9,4 +9,4 @@ module.exports = {
   },
   moduleDirectories: ['node_modules', 'src/node_modules'],
   setupFiles: ['./.erb/scripts/CheckBuildsExist.js'],
-};
+}

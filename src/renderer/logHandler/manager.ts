@@ -1,3 +1,5 @@
+import log from 'electron-log'
+
 import { Topic } from '@shared/constants/topic'
 import { getStore } from '@shared/store'
 import type { LogData } from '@shared/types'
@@ -25,6 +27,7 @@ export function logManager(
         original: item.line?.original,
         result,
       }
+      log.info(data)
       store.dispatch<Topic.FLOW>({
         type: Topic.FLOW,
         payload: data,

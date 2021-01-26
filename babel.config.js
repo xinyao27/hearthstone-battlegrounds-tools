@@ -1,8 +1,6 @@
-/* eslint global-require: off, import/no-extraneous-dependencies: off */
+const developmentEnvironments = ['development', 'test']
 
-const developmentEnvironments = ['development', 'test'];
-
-const developmentPlugins = [require('@babel/plugin-transform-runtime')];
+const developmentPlugins = [require('@babel/plugin-transform-runtime')]
 
 const productionPlugins = [
   require('babel-plugin-dev-expression'),
@@ -29,12 +27,12 @@ const productionPlugins = [
     },
     'icons',
   ],
-];
+]
 
 module.exports = (api) => {
   // See docs about api at https://babeljs.io/docs/en/config-files#apicache
 
-  const development = api.env(developmentEnvironments);
+  const development = api.env(developmentEnvironments)
 
   return {
     presets: [
@@ -76,5 +74,5 @@ module.exports = (api) => {
 
       ...(development ? developmentPlugins : productionPlugins),
     ],
-  };
-};
+  }
+}
