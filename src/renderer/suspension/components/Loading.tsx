@@ -1,9 +1,9 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
 
 interface LoadingProps {
-  size?: 'small' | 'normal';
+  size?: 'small' | 'normal'
 }
 
 const useStyles = makeStyles(() => ({
@@ -44,10 +44,10 @@ const useStyles = makeStyles(() => ({
     width: 80,
     height: 80,
   },
-}));
+}))
 
 const Loading: React.FC<LoadingProps> = ({ size = 'normal' }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <div
@@ -56,7 +56,7 @@ const Loading: React.FC<LoadingProps> = ({ size = 'normal' }) => {
         [classes.sizeNormal]: size === 'normal',
       })}
     />
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading

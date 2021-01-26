@@ -1,34 +1,34 @@
-import React from 'react';
-import { createModel } from 'hox';
-import { exec as execBase } from 'child_process';
-import { promisify } from 'util';
-import path from 'path';
-import { is } from 'electron-util';
+import React from 'react'
+import { createModel } from 'hox'
+import { exec as execBase } from 'child_process'
+import { promisify } from 'util'
+import path from 'path'
+import { is } from 'electron-util'
 
-import { config } from '@shared/store';
+import { config } from '@shared/store'
 
-const exec = promisify(execBase);
+const exec = promisify(execBase)
 
 function useStartHS() {
   const handleStartHS = React.useCallback(async () => {
-    const heartstoneRootPath = config.get('heartstoneRootPath') as string;
+    const heartstoneRootPath = config.get('heartstoneRootPath') as string
     const heartstoneAppName = is.windows
       ? 'Hearthstone Beta Launcher.exe'
       : is.macos
       ? 'Hearthstone Beta Launcher.app'
-      : '';
-    const heartstoneAppPath = path.join(heartstoneRootPath, heartstoneAppName);
+      : ''
+    const heartstoneAppPath = path.join(heartstoneRootPath, heartstoneAppName)
     const command = is.windows
       ? `start "" "${heartstoneAppPath}"`
       : is.macos
       ? `open "${heartstoneAppPath}"`
-      : '';
-    await exec(command);
-  }, []);
+      : ''
+    await exec(command)
+  }, [])
 
   return {
     run: handleStartHS,
-  };
+  }
 }
 
-export default createModel(useStartHS);
+export default createModel(useStartHS)

@@ -1,20 +1,20 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Droppable, Draggable, DraggableProvided } from 'react-beautiful-dnd';
-import { FixedSizeList as List, areEqual } from 'react-window';
-import { Minion } from '@hbt-org/core';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Droppable, Draggable, DraggableProvided } from 'react-beautiful-dnd'
+import { FixedSizeList as List, areEqual } from 'react-window'
+import { Minion } from '@hbt-org/core'
 
-import MinionComponent from '@core/components/Minion';
+import MinionComponent from '@core/components/Minion'
 
 function getStyle(provided: DraggableProvided, style?: React.CSSProperties) {
   if (!style) {
-    return provided.draggableProps.style;
+    return provided.draggableProps.style
   }
 
   return {
     ...provided.draggableProps.style,
     ...style,
-  };
+  }
 }
 
 const useStyles = makeStyles(() => ({
@@ -47,17 +47,17 @@ const useStyles = makeStyles(() => ({
       transform: 'translate(-50%, -50%)',
     },
   },
-}));
+}))
 
 interface ItemProps {
-  data: Minion;
-  index: number;
+  data: Minion
+  index: number
   // eslint-disable-next-line react/require-default-props
-  style?: React.CSSProperties;
-  provided: DraggableProvided;
+  style?: React.CSSProperties
+  provided: DraggableProvided
 }
 const Item = React.memo<ItemProps>(({ data, index, style, provided }) => {
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <div
       className={classes.storeMinion}
@@ -69,18 +69,18 @@ const Item = React.memo<ItemProps>(({ data, index, style, provided }) => {
     >
       <MinionComponent minion={data} type="store" />
     </div>
-  );
-});
-Item.displayName = 'Item';
+  )
+})
+Item.displayName = 'Item'
 
 interface ColumnProps {
-  data: Minion[];
-  index: number;
+  data: Minion[]
+  index: number
   // eslint-disable-next-line react/require-default-props
-  style?: React.CSSProperties;
+  style?: React.CSSProperties
 }
 const Column = React.memo(({ data, index, style }: ColumnProps) => {
-  const minion = data[index];
+  const minion = data[index]
 
   return (
     <Draggable draggableId={minion.id.toString()} index={index} key={minion.id}>
@@ -93,16 +93,16 @@ const Column = React.memo(({ data, index, style }: ColumnProps) => {
         />
       )}
     </Draggable>
-  );
-}, areEqual);
-Column.displayName = 'Column';
+  )
+}, areEqual)
+Column.displayName = 'Column'
 
 interface StoreProps {
-  data: Minion[];
+  data: Minion[]
 }
 
 const Store: React.FC<StoreProps> = ({ data }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Droppable
@@ -134,7 +134,7 @@ const Store: React.FC<StoreProps> = ({ data }) => {
         </List>
       )}
     </Droppable>
-  );
-};
+  )
+}
 
-export default Store;
+export default Store

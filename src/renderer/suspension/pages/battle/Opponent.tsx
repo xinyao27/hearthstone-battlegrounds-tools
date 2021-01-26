@@ -1,18 +1,18 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grow } from '@material-ui/core';
-import { useBoolean } from 'ahooks';
-import clsx from 'clsx';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Grow } from '@material-ui/core'
+import { useBoolean } from 'ahooks'
+import clsx from 'clsx'
 
-import HeroCard from '@suspension/components/HeroCard';
-import MinionCard from '@suspension/components/MinionCard';
-import Text from '@suspension/components/Text';
-import Loading from '@suspension/components/Loading';
-import useStateFlow from '@suspension/hooks/useStateFlow';
-import useBattleState from '@suspension/hooks/useBattleState';
-import type { OpponentLineup } from '@suspension/types';
-import useHeroes from '@shared/hooks/useHeroes';
-import useLineupModel from '@shared/hooks/useLineupModel';
+import HeroCard from '@suspension/components/HeroCard'
+import MinionCard from '@suspension/components/MinionCard'
+import Text from '@suspension/components/Text'
+import Loading from '@suspension/components/Loading'
+import useStateFlow from '@suspension/hooks/useStateFlow'
+import useBattleState from '@suspension/hooks/useBattleState'
+import type { OpponentLineup } from '@suspension/types'
+import useHeroes from '@shared/hooks/useHeroes'
+import useLineupModel from '@shared/hooks/useLineupModel'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -70,12 +70,12 @@ const useStyles = makeStyles((theme) => ({
   value: {
     fontSize: 20,
   },
-}));
+}))
 
 export interface OpponentProps {
-  hero?: string;
-  opponentLineup?: OpponentLineup;
-  simplified?: boolean;
+  hero?: string
+  opponentLineup?: OpponentLineup
+  simplified?: boolean
 }
 
 const Opponent: React.FC<OpponentProps> = ({
@@ -83,25 +83,25 @@ const Opponent: React.FC<OpponentProps> = ({
   opponentLineup,
   simplified = false,
 }) => {
-  const classes = useStyles();
-  const [stateFlow] = useStateFlow();
-  const { getHeroId } = useHeroes();
-  const { ownLineup } = useBattleState();
-  const [unfolded, { toggle: toggleUnfolded }] = useBoolean(!simplified);
-  const currentTurn = stateFlow?.TURN?.result;
+  const classes = useStyles()
+  const [stateFlow] = useStateFlow()
+  const { getHeroId } = useHeroes()
+  const { ownLineup } = useBattleState()
+  const [unfolded, { toggle: toggleUnfolded }] = useBoolean(!simplified)
+  const currentTurn = stateFlow?.TURN?.result
   const turn =
-    parseInt(currentTurn, 10) - parseInt(opponentLineup?.turn as string, 10);
+    parseInt(currentTurn, 10) - parseInt(opponentLineup?.turn as string, 10)
   const {
     combatPower: opponentCombatPower,
     loading: opponentLoading,
   } = useLineupModel(
     opponentLineup?.minions?.length ? opponentLineup.minions : [],
     true
-  );
+  )
   const { combatPower: ownCombatPower, loading: ownLoading } = useLineupModel(
     ownLineup?.length ? ownLineup : [],
     true
-  );
+  )
 
   if (hero) {
     return (
@@ -117,6 +117,8 @@ const Opponent: React.FC<OpponentProps> = ({
               [classes.toggleActive]: unfolded,
             })}
             onClick={() => toggleUnfolded()}
+            role="button"
+            tabIndex={0}
           />
         )}
         <Grow in={unfolded} style={{ transformOrigin: '0 0 0' }}>
@@ -170,7 +172,7 @@ const Opponent: React.FC<OpponentProps> = ({
                   </div>
                 </div>
                 <div className={classes.minions}>
-                  {opponentLineup?.minions?.map((minion: any) => (
+                  {opponentLineup?.minions?.map((minion) => (
                     <MinionCard
                       minionName={minion.name}
                       props={minion.props}
@@ -185,9 +187,9 @@ const Opponent: React.FC<OpponentProps> = ({
           </div>
         </Grow>
       </div>
-    );
+    )
   }
-  return <Text className={classes.tip}>很抱歉没有检测到对手</Text>;
-};
+  return <Text className={classes.tip}>很抱歉没有检测到对手</Text>
+}
 
-export default Opponent;
+export default Opponent

@@ -1,5 +1,5 @@
-import axios from 'axios';
-import qs from 'querystring';
+import axios from 'axios'
+import qs from 'querystring'
 
 export default axios.create({
   baseURL:
@@ -9,12 +9,14 @@ export default axios.create({
       : 'https://hs.chenyueban.com/api',
   timeout: process.env.NODE_ENV === 'development' ? 10000 : 15000,
   paramsSerializer: (params) => qs.stringify(params),
-});
+})
 
-export function getAuthConfig() {
+export function getAuthConfig(): {
+  headers: { Authorization: string }
+} {
   return {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('hbt_token')}`,
     },
-  };
+  }
 }

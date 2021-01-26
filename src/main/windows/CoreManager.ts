@@ -1,27 +1,26 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'events'
 import {
   app,
   BrowserWindow,
   shell,
   BrowserWindowConstructorOptions,
-  globalShortcut,
-} from 'electron';
-import { is } from 'electron-util';
+} from 'electron'
+import { is } from 'electron-util'
 
-import { getAppHTML, getAssetPath } from '../utils';
+import { getAppHTML, getAssetPath } from '../utils'
 
 interface Params {
-  onInit: (window: BrowserWindow) => void;
-  onDestroy?: () => void;
+  onInit: (window: BrowserWindow) => void
+  onDestroy?: () => void
 }
 
 class CoreManager extends EventEmitter {
-  option: BrowserWindowConstructorOptions;
+  option: BrowserWindowConstructorOptions
 
-  window: BrowserWindow | null;
+  window: BrowserWindow | null
 
   constructor({ onInit, onDestroy }: Params) {
-    super();
+    super()
 
     const defaultOptions: BrowserWindowConstructorOptions = {
       show: false,
@@ -34,89 +33,90 @@ class CoreManager extends EventEmitter {
         nodeIntegration: true,
         enableRemoteModule: true,
       },
-    };
-    if (is.windows) {
-      defaultOptions.frame = false;
     }
-    this.option = defaultOptions;
-    this.window = null;
-    this.init(this.option, onInit, onDestroy);
+    if (is.windows) {
+      defaultOptions.frame = false
+    }
+    this.option = defaultOptions
+    this.window = null
+    this.init(this.option, onInit, onDestroy)
   }
 
   init(
     options: BrowserWindowConstructorOptions,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     onInit: Params['onInit'] = () => {},
     onDestroy?: Params['onDestroy']
-  ) {
-    this.window = new BrowserWindow(options);
+  ): void {
+    this.window = new BrowserWindow(options)
     if (is.macos) {
-      app.dock.setIcon(getAssetPath('icon.png'));
+      app.dock.setIcon(getAssetPath('icon.png'))
     }
-    this.window.loadURL(getAppHTML());
-    onInit(this.window);
+    this.window.loadURL(getAppHTML())
+    onInit(this.window)
 
     this.window.webContents.on('did-finish-load', () => {
       if (!this.window) {
-        throw new Error('`coreWindow` is not defined');
+        throw new Error('`coreWindow` is not defined')
       }
       if (process.env.START_MINIMIZED) {
-        this.window.minimize();
+        this.window.minimize()
       } else {
-        this.window.show();
+        this.window.show()
       }
-    });
+    })
 
     // Open urls in the user's browser
     this.window.webContents.on('new-window', (event, url) => {
-      event.preventDefault();
-      shell.openExternal(url);
-    });
+      event.preventDefault()
+      shell.openExternal(url)
+    })
 
     this.window.on('close', (e) => {
       if (is.macos) {
-        e.preventDefault();
-        this.hide();
+        e.preventDefault()
+        this.hide()
       }
-    });
+    })
 
     this.window.on('closed', () => {
-      this.window = null;
-      onDestroy?.();
-    });
+      this.window = null
+      onDestroy?.()
+    })
 
     if (is.macos) {
       this.window?.webContents.on('before-input-event', (event, input) => {
         if (input.meta && input.key.toLowerCase() === 'q') {
-          event.preventDefault();
-          app.quit();
-          app.exit();
+          event.preventDefault()
+          app.quit()
+          app.exit()
         }
-      });
+      })
     }
   }
 
-  destroy() {
-    this.window?.destroy();
+  destroy(): void {
+    this.window?.destroy()
   }
 
-  show() {
+  show(): void {
     if (this.window) {
-      if (this.window.isMinimized()) this.window.restore();
-      this.window.show();
+      if (this.window.isMinimized()) this.window.restore()
+      this.window.show()
     }
   }
 
-  hide() {
+  hide(): void {
     if (this.window) {
-      this.window.hide();
+      this.window.hide()
     }
   }
 
-  minimize() {
+  minimize(): void {
     if (this.window) {
-      this.window.minimize();
+      this.window.minimize()
     }
   }
 }
 
-export default CoreManager;
+export default CoreManager

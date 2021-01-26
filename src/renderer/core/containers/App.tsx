@@ -1,25 +1,25 @@
-import React, { ReactNode } from 'react';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import { Box, CssBaseline } from '@material-ui/core';
-import deepOrange from '@material-ui/core/colors/deepOrange';
-import red from '@material-ui/core/colors/red';
-import common from '@material-ui/core/colors/common';
-import { SnackbarProvider } from 'notistack';
-import { useMount, useUpdateEffect } from 'ahooks';
-import { useHistory } from 'react-router-dom';
+import React, { ReactNode } from 'react'
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
+import { Box, CssBaseline } from '@material-ui/core'
+import deepOrange from '@material-ui/core/colors/deepOrange'
+import red from '@material-ui/core/colors/red'
+import common from '@material-ui/core/colors/common'
+import { SnackbarProvider } from 'notistack'
+import { useMount, useUpdateEffect } from 'ahooks'
+import { useHistory } from 'react-router-dom'
 
-import Header from '@core/components/Header';
-import Navigation from '@core/components/Navigation';
-import useRecord from '@shared/hooks/useRecord';
-import useInit from '@core/hooks/useInit';
-import useAuth from '@shared/hooks/useAuth';
-import routes from '@core/constants/routes.json';
-import { getStore } from '@shared/store';
-import { Topic } from '@shared/constants/topic';
+import Header from '@core/components/Header'
+import Navigation from '@core/components/Navigation'
+import useRecord from '@shared/hooks/useRecord'
+import useInit from '@core/hooks/useInit'
+import useAuth from '@shared/hooks/useAuth'
+import routes from '@core/constants/routes.json'
+import { getStore } from '@shared/store'
+import { Topic } from '@shared/constants/topic'
 
 type Props = {
-  children: ReactNode;
-};
+  children: ReactNode
+}
 
 const JianLiBianFont = {
   fontFamily: 'JianLiBian',
@@ -35,7 +35,7 @@ const JianLiBianFont = {
       require('@shared/assets/fonts/JianLiBian.ttf').default
     }) format('truetype')
   `,
-};
+}
 const BelweBoldFont = {
   fontFamily: 'Belwe Bold',
   fontStyle: 'normal',
@@ -50,7 +50,7 @@ const BelweBoldFont = {
       require('@shared/assets/fonts/Belwe-Bold.ttf').default
     }) format('woff2')
   `,
-};
+}
 const muiTheme = createMuiTheme({
   overrides: {
     MuiCssBaseline: {
@@ -90,35 +90,35 @@ const muiTheme = createMuiTheme({
       main: red[500],
     },
   },
-});
+})
 
-const store = getStore();
+const store = getStore()
 
-export default function App({ children }: Props) {
-  const history = useHistory();
-  const [, { addRecord }] = useRecord();
-  const [correctDirectory, { check }] = useInit();
-  const { resetAuth } = useAuth();
+const App: React.FC<Props> = ({ children }) => {
+  const history = useHistory()
+  const [, { addRecord }] = useRecord()
+  const [correctDirectory, { check }] = useInit()
+  const { resetAuth } = useAuth()
 
   useUpdateEffect(() => {
     // 不正确 进入设置页面开始引导
     if (!correctDirectory) {
-      history.push(routes.SETTINGS);
+      history.push(routes.SETTINGS)
     }
-  }, [correctDirectory, history]);
+  }, [correctDirectory, history])
 
   useMount(() => {
-    check();
+    check()
     store.subscribe(Topic.ADD_RECORD, (action) => {
-      addRecord(action.payload);
-    });
+      addRecord(action.payload)
+    })
     store.subscribe(Topic.SET_TOKEN, (action) => {
       if (action.payload) {
-        localStorage.setItem('hbt_token', action.payload);
-        resetAuth();
+        localStorage.setItem('hbt_token', action.payload)
+        resetAuth()
       }
-    });
-  });
+    })
+  })
 
   return (
     <ThemeProvider theme={muiTheme}>
@@ -135,5 +135,7 @@ export default function App({ children }: Props) {
         </Box>
       </SnackbarProvider>
     </ThemeProvider>
-  );
+  )
 }
+
+export default App

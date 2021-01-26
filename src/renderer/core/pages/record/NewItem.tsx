@@ -1,19 +1,19 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   Paper,
   Select,
   MenuItem,
   InputBase,
   IconButton,
-} from '@material-ui/core';
-import SendIcon from '@material-ui/icons/Send';
-import { useSnackbar } from 'notistack';
-import clsx from 'clsx';
+} from '@material-ui/core'
+import SendIcon from '@material-ui/icons/Send'
+import { useSnackbar } from 'notistack'
+import clsx from 'clsx'
 
-import type { RecordItem } from '@shared/hooks/useStatistics';
-import { getImageUrl } from '@suspension/utils';
-import useHeroes from '@shared/hooks/useHeroes';
+import type { RecordItem } from '@shared/hooks/useStatistics'
+import { getImageUrl } from '@suspension/utils'
+import useHeroes from '@shared/hooks/useHeroes'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,33 +33,33 @@ const useStyles = makeStyles((theme) => ({
     width: 40,
     marginRight: theme.spacing(1),
   },
-}));
+}))
 
 interface NewItemProps {
-  className?: string;
-  onSubmit: (item: RecordItem) => void;
+  className?: string
+  onSubmit: (item: RecordItem) => void
 }
 
 const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
   ({ className, onSubmit }, ref) => {
-    const classes = useStyles();
-    const { enqueueSnackbar } = useSnackbar();
-    const { heroes } = useHeroes();
+    const classes = useStyles()
+    const { enqueueSnackbar } = useSnackbar()
+    const { heroes } = useHeroes()
 
-    const [currentItem, setCurrentItem] = React.useState(() => heroes[0].id);
-    const [rank, setRank] = React.useState('');
+    const [currentItem, setCurrentItem] = React.useState(() => heroes[0].id)
+    const [rank, setRank] = React.useState('')
     const handleItemChange = React.useCallback((e) => {
-      setCurrentItem(e.target.value);
-    }, []);
+      setCurrentItem(e.target.value)
+    }, [])
     const handleRankChange = React.useCallback((e) => {
-      setRank(e.target.value);
-    }, []);
+      setRank(e.target.value)
+    }, [])
     const handleSubmit = React.useCallback(() => {
-      const hero = heroes.find((h) => h.id === currentItem);
-      const date = new Date();
+      const hero = heroes.find((h) => h.id === currentItem)
+      const date = new Date()
       if (!rank) {
-        enqueueSnackbar('请填写排名', { variant: 'warning' });
-        return;
+        enqueueSnackbar('请填写排名', { variant: 'warning' })
+        return
       }
       if (hero) {
         // @ts-ignore
@@ -70,9 +70,9 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
           },
           rank,
           date,
-        });
+        })
       }
-    }, [heroes, rank, currentItem, enqueueSnackbar, onSubmit]);
+    }, [heroes, rank, currentItem, enqueueSnackbar, onSubmit])
 
     return (
       <Paper className={clsx(classes.root, className)} ref={ref}>
@@ -107,9 +107,9 @@ const NewItem = React.forwardRef<HTMLElement, NewItemProps>(
           <SendIcon />
         </IconButton>
       </Paper>
-    );
+    )
   }
-);
-NewItem.displayName = 'NewItem';
+)
+NewItem.displayName = 'NewItem'
 
-export default NewItem;
+export default NewItem

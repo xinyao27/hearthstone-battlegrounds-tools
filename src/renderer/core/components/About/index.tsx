@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   Modal,
   Slide,
@@ -7,13 +7,13 @@ import {
   Typography,
   IconButton,
   Button,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { shell } from 'electron';
+} from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
+import { shell } from 'electron'
 
 interface AboutProps {
-  open: boolean;
-  onClose: () => void;
+  open: boolean
+  onClose: () => void
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -55,33 +55,33 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(2),
     },
   },
-}));
+}))
 
-const { version } = require('@src/package.json');
+const { version } = require('@src/package.json')
 
 const About: React.FC<AboutProps> = ({ open, onClose }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   const versions = React.useMemo(() => {
-    const { electron, chrome, node, v8 } = process.versions;
+    const { electron, chrome, node, v8 } = process.versions
     return [
       { type: 'electron', value: electron },
       { type: 'chrome', value: chrome },
       { type: 'node', value: node },
       { type: 'v8', value: v8 },
-    ];
-  }, []);
+    ]
+  }, [])
 
   const handleToLicense = React.useCallback(() => {
     shell.openExternal(
       'https://github.com/hbt-org/hearthstone-battlegrounds-tools/blob/main/LICENSE'
-    );
-  }, []);
+    )
+  }, [])
   const handleToReleases = React.useCallback(() => {
     shell.openExternal(
       'https://github.com/hbt-org/hearthstone-battlegrounds-tools/releases'
-    );
-  }, []);
+    )
+  }, [])
 
   return (
     <Modal
@@ -144,7 +144,7 @@ const About: React.FC<AboutProps> = ({ open, onClose }) => {
         </Paper>
       </Slide>
     </Modal>
-  );
-};
+  )
+}
 
-export default About;
+export default About

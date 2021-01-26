@@ -1,8 +1,8 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { is } from 'electron-util';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { is } from 'electron-util'
 
-import WinTitleBar from '@core/components/Native/WinTitleBar';
+import WinTitleBar from '@core/components/Native/WinTitleBar'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,15 +23,17 @@ const useStyles = makeStyles((theme) => ({
   title: {
     paddingLeft: theme.spacing(1),
   },
-}));
+}))
 
-export default function Header() {
-  const classes = useStyles();
+const Header: React.FC = () => {
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
       <div className={classes.dragger} />
       {is.windows && <WinTitleBar />}
     </div>
-  );
+  )
 }
+
+export default Header

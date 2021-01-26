@@ -1,84 +1,84 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import type { IMinion } from '@hbt-org/core';
-import _ from 'lodash';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+import type { IMinion } from '@hbt-org/core'
+import _ from 'lodash'
 
-import Layout from '@suspension/components/Layout';
-import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook';
-import MinionCard from '@suspension/components/MinionCard';
-import Text from '@suspension/components/Text';
-import useMinions from '@shared/hooks/useMinions';
+import Layout from '@suspension/components/Layout'
+import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook'
+import MinionCard from '@suspension/components/MinionCard'
+import Text from '@suspension/components/Text'
+import useMinions from '@shared/hooks/useMinions'
 
 interface TierList {
-  [techLevel: number]: IMinion[];
+  [techLevel: number]: IMinion[]
 }
 interface TierRaceList {
-  [race: string]: Record<string, IMinion[]>;
+  [race: string]: Record<string, IMinion[]>
 }
 function groupByTier(list: IMinion[]) {
   return list.reduce<TierList>((acc, cur) => {
-    const { techLevel } = cur;
+    const { techLevel } = cur
     if (techLevel) {
       return {
         ...acc,
         [techLevel]: Array.isArray(acc[techLevel])
           ? [...acc[techLevel], cur]
           : [cur],
-      };
+      }
     }
-    return acc;
-  }, {});
+    return acc
+  }, {})
 }
 function groupByRace(list: TierList) {
   return Object.keys(list).reduce<TierRaceList>((acc, cur) => {
-    const minions = list[parseInt(cur, 10)];
+    const minions = list[parseInt(cur, 10)]
     return {
       ...acc,
       [cur]: _.groupBy(minions, (value) => value.race ?? 'INVALID'),
-    };
-  }, {});
+    }
+  }, {})
 }
 function getTierCN(techLevel: number) {
   switch (techLevel) {
     case 1:
-      return '一';
+      return '一'
     case 2:
-      return '二';
+      return '二'
     case 3:
-      return '三';
+      return '三'
     case 4:
-      return '四';
+      return '四'
     case 5:
-      return '五';
+      return '五'
     case 6:
-      return '六';
+      return '六'
     default:
-      return '一';
+      return '一'
   }
 }
 function getRaceCN(race: string) {
   switch (race) {
     case 'INVALID':
-      return '中立';
+      return '中立'
     case 'MURLOC':
-      return '鱼人';
+      return '鱼人'
     case 'DEMON':
-      return '恶魔';
+      return '恶魔'
     case 'MECHANICAL':
-      return '机械';
+      return '机械'
     case 'ELEMENTAL':
-      return '元素';
+      return '元素'
     case 'BEAST':
-      return '野兽';
+      return '野兽'
     case 'PIRATE':
-      return '海盗';
+      return '海盗'
     case 'DRAGON':
-      return '龙';
+      return '龙'
     case 'ALL':
-      return '所有';
+      return '所有'
     default:
-      return '中立';
+      return '中立'
   }
 }
 
@@ -110,16 +110,16 @@ const useStyles = makeStyles((theme) => ({
   race: {
     marginBottom: theme.spacing(1),
   },
-}));
+}))
 
 const Handbook: React.FC = () => {
-  const classes = useStyles();
-  const { minions } = useMinions();
+  const classes = useStyles()
+  const { minions } = useMinions()
   const techLevelData = groupByTier(
     minions.filter((v) => !!v.battlegroundsPremiumDbfId && v.official)
-  );
-  const techLevelRaceData = groupByRace(techLevelData);
-  const [currentTier, setCurrentTier] = React.useState<number>(1);
+  )
+  const techLevelRaceData = groupByRace(techLevelData)
+  const [currentTier, setCurrentTier] = React.useState<number>(1)
 
   return (
     <Layout className={classes.root}>
@@ -151,7 +151,7 @@ const Handbook: React.FC = () => {
         <div className={classes.minions}>
           {techLevelRaceData?.[currentTier] &&
             Object.keys(techLevelRaceData?.[currentTier])?.map((race) => {
-              const raceMinions = techLevelRaceData?.[currentTier]?.[race];
+              const raceMinions = techLevelRaceData?.[currentTier]?.[race]
               return (
                 <div key={race}>
                   <Text className={classes.race} color="#45331d" stroke={false}>
@@ -165,12 +165,12 @@ const Handbook: React.FC = () => {
                     />
                   ))}
                 </div>
-              );
+              )
             })}
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default Handbook;
+export default Handbook

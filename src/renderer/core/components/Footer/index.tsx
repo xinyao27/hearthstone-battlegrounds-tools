@@ -1,6 +1,6 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Button } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,10 +10,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-}));
+}))
 
-export default function Footer() {
-  const classes = useStyles();
+const Footer: React.FC = () => {
+  const classes = useStyles()
 
   return (
     <footer className={classes.root}>
@@ -26,5 +26,7 @@ export default function Footer() {
         chenyueban
       </Button>
     </footer>
-  );
+  )
 }
+
+export default Footer

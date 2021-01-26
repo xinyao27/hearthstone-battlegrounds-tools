@@ -1,21 +1,21 @@
-import React from 'react';
+import React from 'react'
 import {
   MuiPickersUtilsProvider,
   DatePicker as BaseDatePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/dayjs';
-import { Tooltip } from '@material-ui/core';
-import orange from '@material-ui/core/colors/orange';
-import dayjs, { Dayjs } from 'dayjs';
-import cnLocale from 'dayjs/locale/zh-cn';
+} from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/dayjs'
+import { Tooltip } from '@material-ui/core'
+import orange from '@material-ui/core/colors/orange'
+import dayjs, { Dayjs } from 'dayjs'
+import cnLocale from 'dayjs/locale/zh-cn'
 
-import type { RecordItem } from '@shared/hooks/useStatistics';
-import { makeStyles } from '@material-ui/core/styles';
+import type { RecordItem } from '@shared/hooks/useStatistics'
+import { makeStyles } from '@material-ui/core/styles'
 
 interface DatePickerProps {
-  data: RecordItem[];
-  value: Dayjs;
-  onChange: (date: Dayjs) => void | React.Dispatch<React.SetStateAction<Date>>;
+  data: RecordItem[]
+  value: Dayjs
+  onChange: (date: Dayjs) => void | React.Dispatch<React.SetStateAction<Date>>
 }
 
 /**
@@ -33,42 +33,42 @@ function getLevel(count: number) {
     return {
       level: 1,
       color: orange[50],
-    };
+    }
   }
   if (count >= 5 && count <= 8) {
     return {
       level: 2,
       color: orange[100],
-    };
+    }
   }
   if (count >= 9 && count <= 12) {
     return {
       level: 3,
       color: orange[300],
-    };
+    }
   }
   if (count >= 13 && count <= 16) {
     return {
       level: 4,
       color: orange[500],
-    };
+    }
   }
   if (count >= 17 && count <= 20) {
     return {
       level: 5,
       color: orange[700],
-    };
+    }
   }
   if (count > 20) {
     return {
       level: 6,
       color: orange[900],
-    };
+    }
   }
   return {
     level: 0,
     color: 'transparent',
-  };
+  }
 }
 
 const useStyles = makeStyles(() => ({
@@ -80,10 +80,10 @@ const useStyles = makeStyles(() => ({
       height: 32,
     },
   },
-}));
+}))
 
 const DatePicker: React.FC<DatePickerProps> = ({ data, value, onChange }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={cnLocale}>
@@ -93,9 +93,10 @@ const DatePicker: React.FC<DatePickerProps> = ({ data, value, onChange }) => {
         // @ts-ignore
         onChange={onChange}
         renderDay={(day, _, dayInCurrentMonth, dayComponent) => {
-          const date = day!.clone();
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          const date = day!.clone()
           const count = data.filter((v) => dayjs(v.date).isSame(date, 'date'))
-            .length;
+            .length
 
           if (dayInCurrentMonth) {
             if (count) {
@@ -112,7 +113,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ data, value, onChange }) => {
                     </div>
                   </div>
                 </Tooltip>
-              );
+              )
             }
             return (
               <div className={classes.block}>
@@ -120,13 +121,13 @@ const DatePicker: React.FC<DatePickerProps> = ({ data, value, onChange }) => {
                   {dayComponent}
                 </div>
               </div>
-            );
+            )
           }
           return (
             <div className={classes.block}>
               <div style={{ background: 'transparent' }}>{dayComponent}</div>
             </div>
-          );
+          )
         }}
         format="YYYY/MM/DD"
         todayLabel="今日"
@@ -137,7 +138,7 @@ const DatePicker: React.FC<DatePickerProps> = ({ data, value, onChange }) => {
         allowKeyboardControl={false}
       />
     </MuiPickersUtilsProvider>
-  );
-};
+  )
+}
 
-export default DatePicker;
+export default DatePicker

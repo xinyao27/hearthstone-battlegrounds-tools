@@ -2,903 +2,903 @@ export namespace ObsWebSocket {
   type Callback<K extends keyof RequestMethodReturnMap> = (
     error?: Error | ObsWebSocket.ObsError,
     response?: RequestMethodReturnMap[K]
-  ) => void;
+  ) => void
 
   interface ObsError {
-    messageId: string;
-    status: 'error';
-    error: string;
+    messageId: string
+    status: 'error'
+    error: string
   }
 
   interface SceneItem {
-    source_cx: number;
-    cy: number;
-    alignment: number;
-    name: string;
-    id: number;
-    render: boolean;
-    muted: boolean;
-    locked: boolean;
-    cx: number;
-    source_cy: number;
-    type: string;
-    volume: number;
-    x: number;
-    y: number;
-    parentGroupName?: string;
-    groupChildren?: ObsWebSocket.SceneItem[];
+    source_cx: number
+    cy: number
+    alignment: number
+    name: string
+    id: number
+    render: boolean
+    muted: boolean
+    locked: boolean
+    cx: number
+    source_cy: number
+    type: string
+    volume: number
+    x: number
+    y: number
+    parentGroupName?: string
+    groupChildren?: ObsWebSocket.SceneItem[]
   }
 
   interface SceneItemTransform {
-    locked: boolean;
-    groupChildren?: ObsWebSocket.SceneItemTransform[];
-    parentGroupName?: string;
-    rotation: number;
-    height: number;
-    width: number;
-    sourceHeight: number;
-    sourceWidth: number;
-    visible: boolean;
-    bounds: { y: number; type: string; alignment: number; x: number };
-    crop: { left: number; bottom: number; right: number; top: number };
-    position: { y: number; alignment: number; x: number };
-    scale: { y: number; x: number };
+    locked: boolean
+    groupChildren?: ObsWebSocket.SceneItemTransform[]
+    parentGroupName?: string
+    rotation: number
+    height: number
+    width: number
+    sourceHeight: number
+    sourceWidth: number
+    visible: boolean
+    bounds: { y: number; type: string; alignment: number; x: number }
+    crop: { left: number; bottom: number; right: number; top: number }
+    position: { y: number; alignment: number; x: number }
+    scale: { y: number; x: number }
   }
 
   interface OBSStats {
-    fps: number;
-    'render-total-frames': number;
-    'render-missed-frames': number;
-    'output-total-frames': number;
-    'output-skipped-frames': number;
-    'average-frame-time': number;
-    'cpu-usage': number;
-    'memory-usage': number;
-    'free-disk-space': number;
+    fps: number
+    'render-total-frames': number
+    'render-missed-frames': number
+    'output-total-frames': number
+    'output-skipped-frames': number
+    'average-frame-time': number
+    'cpu-usage': number
+    'memory-usage': number
+    'free-disk-space': number
   }
 
   interface Output {
-    name: string;
-    totalBytes: number;
-    width: number;
-    height: number;
+    name: string
+    totalBytes: number
+    width: number
+    height: number
     flags: {
-      service: boolean;
-      encoded: boolean;
-      video: boolean;
-      audio: boolean;
-      rawValue: number;
-      multiTrack: boolean;
-    };
-    droppedFrames: number;
-    totalFrames: number;
-    congestion: number;
-    reconnecting: boolean;
-    type: string;
-    active: boolean;
-    settings: Record<string, unknown>;
+      service: boolean
+      encoded: boolean
+      video: boolean
+      audio: boolean
+      rawValue: number
+      multiTrack: boolean
+    }
+    droppedFrames: number
+    totalFrames: number
+    congestion: number
+    reconnecting: boolean
+    type: string
+    active: boolean
+    settings: Record<string, unknown>
   }
 
   interface Scene {
-    name: string;
-    sources: ObsWebSocket.SceneItem[];
+    name: string
+    sources: ObsWebSocket.SceneItem[]
   }
 }
 
 export interface RequestMethodsArgsMap {
-  GetVersion: void;
+  GetVersion: void
 
-  GetAuthRequired: void;
+  GetAuthRequired: void
 
-  Authenticate: { auth: string };
+  Authenticate: { auth: string }
 
-  SetHeartbeat: { enable: boolean };
+  SetHeartbeat: { enable: boolean }
 
-  SetFilenameFormatting: { 'filename-formatting': string };
+  SetFilenameFormatting: { 'filename-formatting': string }
 
-  GetFilenameFormatting: void;
+  GetFilenameFormatting: void
 
-  GetStats: void;
+  GetStats: void
 
-  BroadcastCustomMessage: { realm: string; data: Record<string, unknown> };
+  BroadcastCustomMessage: { realm: string; data: Record<string, unknown> }
 
-  GetVideoInfo: void;
+  GetVideoInfo: void
 
   OpenProjector: {
-    type?: string;
-    monitor?: number;
-    geometry?: string;
-    name?: string;
-  };
+    type?: string
+    monitor?: number
+    geometry?: string
+    name?: string
+  }
 
-  ListOutputs: void;
+  ListOutputs: void
 
-  GetOutputInfo: { outputName: string };
+  GetOutputInfo: { outputName: string }
 
-  StartOutput: { outputName: string };
+  StartOutput: { outputName: string }
 
-  StopOutput: { outputName: string; force?: boolean };
+  StopOutput: { outputName: string; force?: boolean }
 
-  SetCurrentProfile: { 'profile-name': string };
+  SetCurrentProfile: { 'profile-name': string }
 
-  GetCurrentProfile: void;
+  GetCurrentProfile: void
 
-  ListProfiles: void;
+  ListProfiles: void
 
-  StartStopRecording: void;
+  StartStopRecording: void
 
-  StartRecording: void;
+  StartRecording: void
 
-  StopRecording: void;
+  StopRecording: void
 
-  PauseRecording: void;
+  PauseRecording: void
 
-  ResumeRecording: void;
+  ResumeRecording: void
 
-  SetRecordingFolder: { 'rec-folder': string };
+  SetRecordingFolder: { 'rec-folder': string }
 
-  GetRecordingFolder: void;
+  GetRecordingFolder: void
 
-  StartStopReplayBuffer: void;
+  StartStopReplayBuffer: void
 
-  StartReplayBuffer: void;
+  StartReplayBuffer: void
 
-  StopReplayBuffer: void;
+  StopReplayBuffer: void
 
-  SaveReplayBuffer: void;
+  SaveReplayBuffer: void
 
-  SetCurrentSceneCollection: { 'sc-name': string };
+  SetCurrentSceneCollection: { 'sc-name': string }
 
-  GetCurrentSceneCollection: void;
+  GetCurrentSceneCollection: void
 
-  ListSceneCollections: void;
+  ListSceneCollections: void
 
   GetSceneItemProperties: {
-    'scene-name'?: string;
-    item: { name?: string; id?: number };
-  };
+    'scene-name'?: string
+    item: { name?: string; id?: number }
+  }
 
   SetSceneItemProperties: {
-    'scene-name'?: string;
-    rotation?: number;
-    item: { name?: string; id?: number };
-    visible?: boolean;
-    locked?: boolean;
-    position: { y?: number; alignment?: number; x?: number };
-    bounds: { y?: number; type?: string; alignment?: number; x?: number };
-    scale: { x?: number; y?: number };
-    crop: { bottom?: number; left?: number; right?: number; top?: number };
-  };
+    'scene-name'?: string
+    rotation?: number
+    item: { name?: string; id?: number }
+    visible?: boolean
+    locked?: boolean
+    position: { y?: number; alignment?: number; x?: number }
+    bounds: { y?: number; type?: string; alignment?: number; x?: number }
+    scale: { x?: number; y?: number }
+    crop: { bottom?: number; left?: number; right?: number; top?: number }
+  }
 
   ResetSceneItem: {
-    'scene-name'?: string;
-    item: { name?: string; id?: number };
-  };
+    'scene-name'?: string
+    item: { name?: string; id?: number }
+  }
 
   SetSceneItemRender: {
-    'scene-name'?: string;
-    source: string;
-    render: boolean;
-  };
+    'scene-name'?: string
+    source: string
+    render: boolean
+  }
 
   SetSceneItemPosition: {
-    'scene-name'?: string;
-    item: string;
-    x: number;
-    y: number;
-  };
+    'scene-name'?: string
+    item: string
+    x: number
+    y: number
+  }
 
   SetSceneItemTransform: {
-    'scene-name'?: string;
-    item: string;
-    'x-scale': number;
-    'y-scale': number;
-    rotation: number;
-  };
+    'scene-name'?: string
+    item: string
+    'x-scale': number
+    'y-scale': number
+    rotation: number
+  }
 
   SetSceneItemCrop: {
-    'scene-name'?: string;
-    item: string;
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  };
+    'scene-name'?: string
+    item: string
+    top: number
+    bottom: number
+    left: number
+    right: number
+  }
 
-  DeleteSceneItem: { scene?: string; item: { name: string; id: number } };
+  DeleteSceneItem: { scene?: string; item: { name: string; id: number } }
 
   DuplicateSceneItem: {
-    fromScene?: string;
-    toScene?: string;
-    item: { name: string; id: number };
-  };
+    fromScene?: string
+    toScene?: string
+    item: { name: string; id: number }
+  }
 
-  SetCurrentScene: { 'scene-name': string };
+  SetCurrentScene: { 'scene-name': string }
 
-  GetCurrentScene: void;
+  GetCurrentScene: void
 
-  GetSceneList: void;
+  GetSceneList: void
 
   ReorderSceneItems: {
-    scene?: string;
-    items: ObsWebSocket.Scene[];
-    'items[]': { id?: number; name?: string };
-  };
+    scene?: string
+    items: ObsWebSocket.Scene[]
+    'items[]': { id?: number; name?: string }
+  }
 
   SetSceneTransitionOverride: {
-    sceneName: string;
-    transitionName: string;
-    transitionDuration?: number;
-  };
+    sceneName: string
+    transitionName: string
+    transitionDuration?: number
+  }
 
-  RemoveSceneTransitionOverride: { sceneName: string };
+  RemoveSceneTransitionOverride: { sceneName: string }
 
-  GetSceneTransitionOverride: { sceneName: string };
+  GetSceneTransitionOverride: { sceneName: string }
 
-  GetSourcesList: void;
+  GetSourcesList: void
 
-  GetSourceTypesList: void;
+  GetSourceTypesList: void
 
-  GetVolume: { source: string; useDecibel?: boolean };
+  GetVolume: { source: string; useDecibel?: boolean }
 
-  SetVolume: { source: string; volume: number; useDecibel?: boolean };
+  SetVolume: { source: string; volume: number; useDecibel?: boolean }
 
-  GetMute: { source: string };
+  GetMute: { source: string }
 
-  SetMute: { source: string; mute: boolean };
+  SetMute: { source: string; mute: boolean }
 
-  ToggleMute: { source: string };
+  ToggleMute: { source: string }
 
-  SetSourceName: { sourceName: string; newName: string };
+  SetSourceName: { sourceName: string; newName: string }
 
-  SetSyncOffset: { source: string; offset: number };
+  SetSyncOffset: { source: string; offset: number }
 
-  GetSyncOffset: { source: string };
+  GetSyncOffset: { source: string }
 
-  GetSourceSettings: { sourceName: string; sourceType?: string };
+  GetSourceSettings: { sourceName: string; sourceType?: string }
 
   SetSourceSettings: {
-    sourceName: string;
-    sourceType?: string;
-    sourceSettings: Record<string, unknown>;
-  };
+    sourceName: string
+    sourceType?: string
+    sourceSettings: Record<string, unknown>
+  }
 
-  GetTextGDIPlusProperties: { source: string };
+  GetTextGDIPlusProperties: { source: string }
 
   SetTextGDIPlusProperties: {
-    source: string;
-    render?: boolean;
-    'bk-color'?: number;
-    'bk-opacity'?: number;
-    chatlog?: boolean;
-    chatlog_lines?: number;
-    color?: number;
-    extents?: boolean;
-    extents_cx?: number;
-    extents_cy?: number;
-    file?: string;
-    read_from_file?: boolean;
-    font?: { style?: string; size?: number; face?: string; flags?: number };
-    vertical?: boolean;
-    align?: string;
-    valign?: string;
-    text?: string;
-    gradient?: boolean;
-    gradient_color?: number;
-    gradient_dir?: number;
-    gradient_opacity?: number;
-    outline?: boolean;
-    outline_color?: number;
-    outline_size?: number;
-    outline_opacity?: number;
-  };
+    source: string
+    render?: boolean
+    'bk-color'?: number
+    'bk-opacity'?: number
+    chatlog?: boolean
+    chatlog_lines?: number
+    color?: number
+    extents?: boolean
+    extents_cx?: number
+    extents_cy?: number
+    file?: string
+    read_from_file?: boolean
+    font?: { style?: string; size?: number; face?: string; flags?: number }
+    vertical?: boolean
+    align?: string
+    valign?: string
+    text?: string
+    gradient?: boolean
+    gradient_color?: number
+    gradient_dir?: number
+    gradient_opacity?: number
+    outline?: boolean
+    outline_color?: number
+    outline_size?: number
+    outline_opacity?: number
+  }
 
-  GetTextFreetype2Properties: { source: string };
+  GetTextFreetype2Properties: { source: string }
 
   SetTextFreetype2Properties: {
-    source: string;
-    word_wrap?: boolean;
-    color2?: number;
-    custom_width?: number;
-    drop_shadow?: boolean;
-    font?: { style?: string; flags?: number; face?: string; size?: number };
-    text_file?: string;
-    text?: string;
-    color1?: number;
-    outline?: boolean;
-    from_file?: boolean;
-    log_mode?: boolean;
-  };
+    source: string
+    word_wrap?: boolean
+    color2?: number
+    custom_width?: number
+    drop_shadow?: boolean
+    font?: { style?: string; flags?: number; face?: string; size?: number }
+    text_file?: string
+    text?: string
+    color1?: number
+    outline?: boolean
+    from_file?: boolean
+    log_mode?: boolean
+  }
 
-  GetBrowserSourceProperties: { source: string };
+  GetBrowserSourceProperties: { source: string }
 
   SetBrowserSourceProperties: {
-    source: string;
-    is_local_file?: boolean;
-    local_file?: string;
-    url?: string;
-    css?: string;
-    width?: number;
-    height?: number;
-    fps?: number;
-    shutdown?: boolean;
-    render?: boolean;
-  };
+    source: string
+    is_local_file?: boolean
+    local_file?: string
+    url?: string
+    css?: string
+    width?: number
+    height?: number
+    fps?: number
+    shutdown?: boolean
+    render?: boolean
+  }
 
-  GetSpecialSources: void;
+  GetSpecialSources: void
 
-  GetSourceFilters: { sourceName: string };
+  GetSourceFilters: { sourceName: string }
 
-  GetSourceFilterInfo: { sourceName: string; filterName: string };
+  GetSourceFilterInfo: { sourceName: string; filterName: string }
 
   AddFilterToSource: {
-    sourceName: string;
-    filterName: string;
-    filterType: string;
-    filterSettings: Record<string, unknown>;
-  };
+    sourceName: string
+    filterName: string
+    filterType: string
+    filterSettings: Record<string, unknown>
+  }
 
-  RemoveFilterFromSource: { sourceName: string; filterName: string };
+  RemoveFilterFromSource: { sourceName: string; filterName: string }
 
   ReorderSourceFilter: {
-    sourceName: string;
-    filterName: string;
-    newIndex: number;
-  };
+    sourceName: string
+    filterName: string
+    newIndex: number
+  }
 
   MoveSourceFilter: {
-    sourceName: string;
-    filterName: string;
-    movementType: string;
-  };
+    sourceName: string
+    filterName: string
+    movementType: string
+  }
 
   SetSourceFilterSettings: {
-    sourceName: string;
-    filterName: string;
-    filterSettings: Record<string, unknown>;
-  };
+    sourceName: string
+    filterName: string
+    filterSettings: Record<string, unknown>
+  }
 
   SetSourceFilterVisibility: {
-    sourceName: string;
-    filterName: string;
-    filterEnabled: boolean;
-  };
+    sourceName: string
+    filterName: string
+    filterEnabled: boolean
+  }
 
-  GetAudioMonitorType: { sourceName: string };
+  GetAudioMonitorType: { sourceName: string }
 
-  SetAudioMonitorType: { sourceName: string; monitorType: string };
+  SetAudioMonitorType: { sourceName: string; monitorType: string }
 
   TakeSourceScreenshot: {
-    sourceName: string;
-    embedPictureFormat?: string;
-    saveToFilePath?: string;
-    fileFormat?: string;
-    compressionQuality?: number;
-    width?: number;
-    height?: number;
-  };
+    sourceName: string
+    embedPictureFormat?: string
+    saveToFilePath?: string
+    fileFormat?: string
+    compressionQuality?: number
+    width?: number
+    height?: number
+  }
 
-  GetStreamingStatus: void;
+  GetStreamingStatus: void
 
-  StartStopStreaming: void;
+  StartStopStreaming: void
 
   StartStreaming: {
     stream?: {
-      type?: string;
-      metadata?: Record<string, unknown>;
+      type?: string
+      metadata?: Record<string, unknown>
       settings?: {
-        server?: string;
-        key?: string;
-        use_auth?: boolean;
-        username?: string;
-        password?: string;
-      };
-    };
-  };
+        server?: string
+        key?: string
+        use_auth?: boolean
+        username?: string
+        password?: string
+      }
+    }
+  }
 
-  StopStreaming: void;
+  StopStreaming: void
 
   SetStreamSettings: {
-    type: string;
+    type: string
     settings: {
-      server?: string;
-      key?: string;
-      use_auth?: boolean;
-      username?: string;
-      password?: string;
-    };
-    save: boolean;
-  };
+      server?: string
+      key?: string
+      use_auth?: boolean
+      username?: string
+      password?: string
+    }
+    save: boolean
+  }
 
-  GetStreamSettings: void;
+  GetStreamSettings: void
 
-  SaveStreamSettings: void;
+  SaveStreamSettings: void
 
-  SendCaptions: { text: string };
+  SendCaptions: { text: string }
 
-  GetStudioModeStatus: void;
+  GetStudioModeStatus: void
 
-  GetPreviewScene: void;
+  GetPreviewScene: void
 
-  SetPreviewScene: { 'scene-name': string };
+  SetPreviewScene: { 'scene-name': string }
 
   TransitionToProgram: {
-    'with-transition'?: { name: string; duration?: number };
-  };
+    'with-transition'?: { name: string; duration?: number }
+  }
 
-  EnableStudioMode: void;
+  EnableStudioMode: void
 
-  DisableStudioMode: void;
+  DisableStudioMode: void
 
-  ToggleStudioMode: void;
+  ToggleStudioMode: void
 
-  GetTransitionList: void;
+  GetTransitionList: void
 
-  GetCurrentTransition: void;
+  GetCurrentTransition: void
 
-  SetCurrentTransition: { 'transition-name': string };
+  SetCurrentTransition: { 'transition-name': string }
 
-  SetTransitionDuration: { duration: number };
+  SetTransitionDuration: { duration: number }
 
-  GetTransitionDuration: void;
+  GetTransitionDuration: void
 
-  GetTransitionPosition: void;
+  GetTransitionPosition: void
 }
 
 export interface RequestMethodReturnMap {
   GetVersion: {
-    messageId: string;
-    status: 'ok';
-    version: number;
-    'obs-websocket-version': string;
-    'obs-studio-version': string;
-    'available-requests': string;
-    'supported-image-export-formats': string;
-  };
+    messageId: string
+    status: 'ok'
+    version: number
+    'obs-websocket-version': string
+    'obs-studio-version': string
+    'available-requests': string
+    'supported-image-export-formats': string
+  }
 
   GetAuthRequired: {
-    messageId: string;
-    status: 'ok';
-    authRequired: boolean;
-    challenge?: string;
-    salt?: string;
-  };
+    messageId: string
+    status: 'ok'
+    authRequired: boolean
+    challenge?: string
+    salt?: string
+  }
 
-  Authenticate: void;
+  Authenticate: void
 
-  SetHeartbeat: void;
+  SetHeartbeat: void
 
-  SetFilenameFormatting: void;
+  SetFilenameFormatting: void
 
   GetFilenameFormatting: {
-    messageId: string;
-    status: 'ok';
-    'filename-formatting': string;
-  };
+    messageId: string
+    status: 'ok'
+    'filename-formatting': string
+  }
 
-  GetStats: { messageId: string; status: 'ok'; stats: ObsWebSocket.OBSStats };
+  GetStats: { messageId: string; status: 'ok'; stats: ObsWebSocket.OBSStats }
 
-  BroadcastCustomMessage: void;
+  BroadcastCustomMessage: void
 
   GetVideoInfo: {
-    messageId: string;
-    status: 'ok';
-    baseWidth: number;
-    baseHeight: number;
-    outputWidth: number;
-    outputHeight: number;
-    scaleType: string;
-    fps: number;
-    videoFormat: string;
-    colorSpace: string;
-    colorRange: string;
-  };
+    messageId: string
+    status: 'ok'
+    baseWidth: number
+    baseHeight: number
+    outputWidth: number
+    outputHeight: number
+    scaleType: string
+    fps: number
+    videoFormat: string
+    colorSpace: string
+    colorRange: string
+  }
 
-  OpenProjector: void;
+  OpenProjector: void
 
   ListOutputs: {
-    messageId: string;
-    status: 'ok';
-    outputs: Array<{ [k: string]: any }>;
-  };
+    messageId: string
+    status: 'ok'
+    outputs: Array<{ [k: string]: any }>
+  }
 
   GetOutputInfo: {
-    messageId: string;
-    status: 'ok';
-    outputInfo: Record<string, unknown>;
-  };
+    messageId: string
+    status: 'ok'
+    outputInfo: Record<string, unknown>
+  }
 
-  StartOutput: void;
+  StartOutput: void
 
-  StopOutput: void;
+  StopOutput: void
 
-  SetCurrentProfile: void;
+  SetCurrentProfile: void
 
   GetCurrentProfile: {
-    messageId: string;
-    status: 'ok';
-    'profile-name': string;
-  };
+    messageId: string
+    status: 'ok'
+    'profile-name': string
+  }
 
   ListProfiles: {
-    messageId: string;
-    status: 'ok';
-    profiles: Array<{ [k: string]: any }>;
-  };
+    messageId: string
+    status: 'ok'
+    profiles: Array<{ [k: string]: any }>
+  }
 
-  StartStopRecording: void;
+  StartStopRecording: void
 
-  StartRecording: void;
+  StartRecording: void
 
-  StopRecording: void;
+  StopRecording: void
 
-  PauseRecording: void;
+  PauseRecording: void
 
-  ResumeRecording: void;
+  ResumeRecording: void
 
-  SetRecordingFolder: void;
+  SetRecordingFolder: void
 
   GetRecordingFolder: {
-    messageId: string;
-    status: 'ok';
-    'rec-folder': string;
-  };
+    messageId: string
+    status: 'ok'
+    'rec-folder': string
+  }
 
-  StartStopReplayBuffer: void;
+  StartStopReplayBuffer: void
 
-  StartReplayBuffer: void;
+  StartReplayBuffer: void
 
-  StopReplayBuffer: void;
+  StopReplayBuffer: void
 
-  SaveReplayBuffer: void;
+  SaveReplayBuffer: void
 
-  SetCurrentSceneCollection: void;
+  SetCurrentSceneCollection: void
 
   GetCurrentSceneCollection: {
-    messageId: string;
-    status: 'ok';
-    'sc-name': string;
-  };
+    messageId: string
+    status: 'ok'
+    'sc-name': string
+  }
 
   ListSceneCollections: {
-    messageId: string;
-    status: 'ok';
-    'scene-collections': string[];
-  };
+    messageId: string
+    status: 'ok'
+    'scene-collections': string[]
+  }
 
   GetSceneItemProperties: {
-    messageId: string;
-    status: 'ok';
-    muted: boolean;
-    name: string;
-    parentGroupName?: string;
-    alignment: number;
-    height: number;
-    rotation: number;
-    width: number;
-    sourceHeight: number;
-    sourceWidth: number;
-    locked: boolean;
-    itemId: number;
-    visible: boolean;
-    groupChildren?: ObsWebSocket.SceneItemTransform[];
-    crop: { left: number; right: number; bottom: number; top: number };
-    bounds: { type: string; alignment: number; x: number; y: number };
-    scale: { y: number; x: number };
-    position: { alignment: number; y: number; x: number };
-  };
+    messageId: string
+    status: 'ok'
+    muted: boolean
+    name: string
+    parentGroupName?: string
+    alignment: number
+    height: number
+    rotation: number
+    width: number
+    sourceHeight: number
+    sourceWidth: number
+    locked: boolean
+    itemId: number
+    visible: boolean
+    groupChildren?: ObsWebSocket.SceneItemTransform[]
+    crop: { left: number; right: number; bottom: number; top: number }
+    bounds: { type: string; alignment: number; x: number; y: number }
+    scale: { y: number; x: number }
+    position: { alignment: number; y: number; x: number }
+  }
 
-  SetSceneItemProperties: void;
+  SetSceneItemProperties: void
 
-  ResetSceneItem: void;
+  ResetSceneItem: void
 
-  SetSceneItemRender: void;
+  SetSceneItemRender: void
 
-  SetSceneItemPosition: void;
+  SetSceneItemPosition: void
 
-  SetSceneItemTransform: void;
+  SetSceneItemTransform: void
 
-  SetSceneItemCrop: void;
+  SetSceneItemCrop: void
 
-  DeleteSceneItem: void;
+  DeleteSceneItem: void
 
   DuplicateSceneItem: {
-    messageId: string;
-    status: 'ok';
-    scene: string;
-    item: { id: number; name: string };
-  };
+    messageId: string
+    status: 'ok'
+    scene: string
+    item: { id: number; name: string }
+  }
 
-  SetCurrentScene: void;
+  SetCurrentScene: void
 
   GetCurrentScene: {
-    messageId: string;
-    status: 'ok';
-    name: string;
-    sources: ObsWebSocket.SceneItem[];
-  };
+    messageId: string
+    status: 'ok'
+    name: string
+    sources: ObsWebSocket.SceneItem[]
+  }
 
   GetSceneList: {
-    messageId: string;
-    status: 'ok';
-    'current-scene': string;
-    scenes: ObsWebSocket.Scene[];
-  };
+    messageId: string
+    status: 'ok'
+    'current-scene': string
+    scenes: ObsWebSocket.Scene[]
+  }
 
-  ReorderSceneItems: void;
+  ReorderSceneItems: void
 
-  SetSceneTransitionOverride: void;
+  SetSceneTransitionOverride: void
 
-  RemoveSceneTransitionOverride: void;
+  RemoveSceneTransitionOverride: void
 
   GetSceneTransitionOverride: {
-    messageId: string;
-    status: 'ok';
-    transitionName: string;
-    transitionDuration: number;
-  };
+    messageId: string
+    status: 'ok'
+    transitionName: string
+    transitionDuration: number
+  }
 
   GetSourcesList: {
-    messageId: string;
-    status: 'ok';
-    sources: { name: string; type: string; typeId: string }[];
-  };
+    messageId: string
+    status: 'ok'
+    sources: { name: string; type: string; typeId: string }[]
+  }
 
   GetSourceTypesList: {
-    messageId: string;
-    status: 'ok';
-    types: { isAsync: boolean }[];
-  };
+    messageId: string
+    status: 'ok'
+    types: { isAsync: boolean }[]
+  }
 
   GetVolume: {
-    messageId: string;
-    status: 'ok';
-    name: string;
-    volume: number;
-    muted: boolean;
-  };
+    messageId: string
+    status: 'ok'
+    name: string
+    volume: number
+    muted: boolean
+  }
 
-  SetVolume: void;
+  SetVolume: void
 
-  GetMute: { messageId: string; status: 'ok'; name: string; muted: boolean };
+  GetMute: { messageId: string; status: 'ok'; name: string; muted: boolean }
 
-  SetMute: void;
+  SetMute: void
 
-  ToggleMute: void;
+  ToggleMute: void
 
-  SetSourceName: void;
+  SetSourceName: void
 
-  SetSyncOffset: void;
+  SetSyncOffset: void
 
   GetSyncOffset: {
-    messageId: string;
-    status: 'ok';
-    name: string;
-    offset: number;
-  };
+    messageId: string
+    status: 'ok'
+    name: string
+    offset: number
+  }
 
   GetSourceSettings: {
-    messageId: string;
-    status: 'ok';
-    sourceName: string;
-    sourceType: string;
-    sourceSettings: Record<string, unknown>;
-  };
+    messageId: string
+    status: 'ok'
+    sourceName: string
+    sourceType: string
+    sourceSettings: Record<string, unknown>
+  }
 
   SetSourceSettings: {
-    messageId: string;
-    status: 'ok';
-    sourceName: string;
-    sourceType: string;
-    sourceSettings: Record<string, unknown>;
-  };
+    messageId: string
+    status: 'ok'
+    sourceName: string
+    sourceType: string
+    sourceSettings: Record<string, unknown>
+  }
 
   GetTextGDIPlusProperties: {
-    messageId: string;
-    status: 'ok';
-    source: string;
-    vertical: boolean;
-    'bk-color': number;
-    'bk-opacity': number;
-    chatlog: boolean;
-    chatlog_lines: number;
-    color: number;
-    extents: boolean;
-    extents_cx: number;
-    extents_cy: number;
-    file: string;
-    read_from_file: boolean;
-    font: { style: string; size: number; face: string; flags: number };
-    valign: string;
-    align: string;
-    text: string;
-    outline_opacity: number;
-    gradient: boolean;
-    gradient_color: number;
-    gradient_dir: number;
-    gradient_opacity: number;
-    outline: boolean;
-    outline_color: number;
-    outline_size: number;
-  };
+    messageId: string
+    status: 'ok'
+    source: string
+    vertical: boolean
+    'bk-color': number
+    'bk-opacity': number
+    chatlog: boolean
+    chatlog_lines: number
+    color: number
+    extents: boolean
+    extents_cx: number
+    extents_cy: number
+    file: string
+    read_from_file: boolean
+    font: { style: string; size: number; face: string; flags: number }
+    valign: string
+    align: string
+    text: string
+    outline_opacity: number
+    gradient: boolean
+    gradient_color: number
+    gradient_dir: number
+    gradient_opacity: number
+    outline: boolean
+    outline_color: number
+    outline_size: number
+  }
 
-  SetTextGDIPlusProperties: void;
+  SetTextGDIPlusProperties: void
 
   GetTextFreetype2Properties: {
-    messageId: string;
-    status: 'ok';
-    source: string;
-    word_wrap: boolean;
-    color2: number;
-    custom_width: number;
-    drop_shadow: boolean;
-    font: { style: string; flags: number; face: string; size: number };
-    text_file: string;
-    text: string;
-    color1: number;
-    outline: boolean;
-    from_file: boolean;
-    log_mode: boolean;
-  };
+    messageId: string
+    status: 'ok'
+    source: string
+    word_wrap: boolean
+    color2: number
+    custom_width: number
+    drop_shadow: boolean
+    font: { style: string; flags: number; face: string; size: number }
+    text_file: string
+    text: string
+    color1: number
+    outline: boolean
+    from_file: boolean
+    log_mode: boolean
+  }
 
-  SetTextFreetype2Properties: void;
+  SetTextFreetype2Properties: void
 
   GetBrowserSourceProperties: {
-    messageId: string;
-    status: 'ok';
-    source: string;
-    is_local_file: boolean;
-    local_file: string;
-    url: string;
-    css: string;
-    width: number;
-    height: number;
-    fps: number;
-    shutdown: boolean;
-  };
+    messageId: string
+    status: 'ok'
+    source: string
+    is_local_file: boolean
+    local_file: string
+    url: string
+    css: string
+    width: number
+    height: number
+    fps: number
+    shutdown: boolean
+  }
 
-  SetBrowserSourceProperties: void;
+  SetBrowserSourceProperties: void
 
   GetSpecialSources: {
-    messageId: string;
-    status: 'ok';
-    'desktop-1'?: string;
-    'desktop-2'?: string;
-    'mic-1'?: string;
-    'mic-2'?: string;
-    'mic-3'?: string;
-  };
+    messageId: string
+    status: 'ok'
+    'desktop-1'?: string
+    'desktop-2'?: string
+    'mic-1'?: string
+    'mic-2'?: string
+    'mic-3'?: string
+  }
 
   GetSourceFilters: {
-    messageId: string;
-    status: 'ok';
-    filters: Record<string, unknown>[];
-  };
+    messageId: string
+    status: 'ok'
+    filters: Record<string, unknown>[]
+  }
 
   GetSourceFilterInfo: {
-    messageId: string;
-    status: 'ok';
-    enabled: boolean;
-    type: string;
-    name: string;
-    settings: Record<string, unknown>;
-  };
+    messageId: string
+    status: 'ok'
+    enabled: boolean
+    type: string
+    name: string
+    settings: Record<string, unknown>
+  }
 
-  AddFilterToSource: void;
+  AddFilterToSource: void
 
-  RemoveFilterFromSource: void;
+  RemoveFilterFromSource: void
 
-  ReorderSourceFilter: void;
+  ReorderSourceFilter: void
 
-  MoveSourceFilter: void;
+  MoveSourceFilter: void
 
-  SetSourceFilterSettings: void;
+  SetSourceFilterSettings: void
 
-  SetSourceFilterVisibility: void;
+  SetSourceFilterVisibility: void
 
   GetAudioMonitorType: {
-    messageId: string;
-    status: 'ok';
-    monitorType: string;
-  };
+    messageId: string
+    status: 'ok'
+    monitorType: string
+  }
 
-  SetAudioMonitorType: void;
+  SetAudioMonitorType: void
 
   TakeSourceScreenshot: {
-    messageId: string;
-    status: 'ok';
-    sourceName: string;
-    img: string;
-    imageFile: string;
-  };
+    messageId: string
+    status: 'ok'
+    sourceName: string
+    img: string
+    imageFile: string
+  }
 
   GetStreamingStatus: {
-    messageId: string;
-    status: 'ok';
-    streaming: boolean;
-    recording: boolean;
-    'stream-timecode'?: string;
-    'rec-timecode'?: string;
-    'preview-only': boolean;
-  };
+    messageId: string
+    status: 'ok'
+    streaming: boolean
+    recording: boolean
+    'stream-timecode'?: string
+    'rec-timecode'?: string
+    'preview-only': boolean
+  }
 
-  StartStopStreaming: void;
+  StartStopStreaming: void
 
-  StartStreaming: void;
+  StartStreaming: void
 
-  StopStreaming: void;
+  StopStreaming: void
 
-  SetStreamSettings: void;
+  SetStreamSettings: void
 
   GetStreamSettings: {
-    messageId: string;
-    status: 'ok';
-    type: string;
+    messageId: string
+    status: 'ok'
+    type: string
     settings: {
-      server: string;
-      key: string;
-      use_auth: boolean;
-      username: string;
-      password: string;
-    };
-  };
+      server: string
+      key: string
+      use_auth: boolean
+      username: string
+      password: string
+    }
+  }
 
-  SaveStreamSettings: void;
+  SaveStreamSettings: void
 
-  SendCaptions: void;
+  SendCaptions: void
 
   GetStudioModeStatus: {
-    messageId: string;
-    status: 'ok';
-    'studio-mode': boolean;
-  };
+    messageId: string
+    status: 'ok'
+    'studio-mode': boolean
+  }
 
   GetPreviewScene: {
-    messageId: string;
-    status: 'ok';
-    name: string;
-    sources: ObsWebSocket.SceneItem[];
-  };
+    messageId: string
+    status: 'ok'
+    name: string
+    sources: ObsWebSocket.SceneItem[]
+  }
 
-  SetPreviewScene: void;
+  SetPreviewScene: void
 
-  TransitionToProgram: void;
+  TransitionToProgram: void
 
-  EnableStudioMode: void;
+  EnableStudioMode: void
 
-  DisableStudioMode: void;
+  DisableStudioMode: void
 
-  ToggleStudioMode: void;
+  ToggleStudioMode: void
 
   GetTransitionList: {
-    messageId: string;
-    status: 'ok';
-    'current-transition': string;
-    transitions: string[];
-  };
+    messageId: string
+    status: 'ok'
+    'current-transition': string
+    transitions: string[]
+  }
 
   GetCurrentTransition: {
-    messageId: string;
-    status: 'ok';
-    name: string;
-    duration?: number;
-  };
+    messageId: string
+    status: 'ok'
+    name: string
+    duration?: number
+  }
 
-  SetCurrentTransition: void;
+  SetCurrentTransition: void
 
-  SetTransitionDuration: void;
+  SetTransitionDuration: void
 
   GetTransitionDuration: {
-    messageId: string;
-    status: 'ok';
-    'transition-duration': number;
-  };
+    messageId: string
+    status: 'ok'
+    'transition-duration': number
+  }
 
   GetTransitionPosition: {
-    messageId: string;
-    status: 'ok';
-    position: number;
-  };
+    messageId: string
+    status: 'ok'
+    position: number
+  }
 }
 
-export type RequestMethodsKeys = keyof RequestMethodsArgsMap;
+export type RequestMethodsKeys = keyof RequestMethodsArgsMap

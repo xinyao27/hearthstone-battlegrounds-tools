@@ -1,40 +1,40 @@
-import CoreManager from '@main/windows/CoreManager';
-import LogHandlerManager from '@main/windows/LogHandlerManager';
-import SuspensionManager from '@main/windows/SuspensionManager';
-import LoginManager from '@main/windows/LoginManager';
-import Store from '@shared/store/store';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import CoreManager from '@main/windows/CoreManager'
+import LogHandlerManager from '@main/windows/LogHandlerManager'
+import SuspensionManager from '@main/windows/SuspensionManager'
+import LoginManager from '@main/windows/LoginManager'
+import Store from '@shared/store/store'
 
-declare module '*.jpg';
-declare module '*.jpeg';
-declare module '*.png';
-declare module '*.gif';
-declare module '*.webp';
-declare module '*.ico';
+declare module '*.jpg'
+declare module '*.jpeg'
+declare module '*.png'
+declare module '*.gif'
+declare module '*.webp'
+declare module '*.ico'
 declare module 'worker-loader!*' {
   class WebpackWorker extends Worker {
-    constructor();
+    constructor()
   }
-  export default WebpackWorker;
+  export default WebpackWorker
 }
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {
     interface Global {
       managers: {
-        coreManager: CoreManager | null;
-        logHandlerManager: LogHandlerManager | null;
-        suspensionManager: SuspensionManager | null;
-        loginManager: LoginManager | null;
-      };
-      store: Store<any>;
+        coreManager: CoreManager | null
+        logHandlerManager: LogHandlerManager | null
+        suspensionManager: SuspensionManager | null
+        loginManager: LoginManager | null
+      }
+      store: Store<any>
     }
   }
 }
 
 export interface LogData<S = string, R = any> {
-  type: 'box' | 'state';
-  date: string;
-  state: S;
-  original: string;
-  result: R;
+  type: 'box' | 'state'
+  date: string
+  state: S
+  original: string
+  result: R
 }

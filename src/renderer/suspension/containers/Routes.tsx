@@ -1,16 +1,16 @@
-import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React from 'react'
+import { Switch, Route } from 'react-router-dom'
 
-import routes from '@suspension/constants/routes.json';
-import WelcomePage from '@suspension/pages/welcome';
-import HeroSelectionPage from '@suspension/pages/heroSelection';
-import BattlePage from '@suspension/pages/battle';
-import HandbookPage from '@suspension/pages/handbook';
-import GameOverPage from '@suspension/pages/gameOver';
+import routes from '@suspension/constants/routes.json'
+import WelcomePage from '@suspension/pages/welcome'
+import HeroSelectionPage from '@suspension/pages/heroSelection'
+import BattlePage from '@suspension/pages/battle'
+import HandbookPage from '@suspension/pages/handbook'
+import GameOverPage from '@suspension/pages/gameOver'
 
-import App from './App';
+import App from './App'
 
-export default function Routes() {
+const Routes: React.FC = () => {
   return (
     <App>
       <Switch>
@@ -21,5 +21,7 @@ export default function Routes() {
         <Route path={routes.GAMEOVER} component={GameOverPage} />
       </Switch>
     </App>
-  );
+  )
 }
+
+export default Routes

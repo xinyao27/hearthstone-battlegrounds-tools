@@ -1,19 +1,19 @@
-import React from 'react';
-import { shell } from 'electron';
-import { makeStyles } from '@material-ui/core/styles';
-import { Tooltip, Tabs, Tab, IconButton } from '@material-ui/core';
-import TodayIcon from '@material-ui/icons/Today';
-import EqualizerIcon from '@material-ui/icons/Equalizer';
-import CasinoIcon from '@material-ui/icons/Casino';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useUpdateEffect } from 'ahooks';
+import React from 'react'
+import { shell } from 'electron'
+import { makeStyles } from '@material-ui/core/styles'
+import { Tooltip, Tabs, Tab, IconButton } from '@material-ui/core'
+import TodayIcon from '@material-ui/icons/Today'
+import EqualizerIcon from '@material-ui/icons/Equalizer'
+import CasinoIcon from '@material-ui/icons/Casino'
+import SettingsIcon from '@material-ui/icons/Settings'
+import { useHistory, useLocation } from 'react-router-dom'
+import { useUpdateEffect } from 'ahooks'
 
-import routes from '@core/constants/routes.json';
-import Logo from '@core/components/Icons/Logo';
-import useStartHS from '@core/hooks/useStartHS';
+import routes from '@core/constants/routes.json'
+import Logo from '@core/components/Icons/Logo'
+import useStartHS from '@core/hooks/useStartHS'
 
-import User from './User';
+import User from './User'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,38 +66,43 @@ const useStyles = makeStyles((theme) => ({
   startGame: {
     width: 56,
   },
-}));
+}))
 
-export default function Navigation() {
-  const history = useHistory();
-  const location = useLocation();
-  const classes = useStyles();
+const Navigation: React.FC = () => {
+  const history = useHistory()
+  const location = useLocation()
+  const classes = useStyles()
 
   const [value, setValue] = React.useState(() =>
     location.pathname === '/' ? '/record' : location.pathname
-  );
+  )
 
   const handleChange = React.useCallback(
     (_: React.ChangeEvent<unknown>, newValue: string) => {
-      setValue(newValue);
-      history.push(newValue);
+      setValue(newValue)
+      history.push(newValue)
     },
     [history]
-  );
+  )
   const handleToWebSite = React.useCallback(() => {
-    shell.openExternal('https://hs.chenyueban.com');
-  }, []);
+    shell.openExternal('https://hs.chenyueban.com')
+  }, [])
 
-  const { run } = useStartHS();
+  const { run } = useStartHS()
 
   useUpdateEffect(() => {
-    setValue(location.pathname);
-  }, [location.pathname]);
+    setValue(location.pathname)
+  }, [location.pathname])
 
   return (
     <aside className={classes.root}>
       <Tooltip title="HBT - 炉石传说酒馆战棋插件" placement="right" arrow>
-        <div className={classes.logo} onClick={handleToWebSite}>
+        <div
+          className={classes.logo}
+          onClick={handleToWebSite}
+          role="button"
+          tabIndex={0}
+        >
           <Logo />
           <span className={classes.title}>HBT</span>
         </div>
@@ -155,5 +160,7 @@ export default function Navigation() {
         </div>
       </div>
     </aside>
-  );
+  )
 }
+
+export default Navigation

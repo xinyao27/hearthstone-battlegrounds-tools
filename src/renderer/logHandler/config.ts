@@ -1,52 +1,52 @@
-import { resolve } from 'path';
-import { is } from 'electron-util';
+import { resolve } from 'path'
+import { is } from 'electron-util'
 
-import { config } from '@shared/store';
+import { config } from '@shared/store'
 
 const Config = {
-  get configHeartstoneRootPath() {
-    return config.get('heartstoneRootPath') as string | undefined;
+  get configHeartstoneRootPath(): string | undefined {
+    return config.get('heartstoneRootPath') as string | undefined
   },
 
-  get windowsHeartstoneRootPath() {
+  get windowsHeartstoneRootPath(): string {
     return (
       this.configHeartstoneRootPath ?? 'C:\\Program Files (x86)\\Hearthstone'
-    );
+    )
   },
 
-  get macOSHeartstoneRootPath() {
-    return this.configHeartstoneRootPath ?? '/Applications/Hearthstone';
+  get macOSHeartstoneRootPath(): string {
+    return this.configHeartstoneRootPath ?? '/Applications/Hearthstone'
   },
 
-  get heartstoneRootPath() {
-    if (is.windows) return this.windowsHeartstoneRootPath;
-    if (is.macos) return this.macOSHeartstoneRootPath;
-    return this.windowsHeartstoneRootPath;
+  get heartstoneRootPath(): string {
+    if (is.windows) return this.windowsHeartstoneRootPath
+    if (is.macos) return this.macOSHeartstoneRootPath
+    return this.windowsHeartstoneRootPath
   },
 
-  get heartstonePowerLogFileName() {
-    return 'Power.log';
+  get heartstonePowerLogFileName(): string {
+    return 'Power.log'
   },
 
-  get heartstonePowerLogFilePath() {
+  get heartstonePowerLogFilePath(): string {
     return resolve(
       this.heartstoneRootPath,
       'Logs',
       this.heartstonePowerLogFileName
-    );
+    )
   },
 
-  get heartstoneBoxLogFileName() {
-    return 'LoadingScreen.log';
+  get heartstoneBoxLogFileName(): string {
+    return 'LoadingScreen.log'
   },
 
-  get heartstoneBoxLogFilePath() {
+  get heartstoneBoxLogFilePath(): string {
     return resolve(
       this.heartstoneRootPath,
       'Logs',
       this.heartstoneBoxLogFileName
-    );
+    )
   },
-};
+}
 
-export default Config;
+export default Config

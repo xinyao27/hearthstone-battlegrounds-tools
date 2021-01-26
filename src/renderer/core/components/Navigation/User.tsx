@@ -1,5 +1,5 @@
-import React from 'react';
-import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { withStyles, makeStyles, createStyles } from '@material-ui/core/styles'
 import {
   Tooltip,
   Typography,
@@ -7,12 +7,12 @@ import {
   Divider,
   Avatar,
   Badge,
-} from '@material-ui/core';
+} from '@material-ui/core'
 
-import useAuth from '@shared/hooks/useAuth';
-import useSynchronousRecords from '@shared/hooks/useSynchronousRecords';
+import useAuth from '@shared/hooks/useAuth'
+import useSynchronousRecords from '@shared/hooks/useSynchronousRecords'
 
-import Login from './Login';
+import Login from './Login'
 
 const StyledBadge = withStyles((theme) =>
   createStyles({
@@ -43,7 +43,7 @@ const StyledBadge = withStyles((theme) =>
       },
     },
   })
-)(Badge);
+)(Badge)
 
 const useStyles = makeStyles((theme) => ({
   small: {
@@ -66,19 +66,19 @@ const useStyles = makeStyles((theme) => ({
       background: 'none',
     },
   },
-}));
+}))
 
 const User: React.FC = () => {
-  const classes = useStyles();
-  const { hasAuth, user, resetAuth } = useAuth();
-  const { loading } = useSynchronousRecords();
+  const classes = useStyles()
+  const { hasAuth, user, resetAuth } = useAuth()
+  const { loading } = useSynchronousRecords()
 
   const handleLogout = React.useCallback(() => {
-    localStorage.removeItem('hbt_token');
-    resetAuth();
-  }, [resetAuth]);
+    localStorage.removeItem('hbt_token')
+    resetAuth()
+  }, [resetAuth])
 
-  const AvatarBadge = loading ? StyledBadge : Badge;
+  const AvatarBadge = loading ? StyledBadge : Badge
 
   if (hasAuth) {
     return (
@@ -114,9 +114,9 @@ const User: React.FC = () => {
           <Avatar className={classes.small}>{user?.bnetTag?.[0]}</Avatar>
         </AvatarBadge>
       </Tooltip>
-    );
+    )
   }
-  return <Login />;
-};
+  return <Login />
+}
 
-export default User;
+export default User

@@ -1,14 +1,14 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Tooltip } from '@material-ui/core';
-import clsx from 'clsx';
-import { useMount } from 'ahooks';
-import { remote } from 'electron';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Tooltip } from '@material-ui/core'
+import clsx from 'clsx'
+import { useMount } from 'ahooks'
+import { remote } from 'electron'
 
-import { config } from '@shared/store';
-import useUnplug from '@suspension/hooks/useUnplug';
+import { config } from '@shared/store'
+import useUnplug from '@suspension/hooks/useUnplug'
 
-import Loading from './Loading';
+import Loading from './Loading'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,19 +48,19 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: 140,
     backgroundPosition: '-103px -40px',
   },
-}));
+}))
 
 const Unplug: React.FC = () => {
-  const classes = useStyles();
-  const { loading, tooltip, unplug } = useUnplug();
+  const classes = useStyles()
+  const { loading, tooltip, unplug } = useUnplug()
 
   useMount(() => {
-    const shortcut = (config.get('shortcuts.unplug') as string) ?? 'F1';
-    remote.globalShortcut.register(shortcut, unplug);
+    const shortcut = (config.get('shortcuts.unplug') as string) ?? 'F1'
+    remote.globalShortcut.register(shortcut, unplug)
     return () => {
-      remote.globalShortcut.unregisterAll();
-    };
-  });
+      remote.globalShortcut.unregisterAll()
+    }
+  })
 
   return (
     <Tooltip title={tooltip} placement="top" arrow>
@@ -69,6 +69,8 @@ const Unplug: React.FC = () => {
           [classes.active]: loading,
         })}
         onClick={unplug}
+        role="button"
+        tabIndex={0}
       >
         {loading ? (
           <Loading size="small" />
@@ -77,7 +79,7 @@ const Unplug: React.FC = () => {
         )}
       </div>
     </Tooltip>
-  );
-};
+  )
+}
 
-export default Unplug;
+export default Unplug

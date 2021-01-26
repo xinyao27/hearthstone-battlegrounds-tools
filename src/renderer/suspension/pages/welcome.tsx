@@ -1,8 +1,8 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 
-import Layout from '@suspension/components/Layout';
-import Text from '@suspension/components/Text';
+import Layout from '@suspension/components/Layout'
+import Text from '@suspension/components/Text'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,17 +17,17 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 24,
     marginTop: theme.spacing(1),
   },
-}));
+}))
 
 const Welcome: React.FC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Layout className={classes.root}>
       <Text className={classes.slogan}>欢迎使用</Text>
       <Text className={classes.slogan2}>HBT 炉石战棋插件</Text>
     </Layout>
-  );
-};
+  )
+}
 
-export default Welcome;
+export default Welcome

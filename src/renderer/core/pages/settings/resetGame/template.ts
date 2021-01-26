@@ -1,4 +1,4 @@
-import { is } from 'electron-util';
+import { is } from 'electron-util'
 
 const template = is.windows
   ? `[Achievements]
@@ -71,6 +71,6 @@ LogLevel=1
 FilePrinting=true
 ConsolePrinting=false
 ScreenPrinting=false`
-  : '';
+  : ''
 
-export default template;
+export default template

@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   List,
   ListItem,
@@ -7,14 +7,14 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   ListSubheader,
-} from '@material-ui/core';
-import InfoIcon from '@material-ui/icons/Info';
-import { useBoolean } from 'ahooks';
+} from '@material-ui/core'
+import InfoIcon from '@material-ui/icons/Info'
+import { useBoolean } from 'ahooks'
 
-import About from '@core/components/About';
+import About from '@core/components/About'
 
-import getList from './list';
-import Intro from './Intro';
+import getList from './list'
+import Intro from './Intro'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme) => ({
     bottom: theme.spacing(9),
     right: theme.spacing(2),
   },
-}));
+}))
 
-export default function Settings() {
-  const classes = useStyles();
+const Settings: React.FC = () => {
+  const classes = useStyles()
 
-  const [aboutOpen, { toggle: toggleAboutOpen }] = useBoolean(false);
+  const [aboutOpen, { toggle: toggleAboutOpen }] = useBoolean(false)
 
-  const list = getList();
+  const list = getList()
 
   return (
     <div className={classes.root}>
@@ -69,5 +69,7 @@ export default function Settings() {
         </ListItem>
       </List>
     </div>
-  );
+  )
 }
+
+export default Settings

@@ -1,13 +1,13 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Menu, MenuItem } from '@material-ui/core';
-import { Minion, minions as allMinions } from '@hbt-org/core';
-import { getImageUrl } from '@suspension/utils';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Menu, MenuItem } from '@material-ui/core'
+import { Minion, minions as allMinions } from '@hbt-org/core'
+import { getImageUrl } from '@suspension/utils'
 
-import Text from '@suspension/components/Text';
+import Text from '@suspension/components/Text'
 
 function getMinion(dbfId: number) {
-  return allMinions.find((minion) => minion.dbfId === dbfId);
+  return allMinions.find((minion) => minion.dbfId === dbfId)
 }
 // 判断是否为传说随从
 function checkLegend(minion: Minion) {
@@ -23,21 +23,21 @@ function checkLegend(minion: Minion) {
     2081,
     1791,
     59955,
-  ];
-  return minionsThatMayFall.includes(minion.dbfId);
+  ]
+  return minionsThatMayFall.includes(minion.dbfId)
 }
 
 export interface EditProps {
-  ATK?: number;
-  HEALTH?: number;
-  TAUNT?: boolean;
-  DIVINE_SHIELD?: boolean;
-  POISONOUS?: boolean;
+  ATK?: number
+  HEALTH?: number
+  TAUNT?: boolean
+  DIVINE_SHIELD?: boolean
+  POISONOUS?: boolean
 }
 interface MinionProps {
-  minion: Minion;
-  type: 'store' | 'minions';
-  onChange?: (props: EditProps) => void;
+  minion: Minion
+  type: 'store' | 'minions'
+  onChange?: (props: EditProps) => void
 }
 
 const useStyles = makeStyles(() => ({
@@ -107,57 +107,57 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     fontSize: 24,
   },
-}));
+}))
 
 const initialState = {
   mouseX: null,
   mouseY: null,
-};
+}
 
 const MinionComponent: React.FC<MinionProps> = ({ minion, type, onChange }) => {
-  const classes = useStyles();
-  const template = React.useMemo(() => getMinion(minion.dbfId), [minion]);
+  const classes = useStyles()
+  const template = React.useMemo(() => getMinion(minion.dbfId), [minion])
 
   const [contextMenu, setContextMenu] = React.useState<{
-    mouseX: null | number;
-    mouseY: null | number;
-  }>(initialState);
+    mouseX: null | number
+    mouseY: null | number
+  }>(initialState)
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (type === 'minions') {
-      event.preventDefault();
+      event.preventDefault()
       setContextMenu({
         mouseX: event.clientX - 2,
         mouseY: event.clientY - 4,
-      });
+      })
     }
-  };
+  }
   const handleClose = React.useCallback(() => {
     if (type === 'minions') {
-      setContextMenu(initialState);
+      setContextMenu(initialState)
     }
-  }, [type]);
+  }, [type])
   const handlePropsSetting = React.useCallback(
     (prop: 'taunt' | 'divineShield' | 'poisonous') => {
       switch (prop) {
         case 'taunt':
           onChange?.({
             TAUNT: !minion.TAUNT,
-          });
-          break;
+          })
+          break
         case 'divineShield':
           onChange?.({
             DIVINE_SHIELD: !minion.DIVINE_SHIELD,
-          });
-          break;
+          })
+          break
         case 'poisonous':
           onChange?.({
             POISONOUS: !minion.POISONOUS,
-          });
-          break;
+          })
+          break
         default:
-          break;
+          break
       }
-      handleClose();
+      handleClose()
     },
     [
       handleClose,
@@ -166,7 +166,7 @@ const MinionComponent: React.FC<MinionProps> = ({ minion, type, onChange }) => {
       minion.TAUNT,
       onChange,
     ]
-  );
+  )
 
   return (
     <div className={classes.root} onContextMenu={handleClick}>
@@ -235,11 +235,11 @@ const MinionComponent: React.FC<MinionProps> = ({ minion, type, onChange }) => {
         color={minion.ATK > (template?.attack ?? 0) ? '#00f300' : 'white'}
         suppressContentEditableWarning
         contentEditable={type === 'minions'}
-        onBlur={(e: any) => {
+        onBlur={(e: { target: { textContent: string } }) => {
           if (type === 'minions') {
             onChange?.({
               ATK: parseInt(e?.target?.textContent, 10) || minion.ATK,
-            });
+            })
           }
         }}
       >
@@ -250,11 +250,11 @@ const MinionComponent: React.FC<MinionProps> = ({ minion, type, onChange }) => {
         color={minion.HEALTH > (template?.health ?? 0) ? '#00f300' : 'white'}
         suppressContentEditableWarning
         contentEditable={type === 'minions'}
-        onBlur={(e: any) => {
+        onBlur={(e: { target: { textContent: string } }) => {
           if (type === 'minions') {
             onChange?.({
               HEALTH: parseInt(e?.target?.textContent, 10) || minion.HEALTH,
-            });
+            })
           }
         }}
       >
@@ -285,7 +285,7 @@ const MinionComponent: React.FC<MinionProps> = ({ minion, type, onChange }) => {
         </Menu>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default MinionComponent;
+export default MinionComponent

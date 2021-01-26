@@ -1,7 +1,7 @@
-import type { IMinionPropsWithNameAndID } from '@hbt-org/core';
+import type { IMinionPropsWithNameAndID } from '@hbt-org/core'
 
 export interface OpponentLineup {
-  hero: string;
-  turn: string;
-  minions: IMinionPropsWithNameAndID[];
+  hero: string
+  turn: string
+  minions: IMinionPropsWithNameAndID[]
 }

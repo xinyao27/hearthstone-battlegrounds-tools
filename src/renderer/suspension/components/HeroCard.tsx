@@ -1,17 +1,17 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grow, Tooltip } from '@material-ui/core';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Grow, Tooltip } from '@material-ui/core'
 
-import type { IHero } from '@hbt-org/core';
+import type { IHero } from '@hbt-org/core'
 
-import HeroData from '@suspension/components/HeroData';
-import { getImageUrl } from '@suspension/utils';
-import useHeroes from '@shared/hooks/useHeroes';
+import HeroData from '@suspension/components/HeroData'
+import { getImageUrl } from '@suspension/utils'
+import useHeroes from '@shared/hooks/useHeroes'
 
 interface HeroCardProps {
-  heroId: number;
-  displayData?: boolean;
-  mini?: boolean;
+  heroId: number
+  displayData?: boolean
+  mini?: boolean
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -65,17 +65,17 @@ const useStyles = makeStyles((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },
-}));
+}))
 
 const HeroCard: React.FC<HeroCardProps> = (props) => {
-  const { heroes } = useHeroes();
-  const { heroId, displayData } = props;
-  const classes = useStyles(props);
+  const { heroes } = useHeroes()
+  const { heroId, displayData } = props
+  const classes = useStyles(props)
 
   const hero = React.useMemo<IHero | undefined>(
     () => heroes.find((v) => v.dbfId === heroId),
     [heroId, heroes]
-  );
+  )
 
   if (hero) {
     return (
@@ -97,15 +97,15 @@ const HeroCard: React.FC<HeroCardProps> = (props) => {
           {displayData ? <HeroData id={heroId} /> : null}
         </div>
       </Grow>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
 HeroCard.defaultProps = {
   displayData: true,
   mini: false,
-};
+}
 
-export default HeroCard;
+export default HeroCard

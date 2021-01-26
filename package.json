@@ -65,6 +65,8 @@
     "@babel/preset-typescript": "^7.12.7",
     "@babel/register": "^7.12.1",
     "@babel/runtime": "^7.12.5",
+    "@chenyueban/lint": "^0.1.4",
+    "@chenyueban/tsconfig": "^0.1.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
     "@sentry/webpack-plugin": "^1.14.0",
     "@teamsupercell/typings-for-css-modules-loader": "^2.2.1",
@@ -86,8 +88,6 @@
     "@types/reactour": "^1.17.1",
     "@types/uuid": "^8.3.0",
     "@types/webpack-env": "^1.15.2",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.1.0",
     "babel-loader": "^8.2.1",
@@ -110,20 +110,8 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.3",
     "enzyme-to-json": "^3.5.0",
-    "eslint": "^7.18.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-airbnb-typescript": "^12.0.0",
-    "eslint-config-erb": "^2.0.0",
-    "eslint-config-prettier": "^7.1.0",
     "eslint-import-resolver-webpack": "^0.13.0",
-    "eslint-plugin-compat": "^3.8.0",
     "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^24.1.3",
-    "eslint-plugin-jsx-a11y": "6.4.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.20.6",
-    "eslint-plugin-react-hooks": "^4.0.8",
     "file-loader": "^6.0.0",
     "husky": "^4.3.8",
     "identity-obj-proxy": "^3.0.0",
@@ -156,7 +144,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
-    "@sentry/electron": "^2.0.4",
+    "@sentry/electron": "^2.2.0",
     "ahooks": "^2.9.1",
     "axios": "^0.21.1",
     "clsx": "^1.1.1",
@@ -203,9 +191,7 @@
     ],
     "afterSign": ".erb/scripts/Notarize.js",
     "mac": {
-      "target": [
-        "dmg"
-      ],
+      "target": ["dmg"],
       "type": "distribution",
       "hardenedRuntime": true,
       "entitlements": "assets/entitlements.mac.plist",
@@ -229,9 +215,7 @@
     },
     "win": {
       "requestedExecutionLevel": "highestAvailable",
-      "target": [
-        "nsis"
-      ]
+      "target": ["nsis"]
     },
     "nsis": {
       "oneClick": false,
@@ -244,9 +228,7 @@
       "buildResources": "assets",
       "output": "release"
     },
-    "extraResources": [
-      "./assets/**"
-    ],
+    "extraResources": ["./assets/**"],
     "publish": {
       "provider": "github",
       "owner": "hbt-org",
@@ -260,21 +242,6 @@
     "yarn": ">=1.22.0"
   },
   "browserslist": [],
-  "prettier": {
-    "overrides": [
-      {
-        "files": [
-          ".prettierrc",
-          ".babelrc",
-          ".eslintrc"
-        ],
-        "options": {
-          "parser": "json"
-        }
-      }
-    ],
-    "singleQuote": true
-  },
   "standard-version": {
     "bumpFiles": [
       {
@@ -288,26 +255,18 @@
     ]
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "cross-env NODE_ENV=development eslint --cache"
-    ],
+    "*.{js,jsx,ts,tsx}": ["cross-env NODE_ENV=development eslint --cache"],
     "{*.json,.{babelrc,eslintrc,prettierrc}}": [
       "prettier --ignore-path .eslintignore --parser json --write"
     ],
-    "*.{css,scss}": [
-      "prettier --ignore-path .eslintignore --single-quote --write"
-    ],
+    "*.{css}": ["prettier --ignore-path .eslintignore --single-quote --write"],
     "*.{html,md,yml}": [
       "prettier --ignore-path .eslintignore --single-quote --write"
     ]
   },
   "renovate": {
-    "extends": [
-      "bliss"
-    ],
-    "baseBranches": [
-      "next"
-    ]
+    "extends": ["bliss"],
+    "baseBranches": ["next"]
   },
   "husky": {
     "hooks": {

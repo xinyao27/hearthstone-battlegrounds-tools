@@ -1,16 +1,16 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { is } from 'electron-util';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+import { is } from 'electron-util'
+import { Link } from 'react-router-dom'
 
-import routes from '@suspension/constants/routes.json';
-import Text from '@suspension/components/Text';
-import Unplug from '@suspension/components/Unplug';
-import { hideSuspension } from '@suspension/utils';
+import routes from '@suspension/constants/routes.json'
+import Text from '@suspension/components/Text'
+import Unplug from '@suspension/components/Unplug'
+import { hideSuspension } from '@suspension/utils'
 
 interface LayoutProps {
-  className?: string;
+  className?: string
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -108,17 +108,22 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     overflowY: 'auto',
   },
-}));
+}))
 
 const Layout: React.FC<LayoutProps> = ({ children, className }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
       <div className={classes.border} />
       <div className={classes.title}>
         <Text className={classes.titleText}>HBT</Text>
-        <div className={classes.close} onClick={hideSuspension} />
+        <div
+          className={classes.close}
+          onClick={hideSuspension}
+          role="button"
+          tabIndex={0}
+        />
       </div>
       {is.windows && <Unplug />}
       <div className={classes.container}>
@@ -146,7 +151,7 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

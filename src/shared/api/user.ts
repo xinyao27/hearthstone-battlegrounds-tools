@@ -1,17 +1,17 @@
-import request, { getAuthConfig } from './request';
+import request, { getAuthConfig } from './request'
 
 export interface User {
-  _id: string;
-  bnetId: number;
-  bnetSub: string;
-  bnetTag: string;
+  _id: string
+  bnetId: number
+  bnetSub: string
+  bnetTag: string
 }
 
 export async function getUser(): Promise<User | undefined> {
-  const url = `/auth/profile`;
-  const { data } = await request.get(url, getAuthConfig());
+  const url = `/auth/profile`
+  const { data } = await request.get(url, getAuthConfig())
   if (data && data.code === 0) {
-    return data.data;
+    return data.data
   }
-  return undefined;
+  return undefined
 }

@@ -1,15 +1,15 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { Minion } from '@hbt-org/core';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
+import { Minion } from '@hbt-org/core'
 
-import Text from '@suspension/components/Text';
+import Text from '@suspension/components/Text'
 
-import MinionComponent, { EditProps } from '@core/components/Minion';
+import MinionComponent, { EditProps } from '@core/components/Minion'
 
 interface MinionsProps {
-  data: Minion[];
-  onChange: React.Dispatch<React.SetStateAction<Minion[]>>;
+  data: Minion[]
+  onChange: React.Dispatch<React.SetStateAction<Minion[]>>
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -38,10 +38,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-}));
+}))
 
 const Minions: React.FC<MinionsProps> = ({ data, onChange }) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Droppable droppableId="minions" direction="horizontal">
@@ -55,12 +55,12 @@ const Minions: React.FC<MinionsProps> = ({ data, onChange }) => {
             data.map((minion, index) => {
               const handleChange = (props: EditProps) => {
                 onChange((prevState) => {
-                  minion.change(props);
-                  const newMinions = Array.from(prevState);
-                  newMinions[index] = minion;
-                  return newMinions;
-                });
-              };
+                  minion.change(props)
+                  const newMinions = Array.from(prevState)
+                  newMinions[index] = minion
+                  return newMinions
+                })
+              }
 
               return (
                 <Draggable
@@ -86,7 +86,7 @@ const Minions: React.FC<MinionsProps> = ({ data, onChange }) => {
                     </div>
                   )}
                 </Draggable>
-              );
+              )
             })
           ) : (
             <Text className={classes.center} stroke={false} color="#666">
@@ -97,7 +97,7 @@ const Minions: React.FC<MinionsProps> = ({ data, onChange }) => {
         </div>
       )}
     </Droppable>
-  );
-};
+  )
+}
 
-export default Minions;
+export default Minions

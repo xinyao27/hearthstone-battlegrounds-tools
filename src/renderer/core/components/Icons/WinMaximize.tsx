@@ -1,7 +1,7 @@
-import React from 'react';
-import { SvgIcon } from '@material-ui/core';
+import React from 'react'
+import { SvgIcon } from '@material-ui/core'
 
-export default function WinMaximize() {
+const WinMaximize: React.FC = () => {
   return (
     <SvgIcon
       viewBox="0 0 24 24"
@@ -24,5 +24,7 @@ export default function WinMaximize() {
         strokeLinejoin="round"
       />
     </SvgIcon>
-  );
+  )
 }
+
+export default WinMaximize

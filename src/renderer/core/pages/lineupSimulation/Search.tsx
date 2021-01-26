@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   Input,
   InputAdornment,
@@ -7,16 +7,16 @@ import {
   FormControl,
   Select,
   MenuItem,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 
 export interface SearchValue {
-  query: string;
-  techLevel: number;
-  race: number;
+  query: string
+  techLevel: number
+  race: number
 }
 interface SearchProps {
-  onChange: (value: SearchValue) => void;
+  onChange: (value: SearchValue) => void
 }
 
 const raceMap = [
@@ -60,7 +60,7 @@ const raceMap = [
     label: '龙',
     value: 24,
   },
-];
+]
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,59 +90,59 @@ const useStyles = makeStyles((theme) => ({
   techLevelItemText: {
     paddingLeft: theme.spacing(2),
   },
-}));
+}))
 
 const Search: React.FC<SearchProps> = ({ onChange }) => {
-  const classes = useStyles();
+  const classes = useStyles()
   // 搜索关键词 可能是完整或部分的随从名称 也可能是部分的技能描述等
-  const [query, setQuery] = React.useState<string>('');
-  const [techLevel, setTier] = React.useState<number>(0);
-  const [race, setRace] = React.useState<number>(-1);
+  const [query, setQuery] = React.useState<string>('')
+  const [techLevel, setTier] = React.useState<number>(0)
+  const [race, setRace] = React.useState<number>(-1)
   const handleQueryChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setQuery(e.target.value);
+      setQuery(e.target.value)
       onChange({
         query: e.target.value,
         techLevel,
         race,
-      });
+      })
     },
     [onChange, race, techLevel]
-  );
+  )
   const handleClearQuery = React.useCallback(() => {
-    setQuery('');
+    setQuery('')
     onChange({
       query: '',
       techLevel,
       race,
-    });
-  }, [onChange, race, techLevel]);
+    })
+  }, [onChange, race, techLevel])
 
   const handleTierChange = React.useCallback(
     (e: React.ChangeEvent<{ value: unknown }>) => {
-      const value = e.target.value as number;
-      setTier(value);
+      const value = e.target.value as number
+      setTier(value)
       onChange({
         query,
         techLevel: value,
         race,
-      });
+      })
     },
     [onChange, query, race]
-  );
+  )
 
   const handleRaceChange = React.useCallback(
     (e: React.ChangeEvent<{ value: unknown }>) => {
-      const value = e.target.value as number;
-      setRace(value);
+      const value = e.target.value as number
+      setRace(value)
       onChange({
         query,
         techLevel,
         race: value,
-      });
+      })
     },
     [onChange, query, techLevel]
-  );
+  )
 
   return (
     <div className={classes.root}>
@@ -198,7 +198,7 @@ const Search: React.FC<SearchProps> = ({ onChange }) => {
         </FormControl>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Search;
+export default Search

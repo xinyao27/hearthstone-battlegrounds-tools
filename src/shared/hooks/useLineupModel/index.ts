@@ -1,1 +1,1 @@
-export { default } from './useLineupModel';
+export { default } from './useLineupModel'

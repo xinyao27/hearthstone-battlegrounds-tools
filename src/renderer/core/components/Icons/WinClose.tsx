@@ -1,7 +1,7 @@
-import React from 'react';
-import { SvgIcon } from '@material-ui/core';
+import React from 'react'
+import { SvgIcon } from '@material-ui/core'
 
-export default function WinClose() {
+const WinClose: React.FC = () => {
   return (
     <SvgIcon
       viewBox="0 0 12 12"
@@ -14,5 +14,7 @@ export default function WinClose() {
       <line x1="3.8" y1="3.8" x2="8.3" y2="8.3" />
       <line x1="8.3" y1="3.8" x2="3.8" y2="8.3" />
     </SvgIcon>
-  );
+  )
 }
+
+export default WinClose

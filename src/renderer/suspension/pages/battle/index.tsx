@@ -1,13 +1,13 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { useToggle } from 'ahooks';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { useToggle } from 'ahooks'
 
-import Layout from '@suspension/components/Layout';
-import Text from '@suspension/components/Text';
-import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook';
-import useBattleState from '@suspension/hooks/useBattleState';
+import Layout from '@suspension/components/Layout'
+import Text from '@suspension/components/Text'
+import SwitchBattleAndHandbook from '@suspension/components/SwitchBattleAndHandbook'
+import useBattleState from '@suspension/hooks/useBattleState'
 
-import Opponent from './Opponent';
+import Opponent from './Opponent'
 
 const useStyles = makeStyles((theme) => ({
   round: {
@@ -68,10 +68,10 @@ const useStyles = makeStyles((theme) => ({
   allOpponents: {
     marginTop: theme.spacing(2),
   },
-}));
+}))
 
 const Battle: React.FC = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   const {
     currentTurn,
@@ -80,11 +80,11 @@ const Battle: React.FC = () => {
     previousOpponent,
     previousOpponentLineup,
     allOpponentLineup,
-  } = useBattleState();
+  } = useBattleState()
 
   const [visible, { toggle: toggleVisible }] = useToggle<'current' | 'all'>(
     'current'
-  );
+  )
 
   return (
     <Layout>
@@ -145,7 +145,7 @@ const Battle: React.FC = () => {
           ))}
       </div>
     </Layout>
-  );
-};
+  )
+}
 
-export default Battle;
+export default Battle

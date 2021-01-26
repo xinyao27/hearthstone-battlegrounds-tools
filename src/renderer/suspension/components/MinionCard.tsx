@@ -1,23 +1,23 @@
-import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Box, Grow, Tooltip } from '@material-ui/core';
-import 'echarts/lib/chart/bar';
-import 'echarts/lib/component/tooltip';
-import type { IMinionProps } from '@hbt-org/core';
+import React from 'react'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
+import { Box, Grow, Tooltip } from '@material-ui/core'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/component/tooltip'
+import type { IMinionProps } from '@hbt-org/core'
 
-import { getImageUrl } from '@suspension/utils';
-import Text from '@suspension/components/Text';
-import useMinions from '@shared/hooks/useMinions';
+import { getImageUrl } from '@suspension/utils'
+import Text from '@suspension/components/Text'
+import useMinions from '@shared/hooks/useMinions'
 
 const ImgTooltip = withStyles(() => ({
   tooltip: {
     background: 'none',
   },
-}))(Tooltip);
+}))(Tooltip)
 
 interface MinionCardProps {
-  minionName: string;
-  props?: IMinionProps;
+  minionName: string
+  props?: IMinionProps
 }
 
 const useStyles = makeStyles(() => ({
@@ -116,17 +116,17 @@ const useStyles = makeStyles(() => ({
     backgroundRepeat: 'no-repeat',
     backgroundSize: '100%',
   },
-}));
+}))
 
 const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
-  const classes = useStyles();
-  const { getMinion, getMinionId } = useMinions();
+  const classes = useStyles()
+  const { getMinion, getMinionId } = useMinions()
 
   const minion = React.useMemo(() => getMinion(getMinionId(minionName)), [
     minionName,
     getMinion,
     getMinionId,
-  ]);
+  ])
   const {
     // 酒馆星级
     TECH_LEVEL,
@@ -146,8 +146,8 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
     POISONOUS,
     // 金色随从
     BACON_MINION_IS_LEVEL_TWO,
-  } = props;
-  const imgSrc = getImageUrl(minion?.id ?? '', 'minion');
+  } = props
+  const imgSrc = getImageUrl(minion?.id ?? '', 'minion')
   if (minionName) {
     return (
       <Grow
@@ -207,7 +207,6 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
                     className={classes.taunt}
                     style={{
                       backgroundImage: `url(${
-                        // eslint-disable-next-line import/no-dynamic-require
                         require(`@shared/assets/images/${
                           BACON_MINION_IS_LEVEL_TWO ? 'taunt_gold' : 'taunt'
                         }.png`).default
@@ -220,10 +219,10 @@ const MinionCard: React.FC<MinionCardProps> = ({ minionName, props = {} }) => {
           </ImgTooltip>
         </div>
       </Grow>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
-export default MinionCard;
+export default MinionCard

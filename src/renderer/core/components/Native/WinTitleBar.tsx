@@ -1,10 +1,10 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import { remote } from 'electron';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import { remote } from 'electron'
 
-import WinMinimize from '@core/components/Icons/WinMinimize';
-import WinMaximize from '@core/components/Icons/WinMaximize';
-import WinClose from '@core/components/Icons/WinClose';
+import WinMinimize from '@core/components/Icons/WinMinimize'
+import WinMaximize from '@core/components/Icons/WinMaximize'
+import WinClose from '@core/components/Icons/WinClose'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,29 +39,41 @@ const useStyles = makeStyles((theme) => ({
       color: '#fff',
     },
   },
-}));
+}))
 
-export default function WinTitleBar() {
-  const classes = useStyles();
-  const win = React.useMemo(() => remote.getGlobal('managers').coreManager, []);
+const WinTitleBar: React.FC = () => {
+  const classes = useStyles()
+  const win = React.useMemo(() => remote.getGlobal('managers').coreManager, [])
   const handleMinimize = React.useCallback(() => {
-    win?.minimize();
-  }, [win]);
+    win?.minimize()
+  }, [win])
   const handleClose = React.useCallback(() => {
-    win?.hide();
-  }, [win]);
+    win?.hide()
+  }, [win])
 
   return (
     <div className={classes.root}>
-      <div className={classes.minimize} onClick={handleMinimize}>
+      <div
+        className={classes.minimize}
+        onClick={handleMinimize}
+        role="button"
+        tabIndex={0}
+      >
         <WinMinimize />
       </div>
       <div>
         <WinMaximize />
       </div>
-      <div className={classes.close} onClick={handleClose}>
+      <div
+        className={classes.close}
+        onClick={handleClose}
+        role="button"
+        tabIndex={0}
+      >
         <WinClose />
       </div>
     </div>
-  );
+  )
 }
+
+export default WinTitleBar

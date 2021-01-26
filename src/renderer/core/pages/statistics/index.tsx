@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import {
   Paper,
   TableContainer,
@@ -12,14 +12,14 @@ import {
   Box,
   IconButton,
   Avatar,
-} from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import dayjs from 'dayjs';
-import { useInViewport, useUpdateEffect } from 'ahooks';
+} from '@material-ui/core'
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import dayjs from 'dayjs'
+import { useInViewport, useUpdateEffect } from 'ahooks'
 
-import useStatistics, { ResultItem } from '@shared/hooks/useStatistics';
-import useRecord from '@shared/hooks/useRecord';
+import useStatistics, { ResultItem } from '@shared/hooks/useStatistics'
+import useRecord from '@shared/hooks/useRecord'
 
 const useRowStyles = makeStyles({
   root: {
@@ -31,13 +31,13 @@ const useRowStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
   },
-});
+})
 interface RowProps {
-  row: ResultItem;
+  row: ResultItem
 }
 const Row: React.FC<RowProps> = ({ row }) => {
-  const classes = useRowStyles();
-  const [open, setOpen] = React.useState(false);
+  const classes = useRowStyles()
+  const [open, setOpen] = React.useState(false)
 
   return (
     <>
@@ -94,20 +94,20 @@ const Row: React.FC<RowProps> = ({ row }) => {
         </TableCell>
       </TableRow>
     </>
-  );
-};
+  )
+}
 
-export default function Statistics() {
-  const [recordList, { refresh }] = useRecord();
-  const result = useStatistics(recordList);
-  const rootRef = React.useRef<HTMLDivElement>(null);
+const Statistics: React.FC = () => {
+  const [recordList, { refresh }] = useRecord()
+  const result = useStatistics(recordList)
+  const rootRef = React.useRef<HTMLDivElement>(null)
 
-  const inViewPort = useInViewport(rootRef);
+  const inViewPort = useInViewport(rootRef)
   useUpdateEffect(() => {
     if (inViewPort) {
-      refresh();
+      refresh()
     }
-  }, [inViewPort]);
+  }, [inViewPort])
 
   return (
     <TableContainer component={Paper} ref={rootRef}>
@@ -128,5 +128,7 @@ export default function Statistics() {
         </TableBody>
       </Table>
     </TableContainer>
-  );
+  )
 }
+
+export default Statistics

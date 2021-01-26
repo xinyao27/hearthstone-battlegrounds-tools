@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 import {
   ListItem,
   ListItemAvatar,
@@ -11,30 +11,30 @@ import {
   Grow,
   Tooltip,
   Badge,
-} from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CloudDoneIcon from '@material-ui/icons/CloudDone';
-import AllInclusiveIcon from '@material-ui/icons/AllInclusive';
-import dayjs from 'dayjs';
-import { useUpdateEffect, useBoolean } from 'ahooks';
-import { is } from 'electron-util';
-import { Minion } from '@hbt-org/core';
+} from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete'
+import CloudDoneIcon from '@material-ui/icons/CloudDone'
+import AllInclusiveIcon from '@material-ui/icons/AllInclusive'
+import dayjs from 'dayjs'
+import { useUpdateEffect, useBoolean } from 'ahooks'
+import { is } from 'electron-util'
+import { Minion } from '@hbt-org/core'
 
-import { getImageUrl } from '@suspension/utils';
-import type { RecordItem } from '@shared/hooks/useStatistics';
-import useHeroes from '@shared/hooks/useHeroes';
-import useAuth from '@shared/hooks/useAuth';
-import useSurprise from '@core/hooks/useSurprise';
-import MinionComponent from '@core/components/Minion';
+import { getImageUrl } from '@suspension/utils'
+import type { RecordItem } from '@shared/hooks/useStatistics'
+import useHeroes from '@shared/hooks/useHeroes'
+import useAuth from '@shared/hooks/useAuth'
+import useSurprise from '@core/hooks/useSurprise'
+import MinionComponent from '@core/components/Minion'
 
-import Replay from './Replay';
+import Replay from './Replay'
 
 const MinionTooltip = withStyles(() => ({
   tooltip: {
     background: 'none',
     maxWidth: 800,
   },
-}))(Tooltip);
+}))(Tooltip)
 
 const useStyles = makeStyles((theme) => ({
   lineup: {
@@ -58,14 +58,14 @@ const useStyles = makeStyles((theme) => ({
   date: {
     marginLeft: theme.spacing(2),
   },
-}));
+}))
 
 interface ItemProps {
-  value: RecordItem;
-  selected: boolean;
-  onClick: (id: string) => void;
-  onDelete: (value: RecordItem) => void;
-  onChange: (value: RecordItem) => void;
+  value: RecordItem
+  selected: boolean
+  onClick: (id: string) => void
+  onDelete: (value: RecordItem) => void
+  onChange: (value: RecordItem) => void
 }
 
 const Item: React.FC<ItemProps> = ({
@@ -75,32 +75,32 @@ const Item: React.FC<ItemProps> = ({
   onDelete,
   onChange,
 }) => {
-  const classes = useStyles();
-  const inputRef = React.useRef<HTMLInputElement>();
-  const { heroes } = useHeroes();
-  const { run: surprise } = useSurprise();
-  const { hasAuth } = useAuth();
-  const [replayOpen, { toggle: toggleReplay }] = useBoolean(false);
+  const classes = useStyles()
+  const inputRef = React.useRef<HTMLInputElement>()
+  const { heroes } = useHeroes()
+  const { run: surprise } = useSurprise()
+  const { hasAuth } = useAuth()
+  const [replayOpen, { toggle: toggleReplay }] = useBoolean(false)
 
   const handleRemarkChange = React.useCallback(
     (e) => {
       if (e.target.value !== undefined && e.target.value.length <= 20) {
-        onChange({ ...value, remark: e.target.value });
+        onChange({ ...value, remark: e.target.value })
       }
     },
     [onChange, value]
-  );
+  )
   const currentHero = React.useMemo(
     () => heroes.find((h) => h.dbfId === value?.hero?.id),
     [heroes, value]
-  );
+  )
 
   useUpdateEffect(() => {
     if (selected) {
-      surprise(value?.remark ?? '');
-      inputRef.current?.focus();
+      surprise(value?.remark ?? '')
+      inputRef.current?.focus()
     }
-  }, [selected, value]);
+  }, [selected, value])
 
   return (
     <MinionTooltip
@@ -167,7 +167,7 @@ const Item: React.FC<ItemProps> = ({
             <IconButton
               aria-label="delete"
               onClick={() => {
-                onDelete(value);
+                onDelete(value)
               }}
             >
               <DeleteIcon />
@@ -197,7 +197,7 @@ const Item: React.FC<ItemProps> = ({
         </ListItemSecondaryAction>
       </ListItem>
     </MinionTooltip>
-  );
-};
+  )
+}
 
-export default Item;
+export default Item

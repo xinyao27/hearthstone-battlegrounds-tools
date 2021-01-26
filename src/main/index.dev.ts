@@ -2,7 +2,7 @@
 
 // import { app } from 'electron';
 
-require('electron-debug')();
+require('electron-debug')()
 
 // app
 //   .whenReady()

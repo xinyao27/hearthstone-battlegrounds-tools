@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Box,
   Button,
@@ -18,21 +18,21 @@ import {
   ListItemSecondaryAction,
   Switch,
   Tooltip,
-} from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { useBoolean, useUpdateEffect } from 'ahooks';
-import { useSnackbar } from 'notistack';
-import { remote } from 'electron';
+} from '@material-ui/core'
+import AddIcon from '@material-ui/icons/Add'
+import CloseIcon from '@material-ui/icons/Close'
+import SettingsIcon from '@material-ui/icons/Settings'
+import { useBoolean, useUpdateEffect } from 'ahooks'
+import { useSnackbar } from 'notistack'
+import { remote } from 'electron'
 
-import useConnect from './useConnect';
-import useObsText from './useObsText';
-import useObsImage from './useObsImage';
+import useConnect from './useConnect'
+import useObsText from './useObsText'
+import useObsImage from './useObsImage'
 
 const OBS: React.FC = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const { connect, disconnect, connected, error } = useConnect();
+  const { enqueueSnackbar } = useSnackbar()
+  const { connect, disconnect, connected, error } = useConnect()
   const {
     enable: textEnable,
     setEnable: textSetEnable,
@@ -41,7 +41,7 @@ const OBS: React.FC = () => {
     setCurrentSource: textSetCurrentSource,
     max: textMax,
     setMax: textSetMax,
-  } = useObsText();
+  } = useObsText()
   const {
     enable: imageEnable,
     setEnable: imageSetEnable,
@@ -49,51 +49,51 @@ const OBS: React.FC = () => {
     setDir: imageSetDir,
     max: imageMax,
     setMax: imageSetMax,
-  } = useObsImage();
-  const [dialogOpen, { toggle: setDialogOpen }] = useBoolean(false);
-  const [drawerOpen, { toggle: setDrawerOpen }] = useBoolean(false);
-  const [host, setHost] = React.useState('http://localhost:4444');
-  const [password, setPassword] = React.useState('');
+  } = useObsImage()
+  const [dialogOpen, { toggle: setDialogOpen }] = useBoolean(false)
+  const [drawerOpen, { toggle: setDrawerOpen }] = useBoolean(false)
+  const [host, setHost] = React.useState('http://localhost:4444')
+  const [password, setPassword] = React.useState('')
   const handleClickConnect = React.useCallback(() => {
-    setDialogOpen(true);
-  }, [setDialogOpen]);
+    setDialogOpen(true)
+  }, [setDialogOpen])
   const handleDialogClose = React.useCallback(() => {
-    setDialogOpen(false);
-  }, [setDialogOpen]);
+    setDialogOpen(false)
+  }, [setDialogOpen])
   const handleHostValueChange = React.useCallback((e) => {
-    setHost(e.target.value);
-  }, []);
+    setHost(e.target.value)
+  }, [])
   const handlePasswordValueChange = React.useCallback((e) => {
-    setPassword(e.target.value);
-  }, []);
+    setPassword(e.target.value)
+  }, [])
   const handleConnect = React.useCallback(() => {
-    connect(host, password);
-    setDrawerOpen(true);
-    handleDialogClose();
-  }, [connect, handleDialogClose, host, password, setDrawerOpen]);
+    connect(host, password)
+    setDrawerOpen(true)
+    handleDialogClose()
+  }, [connect, handleDialogClose, host, password, setDrawerOpen])
   const handleChooseImageDir = React.useCallback(() => {
     remote.dialog
       .showOpenDialog({ properties: ['openDirectory'] })
       .then((result) => {
         if (!result.canceled && result.filePaths[0]) {
-          imageSetDir(result.filePaths[0]);
+          imageSetDir(result.filePaths[0])
         }
-        return result;
+        return result
       })
       // eslint-disable-next-line no-console
-      .catch(console.log);
-  }, [imageSetDir]);
+      .catch(console.log)
+  }, [imageSetDir])
 
   useUpdateEffect(() => {
     if (!connected) {
-      setDrawerOpen(false);
+      setDrawerOpen(false)
     }
-  }, [connected]);
+  }, [connected])
   useUpdateEffect(() => {
     if (error) {
-      enqueueSnackbar(error, { variant: 'error' });
+      enqueueSnackbar(error, { variant: 'error' })
     }
-  }, [error]);
+  }, [error])
 
   return (
     <Box>
@@ -232,7 +232,7 @@ const OBS: React.FC = () => {
         </List>
       </Drawer>
     </Box>
-  );
-};
+  )
+}
 
-export default OBS;
+export default OBS

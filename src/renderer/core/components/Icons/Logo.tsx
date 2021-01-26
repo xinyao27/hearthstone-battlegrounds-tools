@@ -1,7 +1,7 @@
-import React from 'react';
-import { SvgIcon } from '@material-ui/core';
+import React from 'react'
+import { SvgIcon } from '@material-ui/core'
 
-export default function Logo() {
+const Logo: React.FC = () => {
   return (
     <SvgIcon viewBox="0 0 23 26" x="0px" y="0px">
       <g>
@@ -21,5 +21,7 @@ export default function Logo() {
         </g>
       </g>
     </SvgIcon>
-  );
+  )
 }
+
+export default Logo

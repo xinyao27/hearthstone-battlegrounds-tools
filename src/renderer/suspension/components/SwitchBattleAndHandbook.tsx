@@ -1,14 +1,14 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
+import { Link } from 'react-router-dom'
 
-import routes from '@suspension/constants/routes.json';
+import routes from '@suspension/constants/routes.json'
 
-import Text from './Text';
+import Text from './Text'
 
 interface SwitchBattleAndHandbookProps {
-  current: 'battle' | 'handbook';
+  current: 'battle' | 'handbook'
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -39,12 +39,12 @@ const useStyles = makeStyles((theme) => ({
   select: {
     filter: 'grayscale(0) drop-shadow(0px 0px 6px #f9cd0d)',
   },
-}));
+}))
 
 const SwitchBattleAndHandbook: React.FC<SwitchBattleAndHandbookProps> = ({
   current,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <div className={classes.root}>
       <Link
@@ -72,7 +72,7 @@ const SwitchBattleAndHandbook: React.FC<SwitchBattleAndHandbookProps> = ({
         <Text>战棋图鉴</Text>
       </Link>
     </div>
-  );
-};
+  )
+}
 
-export default SwitchBattleAndHandbook;
+export default SwitchBattleAndHandbook

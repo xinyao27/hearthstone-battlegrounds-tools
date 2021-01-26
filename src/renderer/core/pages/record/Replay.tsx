@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from 'react';
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles, createStyles } from '@material-ui/core/styles'
 import {
   Drawer,
   Stepper,
@@ -10,21 +10,21 @@ import {
   Divider,
   Avatar,
   Button,
-} from '@material-ui/core';
-import { Minion } from '@hbt-org/core';
-import { useCounter, useUpdateEffect } from 'ahooks';
+} from '@material-ui/core'
+import { Minion } from '@hbt-org/core'
+import { useCounter, useUpdateEffect } from 'ahooks'
 
-import MinionComponent from '@core/components/Minion';
-import { getImageUrl } from '@suspension/utils';
-import Text from '@suspension/components/Text';
-import useHeroes from '@shared/hooks/useHeroes';
-import { RecordItem } from '@shared/hooks/useStatistics';
-import useLineupModel from '@shared/hooks/useLineupModel';
+import MinionComponent from '@core/components/Minion'
+import { getImageUrl } from '@suspension/utils'
+import Text from '@suspension/components/Text'
+import useHeroes from '@shared/hooks/useHeroes'
+import { RecordItem } from '@shared/hooks/useStatistics'
+import useLineupModel from '@shared/hooks/useLineupModel'
 
 interface ReplayProps {
-  open: boolean;
-  onClose: () => void;
-  data: RecordItem['history'];
+  open: boolean
+  onClose: () => void
+  data: RecordItem['history']
 }
 
 const useStyles = makeStyles((theme) =>
@@ -96,20 +96,20 @@ const useStyles = makeStyles((theme) =>
       },
     },
   })
-);
+)
 
 const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
-  const classes = useStyles();
-  const { getHeroId, getHero } = useHeroes();
+  const classes = useStyles()
+  const { getHeroId, getHero } = useHeroes()
   const [current, { inc, dec, set }] = useCounter(0, {
     max: data.length - 1,
     min: 0,
-  });
+  })
 
   useUpdateEffect(() => {
-    const dom = document.querySelector(`#content-${current}`);
-    dom?.scrollIntoView(false);
-  }, [current]);
+    const dom = document.querySelector(`#content-${current}`)
+    dom?.scrollIntoView(false)
+  }, [current])
 
   return (
     <Drawer
@@ -128,17 +128,18 @@ const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
             item?.lineup.own ?? [],
             true,
             true
-          );
+          )
           const {
             run: opponentRun,
             combatPower: opponentCombatPower,
-          } = useLineupModel(item?.lineup.opponent ?? [], true, true);
+          } = useLineupModel(item?.lineup.opponent ?? [], true, true)
           React.useEffect(() => {
             if (current === index) {
-              ownRun();
-              opponentRun();
+              ownRun()
+              opponentRun()
             }
-          }, [current]);
+            // eslint-disable-next-line
+          }, [current])
           if (item.turn) {
             return (
               // eslint-disable-next-line react/no-array-index-key
@@ -224,9 +225,9 @@ const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
                   </div>
                 </StepContent>
               </Step>
-            );
+            )
           }
-          return null;
+          return null
         })}
       </Stepper>
 
@@ -249,7 +250,7 @@ const Replay: React.FC<ReplayProps> = ({ open, onClose, data = [] }) => {
         </Button>
       </div>
     </Drawer>
-  );
-};
+  )
+}
 
-export default Replay;
+export default Replay

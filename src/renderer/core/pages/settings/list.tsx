@@ -1,7 +1,7 @@
-import React from 'react';
-import { remote } from 'electron';
-import path from 'path';
-import { useBoolean } from 'ahooks';
+import React from 'react'
+import { remote } from 'electron'
+import path from 'path'
+import { useBoolean } from 'ahooks'
 import {
   IconButton,
   Button,
@@ -9,37 +9,37 @@ import {
   Tooltip,
   Select,
   MenuItem,
-} from '@material-ui/core';
-import FolderIcon from '@material-ui/icons/Folder';
-import SettingsIcon from '@material-ui/icons/Settings';
-import KeyboardIcon from '@material-ui/icons/Keyboard';
-import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
-import AllInboxIcon from '@material-ui/icons/AllInbox';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import SportsMmaIcon from '@material-ui/icons/SportsMma';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import VideogameAssetIcon from '@material-ui/icons/VideogameAsset';
-import BuildIcon from '@material-ui/icons/Build';
-import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
-import { useSnackbar } from 'notistack';
-import { is } from 'electron-util';
+} from '@material-ui/core'
+import FolderIcon from '@material-ui/icons/Folder'
+import SettingsIcon from '@material-ui/icons/Settings'
+import KeyboardIcon from '@material-ui/icons/Keyboard'
+import DeveloperModeIcon from '@material-ui/icons/DeveloperMode'
+import AllInboxIcon from '@material-ui/icons/AllInbox'
+import OpenInNewIcon from '@material-ui/icons/OpenInNew'
+import SportsMmaIcon from '@material-ui/icons/SportsMma'
+import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked'
+import VideogameAssetIcon from '@material-ui/icons/VideogameAsset'
+import BuildIcon from '@material-ui/icons/Build'
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore'
+import { useSnackbar } from 'notistack'
+import { is } from 'electron-util'
 
-import { config } from '@shared/store';
-import useInit from '@core/hooks/useInit';
-import useFramerate, { Framerate } from '@core/hooks/useFramerate';
+import { config } from '@shared/store'
+import useInit from '@core/hooks/useInit'
+import useFramerate, { Framerate } from '@core/hooks/useFramerate'
 
-import OBS from './OBS';
-import resetGame from './resetGame';
+import OBS from './OBS'
+import resetGame from './resetGame'
 
 interface Item {
-  id?: string;
-  order: number;
-  icon: React.ReactElement;
-  label: string;
-  action: React.ReactNode | React.Component;
+  id?: string
+  order: number
+  icon: React.ReactElement
+  label: string
+  action: React.ReactNode | React.Component
 }
 function getList(): Item[] {
-  const { suspensionManager } = remote.getGlobal('managers');
+  const { suspensionManager } = remote.getGlobal('managers')
   const list = [
     {
       order: 1,
@@ -47,14 +47,14 @@ function getList(): Item[] {
       label: '当前悬浮框展示状态',
       action: function Action() {
         const handleToggle = () => {
-          const visible = suspensionManager?.window.isVisible();
+          const visible = suspensionManager?.window.isVisible()
           if (visible) {
-            suspensionManager?.hide();
+            suspensionManager?.hide()
           } else {
-            suspensionManager?.show();
+            suspensionManager?.show()
           }
-        };
-        return <Button onClick={handleToggle}>切换</Button>;
+        }
+        return <Button onClick={handleToggle}>切换</Button>
       },
     },
     {
@@ -63,32 +63,32 @@ function getList(): Item[] {
       icon: <FolderIcon />,
       label: '设置《炉石传说》安装路径',
       action: function Action() {
-        const { enqueueSnackbar } = useSnackbar();
-        const [, { check }] = useInit();
+        const { enqueueSnackbar } = useSnackbar()
+        const [, { check }] = useInit()
         const handleClick = () => {
           remote.dialog
             .showOpenDialog({ properties: ['openDirectory'] })
             .then((result) => {
               if (!result.canceled && result.filePaths[0]) {
-                config.set('heartstoneRootPath', result.filePaths[0]);
-                return check();
+                config.set('heartstoneRootPath', result.filePaths[0])
+                return check()
               }
-              throw result;
+              throw result
             })
             .then((success) => {
               if (success) {
                 enqueueSnackbar('设置《炉石传说》安装路径成功', {
                   variant: 'success',
-                });
+                })
               }
-              return success;
+              return success
             })
             .catch(() => {
               enqueueSnackbar('设置《炉石传说》安装路径失败，请重试', {
                 variant: 'error',
-              });
-            });
-        };
+              })
+            })
+        }
         return (
           <Tooltip title={config.get('heartstoneRootPath') as string} arrow>
             <IconButton
@@ -98,7 +98,7 @@ function getList(): Item[] {
               <SettingsIcon />
             </IconButton>
           </Tooltip>
-        );
+        )
       },
     },
     {
@@ -127,26 +127,26 @@ function getList(): Item[] {
             label: '前1% (11000+)',
             key: '1',
           },
-        ];
+        ]
         const [rank, setRank] = React.useState<string>(
           () => (config.get('rank') as string) ?? ranks[0].key
-        );
-        const { enqueueSnackbar } = useSnackbar();
+        )
+        const { enqueueSnackbar } = useSnackbar()
         const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-          const value = e?.target?.value as string;
+          const value = e?.target?.value as string
           if (value) {
-            config.set('rank', value);
-            setRank(value);
-            const label = ranks.find((v) => v.key === value)?.label;
+            config.set('rank', value)
+            setRank(value)
+            const label = ranks.find((v) => v.key === value)?.label
             enqueueSnackbar(`修改玩家分段 ${label} 成功，重启插件后生效`, {
               variant: 'success',
-            });
+            })
           } else {
             enqueueSnackbar(`修改玩家分段失败，请重试`, {
               variant: 'error',
-            });
+            })
           }
-        };
+        }
         return (
           <Tooltip
             title="这个选项将影响选择英雄时的英雄数据"
@@ -161,7 +161,7 @@ function getList(): Item[] {
               ))}
             </Select>
           </Tooltip>
-        );
+        )
       },
     },
     {
@@ -171,19 +171,19 @@ function getList(): Item[] {
       action: function Action() {
         const [checked, { toggle }] = useBoolean(
           config.get('enableGameResult') as boolean
-        );
+        )
         return (
           <Tooltip title="提前看到排名可能会影响游戏体验，请谨慎开启" arrow>
             <Switch
               edge="end"
               checked={checked}
               onChange={(_, value) => {
-                toggle(value);
-                config.set('enableGameResult', value);
+                toggle(value)
+                config.set('enableGameResult', value)
               }}
             />
           </Tooltip>
-        );
+        )
       },
     },
     {
@@ -194,14 +194,14 @@ function getList(): Item[] {
         const handleClick = () => {
           const targetPath = is.windows
             ? path.join(remote.app.getPath('userData'), remote.app.getName())
-            : remote.app.getPath('userData');
-          remote.shell.showItemInFolder(targetPath);
-        };
+            : remote.app.getPath('userData')
+          remote.shell.showItemInFolder(targetPath)
+        }
         return (
           <IconButton onClick={handleClick}>
             <OpenInNewIcon />
           </IconButton>
-        );
+        )
       },
     },
     {
@@ -209,11 +209,11 @@ function getList(): Item[] {
       icon: <SettingsBackupRestoreIcon />,
       label: '修复炉石',
       action: function Action() {
-        const { enqueueSnackbar } = useSnackbar();
+        const { enqueueSnackbar } = useSnackbar()
         const handleClick = async () => {
-          await resetGame();
-          enqueueSnackbar('修复成功，请重启炉石传说', { variant: 'success' });
-        };
+          await resetGame()
+          enqueueSnackbar('修复成功，请重启炉石传说', { variant: 'success' })
+        }
         return (
           <Tooltip
             title="若插件不展示信息可尝试（请在炉石关闭状态下使用）"
@@ -223,7 +223,7 @@ function getList(): Item[] {
               <SettingsBackupRestoreIcon />
             </IconButton>
           </Tooltip>
-        );
+        )
       },
     },
     {
@@ -231,23 +231,23 @@ function getList(): Item[] {
       icon: <BuildIcon />,
       label: '修改炉石帧数',
       action: function Action() {
-        const { enqueueSnackbar } = useSnackbar();
-        const [framerate, { toggle }] = useFramerate();
+        const { enqueueSnackbar } = useSnackbar()
+        const [framerate, { toggle }] = useFramerate()
         const handleChange = (
           e: React.ChangeEvent<{ name?: string; value: unknown }>
         ) => {
-          const value = e?.target?.value as Framerate;
+          const value = e?.target?.value as Framerate
           if (value) {
-            toggle(value);
+            toggle(value)
             enqueueSnackbar(`修改炉石帧数 ${value}Hz 成功，请重启炉石传说`, {
               variant: 'success',
-            });
+            })
           } else {
             enqueueSnackbar(`修改炉石帧数失败，请重试`, {
               variant: 'error',
-            });
+            })
           }
-        };
+        }
 
         return (
           <Tooltip
@@ -261,7 +261,7 @@ function getList(): Item[] {
               <MenuItem value={240}>240Hz</MenuItem>
             </Select>
           </Tooltip>
-        );
+        )
       },
     },
     {
@@ -269,10 +269,10 @@ function getList(): Item[] {
       icon: <RadioButtonCheckedIcon />,
       label: 'OBS设置',
       action: function Action() {
-        return <OBS />;
+        return <OBS />
       },
     },
-  ];
+  ]
   if (is.windows) {
     list.push({
       order: 5,
@@ -291,26 +291,26 @@ function getList(): Item[] {
           'F9',
           'F10',
           'F11',
-        ];
+        ]
         const [shortcut, setShortcut] = React.useState<typeof shortcuts[0]>(
           // @ts-ignore
           () => config.get('shortcuts.unplug')
-        );
-        const { enqueueSnackbar } = useSnackbar();
+        )
+        const { enqueueSnackbar } = useSnackbar()
         const handleChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-          const value = e?.target?.value as string;
+          const value = e?.target?.value as string
           if (value) {
-            config.set('shortcuts.unplug', value);
-            setShortcut(value);
+            config.set('shortcuts.unplug', value)
+            setShortcut(value)
             enqueueSnackbar(`修改拔线快捷键 ${value} 成功，重启插件后生效`, {
               variant: 'success',
-            });
+            })
           } else {
             enqueueSnackbar(`修改拔线快捷键失败，请重试`, {
               variant: 'error',
-            });
+            })
           }
-        };
+        }
         return (
           <Select value={shortcut} onChange={handleChange}>
             {shortcuts.map((item) => (
@@ -319,11 +319,11 @@ function getList(): Item[] {
               </MenuItem>
             ))}
           </Select>
-        );
+        )
       },
-    });
+    })
   }
-  return list;
+  return list
 }
 
-export default getList;
+export default getList

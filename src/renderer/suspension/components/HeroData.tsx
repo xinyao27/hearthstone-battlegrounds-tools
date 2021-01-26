@@ -1,19 +1,19 @@
-import React from 'react';
-import type { EChartOption } from 'echarts';
-import 'echarts/lib/chart/bar';
-import 'echarts/lib/component/tooltip';
-import ReactEchartsCore from 'echarts-for-react/lib/core';
-import echarts from 'echarts/lib/echarts';
-import { Tooltip } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import type { EChartOption } from 'echarts'
+import 'echarts/lib/chart/bar'
+import 'echarts/lib/component/tooltip'
+import ReactEchartsCore from 'echarts-for-react/lib/core'
+import echarts from 'echarts/lib/echarts'
+import { Tooltip } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 
-import { getHeroAnalysis, ListHeroesResult } from '@shared/api';
-import Text from '@suspension/components/Text';
-import Loading from '@suspension/components/Loading';
-import { useRequest } from 'ahooks';
+import { getHeroAnalysis, ListHeroesResult } from '@shared/api'
+import Text from '@suspension/components/Text'
+import Loading from '@suspension/components/Loading'
+import { useRequest } from 'ahooks'
 
 interface ChartProps {
-  hero?: ListHeroesResult[0];
+  hero?: ListHeroesResult[0]
 }
 const Chart: React.FC<ChartProps> = ({ hero }) => {
   const option = React.useMemo<EChartOption>(
@@ -52,7 +52,7 @@ const Chart: React.FC<ChartProps> = ({ hero }) => {
       ],
     }),
     [hero]
-  );
+  )
   if (hero) {
     return (
       <ReactEchartsCore
@@ -60,10 +60,10 @@ const Chart: React.FC<ChartProps> = ({ hero }) => {
         option={option}
         style={{ height: 60 }}
       />
-    );
+    )
   }
-  return null;
-};
+  return null
+}
 
 const useStyles = makeStyles((theme) => ({
   error: {
@@ -102,32 +102,37 @@ const useStyles = makeStyles((theme) => ({
   chart: {
     marginTop: theme.spacing(1),
   },
-}));
+}))
 
 interface HeroDataProps {
-  id: number;
+  id: number
 }
 
 const HeroData: React.FC<HeroDataProps> = ({ id }) => {
-  const classes = useStyles();
+  const classes = useStyles()
   const { data, loading, error, refresh } = useRequest(getHeroAnalysis, {
     cacheKey: 'heroes',
     cacheTime: 30 * 60 * 1000,
-  });
-  const heroData = data?.find((v) => v.hero_dbf_id === id);
+  })
+  const heroData = data?.find((v) => v.hero_dbf_id === id)
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading />
 
   if (error) {
     return (
-      <div className={classes.error} onClick={refresh}>
+      <div
+        className={classes.error}
+        onClick={refresh}
+        role="button"
+        tabIndex={0}
+      >
         <img
           src={require('@shared/assets/images/error.png').default}
           alt="error"
         />
         <Text>数据加载失败 请点击叉号重试</Text>
       </div>
-    );
+    )
   }
 
   if (data) {
@@ -170,10 +175,10 @@ const HeroData: React.FC<HeroDataProps> = ({ id }) => {
           </div>
         </Tooltip>
       </>
-    );
+    )
   }
 
-  return <Text className={classes.noData}>没有足够的数据</Text>;
-};
+  return <Text className={classes.noData}>没有足够的数据</Text>
+}
 
-export default HeroData;
+export default HeroData

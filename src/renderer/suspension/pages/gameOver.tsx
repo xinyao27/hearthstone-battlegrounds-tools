@@ -1,11 +1,11 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 
-import Layout from '@suspension/components/Layout';
-import Text from '@suspension/components/Text';
-import useCurrentHero from '@suspension/hooks/useCurrentHero';
+import Layout from '@suspension/components/Layout'
+import Text from '@suspension/components/Text'
+import useCurrentHero from '@suspension/hooks/useCurrentHero'
 
-import { getImageUrl } from '@suspension/utils';
+import { getImageUrl } from '@suspension/utils'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,11 +113,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     fontSize: 22,
   },
-}));
+}))
 
 const GameOver: React.FC = () => {
-  const classes = useStyles();
-  const { hero, rank } = useCurrentHero();
+  const classes = useStyles()
+  const { hero, rank } = useCurrentHero()
 
   if (hero && rank) {
     return (
@@ -155,7 +155,7 @@ const GameOver: React.FC = () => {
           </Text>
         </div>
       </Layout>
-    );
+    )
   }
 
   return (
@@ -163,7 +163,7 @@ const GameOver: React.FC = () => {
       <Text>检测到对局可能非正常结束，本局战绩已忽略。</Text>
       <Text>您可以选择忽略此消息或到插件战绩栏手动记录战绩。</Text>
     </Layout>
-  );
-};
+  )
+}
 
-export default GameOver;
+export default GameOver

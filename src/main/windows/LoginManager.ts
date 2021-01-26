@@ -1,22 +1,22 @@
-import { EventEmitter } from 'events';
-import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron';
+import { EventEmitter } from 'events'
+import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron'
 
-import { getStore } from '../../shared/store';
-import { Topic } from '../../shared/constants/topic';
+import { getStore } from '../../shared/store'
+import { Topic } from '../../shared/constants/topic'
 
 interface Params {
-  url: string;
-  onInit: (window: BrowserWindow) => void;
-  onDestroy?: () => void;
+  url: string
+  onInit: (window: BrowserWindow) => void
+  onDestroy?: () => void
 }
 
 class LoginManager extends EventEmitter {
-  option: BrowserWindowConstructorOptions;
+  option: BrowserWindowConstructorOptions
 
-  window: BrowserWindow | null;
+  window: BrowserWindow | null
 
   constructor({ url, onInit, onDestroy }: Params) {
-    super();
+    super()
 
     this.option = {
       width: 600,
@@ -28,48 +28,49 @@ class LoginManager extends EventEmitter {
       webPreferences: {
         devTools: false,
       },
-    };
-    this.window = null;
-    this.init(url, this.option, onInit, onDestroy);
+    }
+    this.window = null
+    this.init(url, this.option, onInit, onDestroy)
   }
 
   init(
     url: string,
     options: BrowserWindowConstructorOptions,
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     onInit: Params['onInit'] = () => {},
     onDestroy?: Params['onDestroy']
-  ) {
-    this.window = new BrowserWindow(options);
-    this.window.loadURL(url);
-    onInit(this.window);
+  ): void {
+    this.window = new BrowserWindow(options)
+    this.window.loadURL(url)
+    onInit(this.window)
 
-    const content = this.window.webContents;
+    const content = this.window.webContents
 
     content.on('did-redirect-navigation', (_, newUrl) => {
-      const [, search] = newUrl.split('?');
+      const [, search] = newUrl.split('?')
       if (search) {
-        const [key, token] = search?.split('=');
+        const [key, token] = search?.split('=')
         // 成功拿到 token
         if (key === 'token' && token) {
-          const store = getStore();
+          const store = getStore()
           store.dispatch<Topic.SET_TOKEN>({
             type: Topic.SET_TOKEN,
             payload: token,
-          });
-          this.destroy();
+          })
+          this.destroy()
         }
       }
-    });
+    })
 
     this.window.on('closed', () => {
-      this.window = null;
-      onDestroy?.();
-    });
+      this.window = null
+      onDestroy?.()
+    })
   }
 
-  destroy() {
-    this.window?.destroy();
+  destroy(): void {
+    this.window?.destroy()
   }
 }
 
-export default LoginManager;
+export default LoginManager

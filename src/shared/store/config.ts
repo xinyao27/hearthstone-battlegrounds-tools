@@ -1,32 +1,32 @@
-import { RequestMethodReturnMap } from '@core/pages/settings/OBS/types';
-import Store from 'electron-store';
-import { is } from 'electron-util';
+import { RequestMethodReturnMap } from '@core/pages/settings/OBS/types'
+import Store from 'electron-store'
+import { is } from 'electron-util'
 
 interface Config {
   suspensionBounds?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-  heartstoneRootPath?: string;
-  enableGameResult: boolean;
+    x: number
+    y: number
+    width: number
+    height: number
+  }
+  heartstoneRootPath?: string
+  enableGameResult: boolean
   obs: {
     text: {
-      enable?: boolean;
-      source?: RequestMethodReturnMap['GetSourcesList']['sources'][0];
-      max: number;
-    };
+      enable?: boolean
+      source?: RequestMethodReturnMap['GetSourcesList']['sources'][0]
+      max: number
+    }
     image: {
-      enable?: boolean;
-      dir?: string;
-      max: number;
-    };
-  };
+      enable?: boolean
+      dir?: string
+      max: number
+    }
+  }
   shortcuts: {
-    unplug: string;
-  };
-  rank: string;
+    unplug: string
+  }
+  rank: string
 }
 
 // 存储配置文件
@@ -54,10 +54,11 @@ export const config = {
       rank: 'all',
     },
   }),
-  get(key: keyof Config | string) {
-    return this.store.get(key);
+  get<T = never>(key: keyof Config | string): T {
+    return this.store.get(key)
   },
-  set(key: string, payload: any) {
-    return this.store.set(key, payload);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+  set(key: string, payload: any): void {
+    return this.store.set(key, payload)
   },
-};
+}

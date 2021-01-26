@@ -1,4 +1,4 @@
-import { is } from 'electron-util';
+import { is } from 'electron-util'
 
 const template = is.windows
   ? `backgroundsound=False
@@ -72,6 +72,6 @@ soundvolume=0
 tutoriallostprogress=0
 updateState=100
 targetframerate=60`
-  : '';
+  : ''
 
-export default template;
+export default template

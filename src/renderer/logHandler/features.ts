@@ -1,11 +1,11 @@
-import type { Line, LineBody } from './LogLine';
+import type { Line, LineBody } from './LogLine'
 
 export type BoxState =
   | 'BOX_AWAKE'
   | 'BOX_CHOOSE_BACON'
   | 'BOX_GAME_START'
   | 'BOX_GAME_OVER'
-  | 'BOX_DESTROY';
+  | 'BOX_DESTROY'
 export type State =
   | 'GAME_START'
   | 'HERO_TOBE_CHOSEN'
@@ -22,23 +22,24 @@ export type State =
   | 'OWN_LINEUP2'
   | 'TECH_UP'
   | 'DAMAGE'
-  | 'GAME_OVER';
+  | 'GAME_OVER'
 export interface Feature<T = string> {
-  state: T;
-  sequenceType: Line['sequenceType'];
-  level: Line['level'];
-  bodyType?: LineBody['type'];
-  command?: string | RegExp;
-  parameter?: { key?: string | RegExp; value: string | RegExp }[];
-  children?: Feature<T>[];
-  getResult?: (line: Line) => any;
+  state: T
+  sequenceType: Line['sequenceType']
+  level: Line['level']
+  bodyType?: LineBody['type']
+  command?: string | RegExp
+  parameter?: { key?: string | RegExp; value: string | RegExp }[]
+  children?: Feature<T>[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getResult?: (line: Line) => any
 }
 export interface Minion {
-  name: string;
-  id: string;
+  name: string
+  id: string
   props: {
-    [tag: string]: string;
-  };
+    [tag: string]: string
+  }
 }
 
 export const boxFeatures: Feature<BoxState>[] = [
@@ -98,7 +99,7 @@ export const boxFeatures: Feature<BoxState>[] = [
     sequenceType: 'Box.OnDestroy',
     level: 0,
   },
-];
+]
 
 export const stateFeatures: Feature<State>[] = [
   // 对局开始
@@ -149,16 +150,16 @@ export const stateFeatures: Feature<State>[] = [
             Array.isArray(child.body?.parameter) &&
             child.body?.parameter.length
           ) {
-            const { value } = child.body.parameter[0];
-            const regex = /\[entityName=(.*) id=\d+ zone=HAND.*\]/;
-            const matched = value.match(regex);
+            const { value } = child.body.parameter[0]
+            const regex = /\[entityName=(.*) id=\d+ zone=HAND.*\]/
+            const matched = value.match(regex)
             if (matched) {
-              return matched[1];
+              return matched[1]
             }
           }
-          return null;
+          return null
         })
-        .filter((v) => !!v) as string[];
+        .filter((v) => !!v) as string[]
     },
   },
   // 实际选择的英雄
@@ -193,16 +194,16 @@ export const stateFeatures: Feature<State>[] = [
             Array.isArray(child.body?.parameter) &&
             child.body?.parameter.length
           ) {
-            const { value } = child.body.parameter[0];
-            const regex = /\[entityName=(.*) id=\d+ zone=HAND.*\]/;
-            const matched = value.match(regex);
+            const { value } = child.body.parameter[0]
+            const regex = /\[entityName=(.*) id=\d+ zone=HAND.*\]/
+            const matched = value.match(regex)
             if (matched) {
-              return matched[1];
+              return matched[1]
             }
           }
-          return null;
+          return null
         })
-        .filter((v) => !!v) as string[];
+        .filter((v) => !!v) as string[]
     },
   },
   // 本局对战中对手的英雄
@@ -263,40 +264,39 @@ export const stateFeatures: Feature<State>[] = [
         // @ts-ignore
         return line.children
           .map((c) => {
-            const { body, children } = c;
+            const { body, children } = c
             if (body && children) {
-              const { parameter } = body;
-              const hero = parameter?.find((v) => v.key === 'entityName')
-                ?.value;
-              const id = parameter?.find((v) => v.key === 'id')?.value;
+              const { parameter } = body
+              const hero = parameter?.find((v) => v.key === 'entityName')?.value
+              const id = parameter?.find((v) => v.key === 'id')?.value
               // @ts-ignore
               const playerId = children.find((child) => {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const { parameter: childParameter } = child.body!;
+                const { parameter: childParameter } = child.body!
                 if (Array.isArray(childParameter)) {
                   if (
                     childParameter[0].key === 'tag' &&
                     childParameter[0].value === 'PLAYER_ID' &&
                     childParameter[1].key === 'value'
                   ) {
-                    return true;
+                    return true
                   }
                 }
-                return false;
-              })?.body?.parameter[1]?.value;
+                return false
+              })?.body?.parameter[1]?.value
               if (hero && id && playerId) {
                 return {
                   hero,
                   id,
                   playerId,
-                };
+                }
               }
             }
-            return null;
+            return null
           })
-          .filter((v) => !!v);
+          .filter((v) => !!v)
       }
-      return undefined;
+      return undefined
     },
   },
   // 阿兰娜变身
@@ -371,21 +371,21 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line) => {
-      const oldHero = '阿兰娜·逐星';
-      const oldIdRegex = /\[entityName=.* id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/;
+      const oldHero = '阿兰娜·逐星'
+      const oldIdRegex = /\[entityName=.* id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HP_065pe player=\d+\] EffectCardId=System.Collections.Generic.List`1\[System.String\]/
       const matched = line.body?.parameter
         ?.find((v) => v.key === 'Entity')
-        ?.value.match(oldIdRegex);
-      const oldId = matched?.[1];
+        ?.value.match(oldIdRegex)
+      const oldId = matched?.[1]
       // 返回变身后的英雄 ID
-      const id = line.children?.[0].children?.[0]?.body?.parameter?.[0]?.value;
-      const hero = '释放自我的阿兰娜';
+      const id = line.children?.[0].children?.[0]?.body?.parameter?.[0]?.value
+      const hero = '释放自我的阿兰娜'
       return {
         oldHero,
         oldId,
         hero,
         id,
-      };
+      }
     },
   },
   // 下一个对手
@@ -452,11 +452,11 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line): string | undefined => {
-      const child = line?.children?.[0];
+      const child = line?.children?.[0]
       if (child) {
-        return child?.body?.parameter?.find((v) => v.key === 'value')?.value;
+        return child?.body?.parameter?.find((v) => v.key === 'value')?.value
       }
-      return undefined;
+      return undefined
     },
   },
   // 对局排名
@@ -482,7 +482,7 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line): string | undefined => {
-      return line.body?.parameter?.find((item) => item.key === 'value')?.value;
+      return line.body?.parameter?.find((item) => item.key === 'value')?.value
     },
   },
   // 第几轮
@@ -581,13 +581,12 @@ export const stateFeatures: Feature<State>[] = [
           !!v.body?.parameter?.find(
             (c) => c.key === 'tag' && c.value === 'NUM_TURNS_IN_PLAY'
           )
-      );
-      const turn = child?.body?.parameter?.find((v) => v.key === 'value')
-        ?.value;
+      )
+      const turn = child?.body?.parameter?.find((v) => v.key === 'value')?.value
       if (turn) {
-        return Math.round(parseInt(turn, 10) / 2);
+        return Math.round(parseInt(turn, 10) / 2)
       }
-      return undefined;
+      return undefined
     },
   },
   // 阵容 包含对手以及自己(随从实际属性)
@@ -717,47 +716,47 @@ export const stateFeatures: Feature<State>[] = [
       line
     ):
       | {
-          opponent: { hero: string; minions: Minion[] };
-          own: { hero: string; minions: Minion[] };
+          opponent: { hero: string; minions: Minion[] }
+          own: { hero: string; minions: Minion[] }
         }
       | undefined => {
-      let opponentHero = '';
-      const opponentMinions: Minion[] = [];
-      let ownHero = '';
-      const ownMinions: Minion[] = [];
+      let opponentHero = ''
+      const opponentMinions: Minion[] = []
+      let ownHero = ''
+      const ownMinions: Minion[] = []
       line?.children?.forEach((v) => {
-        const original = v?.body?.original;
+        const original = v?.body?.original
         const opponentMinionMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
-        );
+        )
         const opponentMinionUpdateMatched = original?.match(
           /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=PLAY zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
-        );
+        )
         const opponentHeroMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=PLAY zonePos=0 cardId=TB_BaconShop_HERO_\d+[a-z]? player=\d+\] CardID=TB_BaconShop_HERO_\d+[a-z]?/
-        );
+        )
         if (opponentMinionMatched) {
-          const name = opponentMinionMatched[1];
-          const id = opponentMinionMatched[2];
+          const name = opponentMinionMatched[1]
+          const id = opponentMinionMatched[2]
           if (name && id) {
             const props =
               v.children?.reduce((pre, cur) => {
                 if (cur.body?.parameter) {
                   const prop = cur.body?.parameter.find((c) => c.key === 'tag')
-                    ?.value;
+                    ?.value
                   const value = cur.body?.parameter.find(
                     (c) => c.key === 'value'
-                  )?.value;
+                  )?.value
                   if (prop && value) {
                     return {
                       ...pre,
                       [prop]: value,
-                    };
+                    }
                   }
-                  return pre;
+                  return pre
                 }
-                return pre;
-              }, {}) ?? {};
+                return pre
+              }, {}) ?? {}
             // eslint-disable-next-line prefer-destructuring
             if (
               !opponentMinions.length ||
@@ -767,64 +766,64 @@ export const stateFeatures: Feature<State>[] = [
                 name,
                 id,
                 props,
-              });
+              })
             } else {
               opponentMinions.forEach((c) => {
                 if (c.name === name && c.id === id) {
-                  c.props = props;
+                  c.props = props
                 }
-              });
+              })
             }
           }
         }
         if (opponentMinionUpdateMatched) {
-          const name = opponentMinionUpdateMatched[1];
-          const id = opponentMinionUpdateMatched[2];
-          const prop = opponentMinionUpdateMatched[3];
-          const value = opponentMinionUpdateMatched[4];
+          const name = opponentMinionUpdateMatched[1]
+          const id = opponentMinionUpdateMatched[2]
+          const prop = opponentMinionUpdateMatched[3]
+          const value = opponentMinionUpdateMatched[4]
           const minion = opponentMinions.find(
             (c) => c.name === name && c.id === id
-          );
+          )
           if (prop && value && minion) {
-            minion.props[prop] = value;
+            minion.props[prop] = value
           }
         }
         if (opponentHeroMatched) {
           // eslint-disable-next-line prefer-destructuring
-          opponentHero = opponentHeroMatched[1];
+          opponentHero = opponentHeroMatched[1]
         }
 
         const ownMinionMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
-        );
+        )
         const ownMinionUpdateMatched = original?.match(
           /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
-        );
+        )
         const ownHeroMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=0 cardId=TB_BaconShop_HERO_\d+[a-z]? player=\d+\] CardID=TB_BaconShop_HERO_\d+[a-z]?/
-        );
+        )
         if (ownMinionMatched) {
-          const name = ownMinionMatched[1];
-          const id = ownMinionMatched[2];
+          const name = ownMinionMatched[1]
+          const id = ownMinionMatched[2]
           if (name && id) {
             const props =
               v.children?.reduce((pre, cur) => {
                 if (cur.body?.parameter) {
                   const prop = cur.body?.parameter.find((c) => c.key === 'tag')
-                    ?.value;
+                    ?.value
                   const value = cur.body?.parameter.find(
                     (c) => c.key === 'value'
-                  )?.value;
+                  )?.value
                   if (prop && value) {
                     return {
                       ...pre,
                       [prop]: value,
-                    };
+                    }
                   }
-                  return pre;
+                  return pre
                 }
-                return pre;
-              }, {}) ?? {};
+                return pre
+              }, {}) ?? {}
             // eslint-disable-next-line prefer-destructuring
             if (
               !ownMinions.length ||
@@ -834,31 +833,31 @@ export const stateFeatures: Feature<State>[] = [
                 name,
                 id,
                 props,
-              });
+              })
             } else {
               ownMinions.forEach((c) => {
                 if (c.name === name && c.id === id) {
-                  c.props = props;
+                  c.props = props
                 }
-              });
+              })
             }
           }
         }
         if (ownMinionUpdateMatched) {
-          const name = ownMinionUpdateMatched[1];
-          const id = ownMinionUpdateMatched[2];
-          const prop = ownMinionUpdateMatched[3];
-          const value = ownMinionUpdateMatched[4];
-          const minion = ownMinions.find((c) => c.name === name && c.id === id);
+          const name = ownMinionUpdateMatched[1]
+          const id = ownMinionUpdateMatched[2]
+          const prop = ownMinionUpdateMatched[3]
+          const value = ownMinionUpdateMatched[4]
+          const minion = ownMinions.find((c) => c.name === name && c.id === id)
           if (prop && value && minion) {
-            minion.props[prop] = value;
+            minion.props[prop] = value
           }
         }
         if (ownHeroMatched) {
           // eslint-disable-next-line prefer-destructuring
-          ownHero = ownHeroMatched[1];
+          ownHero = ownHeroMatched[1]
         }
-      });
+      })
 
       if (opponentHero) {
         return {
@@ -867,9 +866,9 @@ export const stateFeatures: Feature<State>[] = [
             minions: opponentMinions,
           },
           own: { hero: ownHero, minions: ownMinions },
-        };
+        }
       }
-      return undefined;
+      return undefined
     },
   },
   // 阵容 只包含自己的阵容详情。通常作为 LINEUP 的替补
@@ -971,38 +970,38 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line): Minion[] | undefined => {
-      const ownMinions: Minion[] = [];
+      const ownMinions: Minion[] = []
       line?.children?.forEach((v) => {
-        const original = v?.body?.original;
+        const original = v?.body?.original
 
         const ownMinionMatched = original?.match(
           /^ {4}FULL_ENTITY - Updating \[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?) player=\d+\] CardID=(TB_BaconShop_HP_033t|((?!TB_BaconShop).)*_\d+[a-z]?)/
-        );
+        )
         const ownMinionUpdateMatched = original?.match(
           /^ {4}TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=SETASIDE zonePos=\d+ cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(.*)/
-        );
+        )
         if (ownMinionMatched) {
-          const name = ownMinionMatched[1];
-          const id = ownMinionMatched[2];
+          const name = ownMinionMatched[1]
+          const id = ownMinionMatched[2]
           if (name && id) {
             const props =
               v.children?.reduce((pre, cur) => {
                 if (cur.body?.parameter) {
                   const prop = cur.body?.parameter.find((c) => c.key === 'tag')
-                    ?.value;
+                    ?.value
                   const value = cur.body?.parameter.find(
                     (c) => c.key === 'value'
-                  )?.value;
+                  )?.value
                   if (prop && value) {
                     return {
                       ...pre,
                       [prop]: value,
-                    };
+                    }
                   }
-                  return pre;
+                  return pre
                 }
-                return pre;
-              }, {}) ?? {};
+                return pre
+              }, {}) ?? {}
             // eslint-disable-next-line prefer-destructuring
             if (
               !ownMinions.length ||
@@ -1012,32 +1011,32 @@ export const stateFeatures: Feature<State>[] = [
                 name,
                 id,
                 props,
-              });
+              })
             } else {
               ownMinions.forEach((c) => {
                 if (c.name === name && c.id === id) {
-                  c.props = props;
+                  c.props = props
                 }
-              });
+              })
             }
           }
         }
         if (ownMinionUpdateMatched) {
-          const name = ownMinionUpdateMatched[1];
-          const id = ownMinionUpdateMatched[2];
-          const prop = ownMinionUpdateMatched[3];
-          const value = ownMinionUpdateMatched[4];
-          const minion = ownMinions.find((c) => c.name === name && c.id === id);
+          const name = ownMinionUpdateMatched[1]
+          const id = ownMinionUpdateMatched[2]
+          const prop = ownMinionUpdateMatched[3]
+          const value = ownMinionUpdateMatched[4]
+          const minion = ownMinions.find((c) => c.name === name && c.id === id)
           if (prop && value && minion) {
-            minion.props[prop] = value;
+            minion.props[prop] = value
           }
         }
-      });
+      })
 
       if (ownMinions) {
-        return ownMinions;
+        return ownMinions
       }
-      return undefined;
+      return undefined
     },
   },
   // 自己阵容（不包含属性 仅为随从种类以及站位）
@@ -1081,29 +1080,29 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line) => {
-      const reg = /option \d+ type=POWER mainEntity=\[entityName=(.*) id=(\d+) zone=(HAND|PLAY) zonePos=(\d+) cardId=.* player=\d+\] error=REQ_ATTACKER_CAN_ATTACK errorParam=/;
+      const reg = /option \d+ type=POWER mainEntity=\[entityName=(.*) id=(\d+) zone=(HAND|PLAY) zonePos=(\d+) cardId=.* player=\d+\] error=REQ_ATTACKER_CAN_ATTACK errorParam=/
       const result: {
-        minion: string;
-        id: string;
-        zone: string;
-        position: string;
-      }[] = [];
+        minion: string
+        id: string
+        zone: string
+        position: string
+      }[] = []
       line.children?.forEach((item) => {
-        const matched = item.original.match(reg);
+        const matched = item.original.match(reg)
         if (matched) {
-          const minion = matched[1];
-          const id = matched[2];
-          const zone = matched[3];
-          const position = matched[4];
+          const minion = matched[1]
+          const id = matched[2]
+          const zone = matched[3]
+          const position = matched[4]
           result.push({
             minion,
             id,
             zone,
             position,
-          });
+          })
         }
-      });
-      return result;
+      })
+      return result
     },
   },
   // 自己阵容2（通常表现为手牌到场上 导致站位变化）
@@ -1212,27 +1211,27 @@ export const stateFeatures: Feature<State>[] = [
       const result: Record<
         string,
         {
-          minion: string;
-          zone: 'PLAY' | 'HAND';
-          position: string;
-          data: Record<string, any>;
+          minion: string
+          zone: 'PLAY' | 'HAND'
+          position: string
+          data: Record<string, any>
         }
-      > = {};
-      const reg = /TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=(HAND|PLAY) zonePos=(\d+) cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(\d+)/;
+      > = {}
+      const reg = /TAG_CHANGE Entity=\[entityName=(.*) id=(\d+) zone=(HAND|PLAY) zonePos=(\d+) cardId=.*_\d+[a-z]? player=\d+\] tag=(.*) value=(\d+)/
       line.children?.forEach?.((item) => {
-        const matched = item.original.match(reg);
+        const matched = item.original.match(reg)
         if (matched) {
-          const minion = matched[1];
-          const id = matched[2];
-          const zone = matched[3] as 'PLAY' | 'HAND';
-          const position = matched[4];
-          const tag = matched[5];
-          const value = matched[6];
+          const minion = matched[1]
+          const id = matched[2]
+          const zone = matched[3] as 'PLAY' | 'HAND'
+          const position = matched[4]
+          const tag = matched[5]
+          const value = matched[6]
           if (result[id]) {
             result[id].data = {
               ...result[id].data,
               [tag]: value,
-            };
+            }
           } else {
             result[id] = {
               minion,
@@ -1241,11 +1240,11 @@ export const stateFeatures: Feature<State>[] = [
               data: {
                 [tag]: value,
               },
-            };
+            }
           }
         }
-      });
-      return result;
+      })
+      return result
     },
   },
   // 回到酒馆（主要用于定位战斗动画完毕的时机）
@@ -1569,14 +1568,14 @@ export const stateFeatures: Feature<State>[] = [
             (i) => i.key === 'tag' && i.value === 'RESOURCES_USED'
           )
         )
-        ?.body?.parameter?.find((v) => v.key === 'Entity')?.value;
-      const reg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShopTechUp(\d+)_Button player=\d+\]/;
+        ?.body?.parameter?.find((v) => v.key === 'Entity')?.value
+      const reg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=TB_BaconShopTechUp(\d+)_Button player=\d+\]/
       const targetTech = line.body?.parameter?.find((v) => v.key === 'Entity')
-        ?.value;
+        ?.value
       return {
         name,
         techLevel: parseInt(targetTech?.match(reg)?.[2] as string, 10),
-      };
+      }
     },
   },
   // 打架完后对英雄造成的伤害
@@ -1658,11 +1657,11 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
     getResult: (line) => {
-      const attackerReg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/;
-      const defenderReg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/;
+      const attackerReg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/
+      const defenderReg = /\[entityName=(.*) id=\d+ zone=PLAY zonePos=0 cardId=(.*) player=\d+\]/
       const attackerMatched = line.body?.parameter
         ?.find((v) => v.key === 'Entity')
-        ?.value.match(attackerReg);
+        ?.value.match(attackerReg)
       const defenderMatched = line.children
         ?.find((v) =>
           v.body?.parameter?.find(
@@ -1670,19 +1669,19 @@ export const stateFeatures: Feature<State>[] = [
           )
         )
         ?.body?.parameter?.find((v) => v.key === 'Entity')
-        ?.value.match(defenderReg);
-      const attacker = attackerMatched?.[1];
-      const defender = defenderMatched?.[1];
+        ?.value.match(defenderReg)
+      const attacker = attackerMatched?.[1]
+      const defender = defenderMatched?.[1]
       const attack = line.children
         ?.find((v) =>
           v.body?.parameter?.find((i) => i.key === 'tag' && i.value === '479')
         )
-        ?.body?.parameter?.find((v) => v.key === 'value')?.value;
+        ?.body?.parameter?.find((v) => v.key === 'value')?.value
       return {
         attacker,
         defender,
         attack: parseInt(attack as string, 10),
-      };
+      }
     },
   },
   // 对局结束
@@ -1708,4 +1707,4 @@ export const stateFeatures: Feature<State>[] = [
       },
     ],
   },
-];
+]
