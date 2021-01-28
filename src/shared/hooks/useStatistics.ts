@@ -43,7 +43,7 @@ export interface ResultItem {
 function useStatistics(recordList: RecordItem[]): ResultItem[] | null {
   const { heroes } = useHeroes()
   if (recordList && recordList.length) {
-    const reSummarized = recordList.reduce<{
+    const reorganizedByHeroId = recordList.reduce<{
       [key: number]: {
         rank: string
         date: string | Date
@@ -58,13 +58,13 @@ function useStatistics(recordList: RecordItem[]): ResultItem[] | null {
       }
     }, {})
 
-    return Object.keys(reSummarized)
+    return Object.keys(reorganizedByHeroId)
       .reduce<ResultItem[]>((pre, cur) => {
         const heroId = parseInt(cur, 10)
         const hero = heroes.find((v) => v.dbfId === heroId)
         const heroAvatar = hero ? getImageUrl(hero.id, 'hero') : ''
         const heroName = hero ? hero.name : ''
-        const ranks = reSummarized[heroId]
+        const ranks = reorganizedByHeroId[heroId]
 
         if (ranks) {
           const averageRanking = (
