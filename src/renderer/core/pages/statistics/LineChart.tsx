@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import _ from 'lodash'
 import { RecordItem } from '@shared/hooks/useStatistics'
 import useRecord from '@shared/hooks/useRecord'
+import { makeStyles } from '@material-ui/core/styles'
 
 const TEMPLATE = 'YYYY-MM-DD'
 function getPastDays(range: number) {
@@ -51,7 +52,14 @@ function getAverageRanks(list: Record<string, RecordItem[]>) {
   })
 }
 
+const useStyles = makeStyles(() => ({
+  root: {
+    flex: 1,
+  },
+}))
+
 const LineChart: React.FC = () => {
+  const classes = useStyles()
   const [recordList] = useRecord()
   const [range] = React.useState(7)
   const option = React.useMemo<EChartOption>(() => {
@@ -62,8 +70,14 @@ const LineChart: React.FC = () => {
     return {
       title: {
         text: `最近7天平均排名`,
+        textStyle: {
+          color: '#e6e7e9',
+          fontWeight: 'normal',
+          fontSize: 12,
+        },
+        padding: [20, 50],
       },
-      color: ['#714822'],
+      color: ['#ff943f'],
       // grid: {
       //   left: '0',
       //   // right: '0',
@@ -95,30 +109,37 @@ const LineChart: React.FC = () => {
           alignWithLabel: true,
         },
         splitLine: { show: false },
+        axisLine: {
+          show: false,
+          lineStyle: {
+            color: '#e6e7e9',
+          },
+        },
         data: days,
       },
       yAxis: {
         type: 'value',
         axisTick: { show: false },
         splitLine: { show: false },
+        axisLine: {
+          show: false,
+          lineStyle: {
+            color: '#e6e7e9',
+          },
+        },
       },
       series: [
         {
           type: 'line',
+          smooth: true,
+          areaStyle: {
+            color: 'rgba(255,148,63,.5)',
+          },
           lineStyle: {
             width: 3,
-            color: '#000',
-            shadowColor: 'rgba(0,0,0,0.3)',
-            shadowBlur: 10,
-            shadowOffsetY: 8,
-          },
-          markPoint: {
-            data: [{ type: 'max', name: '最大值' }],
+            color: '#ff943f',
           },
           markLine: {
-            label: {
-              formatter: `平均：{c}`,
-            },
             data: [
               {
                 type: 'average',
@@ -133,11 +154,13 @@ const LineChart: React.FC = () => {
   }, [range, recordList])
 
   return (
-    <ReactEchartsCore
-      echarts={echarts}
-      option={option}
-      // style={{ height: 60 }}
-    />
+    <div className={classes.root}>
+      <ReactEchartsCore
+        echarts={echarts}
+        option={option}
+        // style={{ height: 60 }}
+      />
+    </div>
   )
 }
 

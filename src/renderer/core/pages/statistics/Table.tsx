@@ -1,8 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import {
-  Paper,
-  TableContainer,
   Table,
   TableRow,
   TableCell,
@@ -96,29 +94,37 @@ const Row: React.FC<RowProps> = ({ row }) => {
   )
 }
 
+const useStyles = makeStyles(() => ({
+  root: {
+    '& *': {
+      color: '#e6e7e9 !important',
+      border: 'none',
+    },
+  },
+}))
+
 const TableComponent: React.FC = () => {
+  const classes = useStyles()
   const [recordList] = useRecord()
   const result = useStatistics(recordList)
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell>英雄</TableCell>
-            <TableCell align="right">选择次数</TableCell>
-            <TableCell align="right">平均排名</TableCell>
-            <TableCell align="right">选择率</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {result?.map((row) => (
-            <Row key={row.heroId} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Table classes={{ root: classes.root }} aria-label="collapsible table">
+      <TableHead>
+        <TableRow>
+          <TableCell />
+          <TableCell>英雄</TableCell>
+          <TableCell align="right">选择次数</TableCell>
+          <TableCell align="right">平均排名</TableCell>
+          <TableCell align="right">选择率</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {result?.map((row) => (
+          <Row key={row.heroId} row={row} />
+        ))}
+      </TableBody>
+    </Table>
   )
 }
 
