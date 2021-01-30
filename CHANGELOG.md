@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.0...v1.5.1) (2021-01-30)
+
+### Features
+
+- **core:** 完成新版统计页面 ([05a1152](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/05a1152a77d1452eccb2a7145a5f6cb7a440aeb8))
+- **core:** 统计页面加入近期平均排名折线图 ([c4a36dc](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/c4a36dce8de3c5a44c94e61ff4501b8d5e1e4d89))
+- **core:** 赛后复盘中的战力数值改为异步计算，解决插件刚打开卡顿的问题 ([b1176f7](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/b1176f7699ecb47fadf2c49eaa05e5a019789a12))
+
+### Bug Fixes
+
+- **core:** 修复复盘中没有随从导致阵容区域塌陷的问题 ([eb18615](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/eb18615a7cc525770028c96ed45c430f97fdeec9))
+- **core:** 修复战绩无法同步的问题 ([063e247](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/063e247fbee9012557883d60a906bd380f089ac5))
+
 ## [1.5.0](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.4.2...v1.5.0) (2021-01-25)
 
 ### Features
