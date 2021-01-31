@@ -34,12 +34,10 @@ function reorganizedByDays(list: RecordItem[], days: string[], range: number) {
       const key = date.format(TEMPLATE)
       return {
         ...pre,
-        [key]: [...pre[key], cur],
+        [key]: [...(pre[key] || []), cur],
       }
     }
-    return {
-      ...pre,
-    }
+    return pre
   }, initial)
 }
 function getAverageRanks(list: Record<string, RecordItem[]>) {
