@@ -2,34 +2,32 @@ import React from 'react'
 import { createModel } from 'hox'
 import path from 'path'
 import { is } from 'electron-util'
-import { exec as execBase } from 'child_process'
-import { promisify } from 'util'
+import sudo from 'sudo-prompt'
 
 import { config } from '@shared/store'
 import { sleep } from '@shared/utils'
 
-const exec = promisify(execBase)
+const options = {
+  name: 'HearthstoneBattlegroundsTools',
+}
+function exec(cmd: string) {
+  return new Promise((resolve, reject) =>
+    sudo.exec(cmd, options, (error, stdout, stderr) => {
+      if (error) reject(error)
+      else resolve({ stdout, stderr })
+    })
+  )
+}
 
 /**
  * 判断是否存在指定防火墙规则
  * @param ruleName
  * @param appPath
  */
-async function hasRule(ruleName: string, appPath: string) {
+async function hasRule(ruleName: string) {
   try {
     if (is.windows) {
       await exec(`netsh advfirewall firewall show rule name="${ruleName}" >nul`)
-    }
-    if (is.macos) {
-      const { stderr, stdout } = await exec(
-        `/usr/libexec/ApplicationFirewall/socketfilterfw --getappblocked ${appPath}`
-      )
-      if (stderr) {
-        throw stderr
-      }
-      if (stdout.includes('The file path you specified does not exist')) {
-        return false
-      }
     }
 
     return true
@@ -54,11 +52,7 @@ async function addRule(
         `netsh advfirewall firewall add rule name="${ruleName}"  dir=out  program="${appPath}" action=block`
       )
     }
-    if (is.macos) {
-      await exec(
-        `/usr/libexec/ApplicationFirewall/socketfilterfw --add ${appPath}`
-      )
-    }
+
     cb(`防火墙规则 ${ruleName} 添加成功`)
     return true
   } catch (_) {
@@ -85,7 +79,7 @@ async function enableRule(
     }
     if (is.macos) {
       await exec(
-        `/usr/libexec/ApplicationFirewall/socketfilterfw --blockapp ${appPath}`
+        `echo "block all" >> /etc/hs_unplug.conf && pfctl -f /etc/hs_unplug.conf 2>/dev/null && pfctl -e 2>/dev/null`
       )
     }
     cb('防火墙规则已经生效 等待恢复')
@@ -101,11 +95,7 @@ async function enableRule(
  * @param appPath
  * @param cb
  */
-async function disableRule(
-  ruleName: string,
-  appPath: string,
-  cb: (title: string) => void
-) {
+async function disableRule(ruleName: string, cb: (title: string) => void) {
   try {
     if (is.windows) {
       await exec(
@@ -113,9 +103,7 @@ async function disableRule(
       )
     }
     if (is.macos) {
-      await exec(
-        `/usr/libexec/ApplicationFirewall/socketfilterfw --unblockapp ${appPath}`
-      )
+      await exec(`pfctl -d 2>/dev/null && pfctl -f /etc/pf.conf 2>/dev/null`)
     }
     cb('恢复炉石网络成功')
     return true
@@ -148,23 +136,32 @@ function useUnplug() {
     if (!loading) {
       toggleLoading(true)
       toggleCompleted(false)
-      setTooltip('正在检查是否存在防火墙规则')
-      const has = await hasRule(ruleName, appPath)
-      if (has) {
-        // 存在指定规则
-        setTooltip('防火墙规则已存在')
-      } else {
-        // 不存在指定规则 添加
-        setTooltip('正在添加防火墙规则')
-        await addRule(ruleName, appPath, setTooltip)
+      if (is.windows) {
+        setTooltip('正在检查是否存在防火墙规则')
+        const has = await hasRule(ruleName)
+        if (has) {
+          // 存在指定规则
+          setTooltip('防火墙规则已存在')
+        } else {
+          // 不存在指定规则 添加
+          setTooltip('正在添加防火墙规则')
+          await addRule(ruleName, appPath, setTooltip)
+        }
+
+        // 启用防火墙规则
+        setTooltip('正在启用防火墙规则')
+        await enableRule(ruleName, appPath, setTooltip)
+
+        await sleep(timeOut * 1000)
+        await disableRule(ruleName, setTooltip)
       }
+      if (is.macos) {
+        setTooltip('正在启用防火墙')
+        await enableRule(ruleName, appPath, setTooltip)
 
-      // 启用防火墙规则
-      setTooltip('正在启用防火墙规则')
-      await enableRule(ruleName, appPath, setTooltip)
-
-      await sleep(timeOut * 1000)
-      await disableRule(ruleName, appPath, setTooltip)
+        await sleep(timeOut * 1000)
+        await disableRule(ruleName, setTooltip)
+      }
 
       await sleep(3000)
       setTooltip(defaultText)

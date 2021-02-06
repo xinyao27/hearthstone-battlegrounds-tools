@@ -125,7 +125,7 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
           tabIndex={0}
         />
       </div>
-      {is.windows && <Unplug />}
+      <Unplug />
       <div className={classes.container}>
         <div className={clsx(classes.content, className)}>
           {is.development && (

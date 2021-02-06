@@ -172,6 +172,7 @@
     "rxjs": "^6.6.3",
     "source-map-support": "^0.5.19",
     "styled-components": "^5.2.1",
+    "sudo-prompt": "^9.2.1",
     "use-deep-compare-effect": "^1.4.0"
   },
   "build": {
