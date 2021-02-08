@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.2](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.1...v1.5.2) (2021-02-08)
+
+### Features
+
+- **suspension:** 实现 mac 端拔线 ([3eb81a3](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/3eb81a3410a9ab367c04e760e9f0add22626053f)), closes [#13](https://github.com/hbt-org/hearthstone-battlegrounds-tools/issues/13)
+
+### Bug Fixes
+
+- **core:** 修复统计页 LineChart 可能出现的报错问题 ([3d59891](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/3d59891317e1fca219eb6737cbf193b8c4984362))
+
 ### [1.5.1](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.0...v1.5.1) (2021-01-30)
 
 ### Features
