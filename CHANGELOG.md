@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.3](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.2...v1.5.3) (2021-02-20)
+
+### Features
+
+- 适配炉石 19.6.0 版本，更新依赖 ([d6c601d](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/d6c601d6538b4cfcd9026203ffd03ad7f17d53ac))
+
+### Bug Fixes
+
+- 尝试修复 ci 环境下 @material-ui/icons 安装失败的问题 ([c976a04](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/c976a04bd3e7236281b76700dfcfa2694c0ffea8))
+
 ### [1.5.2](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.1...v1.5.2) (2021-02-08)
 
 ### Features
