@@ -1,15 +1,12 @@
 import React from 'react'
-import type { EChartOption } from 'echarts'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/component/tooltip'
-import 'echarts/map/js/world'
-import ReactEchartsCore from 'echarts-for-react/lib/core'
-import echarts from 'echarts/lib/echarts'
+import { makeStyles } from '@material-ui/core/styles'
 import dayjs from 'dayjs'
 import _ from 'lodash'
+import type { EChartsOption } from 'echarts'
+import * as echarts from 'echarts'
+import ReactEchartsCore from 'echarts-for-react/lib/core'
 import { RecordItem } from '@shared/hooks/useStatistics'
 import useRecord from '@shared/hooks/useRecord'
-import { makeStyles } from '@material-ui/core/styles'
 
 const TEMPLATE = 'YYYY-MM-DD'
 function getPastDays(range: number) {
@@ -60,7 +57,7 @@ const LineChart: React.FC = () => {
   const classes = useStyles()
   const [recordList] = useRecord()
   const [range] = React.useState(7)
-  const option = React.useMemo<EChartOption>(() => {
+  const option = React.useMemo<EChartsOption>(() => {
     const days = getPastDays(range)
     const averageRanks = getAverageRanks(
       reorganizedByDays(recordList, days, range)

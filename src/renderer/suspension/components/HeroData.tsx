@@ -1,9 +1,7 @@
 import React from 'react'
-import type { EChartOption } from 'echarts'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/component/tooltip'
+import type { EChartsOption } from 'echarts'
+import * as echarts from 'echarts'
 import ReactEchartsCore from 'echarts-for-react/lib/core'
-import echarts from 'echarts/lib/echarts'
 import { Tooltip } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -16,7 +14,7 @@ interface ChartProps {
   hero?: ListHeroesResult[0]
 }
 const Chart: React.FC<ChartProps> = ({ hero }) => {
-  const option = React.useMemo<EChartOption>(
+  const option = React.useMemo<EChartsOption>(
     () => ({
       color: ['#714822'],
       grid: {

@@ -1,8 +1,6 @@
 import React from 'react'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import { Box, Grow, Tooltip } from '@material-ui/core'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/component/tooltip'
 import type { IMinionProps } from '@hbt-org/core'
 
 import { getImageUrl } from '@suspension/utils'
