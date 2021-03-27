@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.5.4](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.3...v1.5.4) (2021-03-27)
+
+### Features
+
+- 适配炉石 20.0 版本 ([663a796](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/663a79684a796d29349650ef928160ce590a1a04))
+
+### Bug Fixes
+
+- **core:** init 时重置设置状态 ([eb674ce](https://github.com/hbt-org/hearthstone-battlegrounds-tools/commit/eb674ce92e0e822cfe0e5b63cfe0fdd5ca50329a))
+
 ### [1.5.3](https://github.com/hbt-org/hearthstone-battlegrounds-tools/compare/v1.5.2...v1.5.3) (2021-02-20)
 
 ### Features
