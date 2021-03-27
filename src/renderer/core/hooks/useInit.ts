@@ -6,6 +6,7 @@ import { promises as fsPromises } from 'fs'
 
 import { config, getStore } from '@shared/store'
 import { Topic } from '@shared/constants/topic'
+import resetGame from '@renderer/core/pages/settings/resetGame'
 
 function useInit(): [boolean, { check: () => Promise<boolean> }] {
   const store = getStore()
@@ -38,6 +39,8 @@ function useInit(): [boolean, { check: () => Promise<boolean> }] {
         store.dispatch<Topic.START_WATCH>({
           type: Topic.START_WATCH,
         })
+        // 重置一次炉石配置 保证日志监控正常运行
+        await resetGame()
       }
       setCorrectDirectory(result)
       return result
